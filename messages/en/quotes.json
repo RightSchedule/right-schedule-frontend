@@ -1,0 +1,102 @@
+{
+  "list": {
+    "title": "Quote requests",
+    "description": "Customers asking for a price. Answer once and they get an email.",
+    "errorFeature": "Quote requests",
+    "emptyTitle": "No quote requests yet",
+    "emptyDescription": "When a customer asks for a price from your booking page, it shows up here.",
+    "emptyFilteredTitle": "Nothing here",
+    "emptyFilteredDescription": "No requests with this status.",
+    "generalRequest": "General request",
+    "filters": {
+      "label": "Filter by status",
+      "all": "All",
+      "PENDING": "Pending",
+      "QUOTED": "Quoted",
+      "DECLINED": "Declined"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {total}"
+    }
+  },
+  "status": {
+    "PENDING": "Pending",
+    "QUOTED": "Quoted",
+    "DECLINED": "Declined"
+  },
+  "detail": {
+    "received": "Received {date}",
+    "service": "Service",
+    "request": "Request",
+    "customer": "Customer",
+    "yourAnswer": "Your answer",
+    "quotedAmount": "Quoted price",
+    "answeredOn": "Answered {date}",
+    "noMessage": "No message included.",
+    "sendQuote": "Send quote",
+    "decline": "Decline",
+    "close": "Close",
+    "back": "Back"
+  },
+  "quoteForm": {
+    "title": "Send a quote",
+    "description": "{name} gets your price by email at {email}. You can't change it afterwards.",
+    "amount": "Price",
+    "amountHint": "Numbers only. No currency is stored, so mention it in your message if it matters.",
+    "message": "Message (optional)",
+    "messagePlaceholder": "What's included, how long it's valid, next steps…",
+    "submit": "Send quote",
+    "sent": "Quote sent to {email}",
+    "errors": {
+      "amountRequired": "Enter a price",
+      "amountInvalid": "Enter a valid price, like 85 or 85.50",
+      "amountTooLarge": "Price is too large",
+      "messageTooLong": "Keep the message under 2000 characters"
+    }
+  },
+  "declineForm": {
+    "title": "Decline this request?",
+    "description": "{name} is told by email that you can't help with this. You can't undo it.",
+    "message": "Reason (optional)",
+    "messagePlaceholder": "A short, polite note for the customer",
+    "submit": "Decline request",
+    "declined": "Request declined"
+  },
+  "landing": {
+    "cta": "Request a quote"
+  },
+  "public": {
+    "title": "Request a quote",
+    "description": "Tell {business} what you need. They'll reply to your email with a price.",
+    "exit": "Back to booking page",
+    "service": "Service",
+    "serviceGeneral": "General request",
+    "name": "Full name",
+    "email": "Email",
+    "emailHint": "The answer is sent here.",
+    "phone": "Phone (optional)",
+    "description_label": "What do you need?",
+    "descriptionPlaceholder": "Describe the job: size, dates, anything that affects the price.",
+    "characters": "{count}/2000",
+    "submit": "Send request",
+    "footer": "No account needed. We only use your details to answer this request.",
+    "errors": {
+      "nameRequired": "Enter your name",
+      "emailInvalid": "Enter a valid email",
+      "phoneInvalid": "Enter a valid phone number",
+      "descriptionRequired": "Tell us what you need",
+      "descriptionTooLong": "Keep it under 2000 characters",
+      "unavailable": "This business or service is no longer available."
+    },
+    "success": {
+      "title": "Request sent",
+      "description": "{business} will review it and reply to {email}.",
+      "note": "You won't get a confirmation email now. You'll hear back once they answer.",
+      "another": "Send another request",
+      "back": "Back to {business}"
+    }
+  }
+}

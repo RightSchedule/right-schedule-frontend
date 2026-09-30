@@ -1,0 +1,49 @@
+{
+  "list": {
+    "title": "Customers",
+    "description": "Everyone who has booked with you, plus anyone you add yourself.",
+    "newButton": "New customer",
+    "errorFeature": "Customers",
+    "emptyTitle": "No customers yet",
+    "emptyDescription": "They'll show up here after their first booking, or add one yourself.",
+    "searchPlaceholder": "Search by name, email or phone",
+    "searchLabel": "Search customers",
+    "noMatch": "No customers match “{query}”.",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {total}"
+    }
+  },
+  "detail": {
+    "back": "Customers",
+    "notFound": "Customer not found",
+    "deleted": "Customer deleted",
+    "deleteTitle": "Delete {name}?",
+    "deleteDescription": "Their bookings are kept and still show the name and contact details they were made with.",
+    "deleteConfirm": "Delete customer",
+    "history": {
+      "title": "Booking history",
+      "errorFeature": "Booking history",
+      "empty": "No bookings yet",
+      "fallbackService": "Booking"
+    }
+  },
+  "form": {
+    "editTitle": "Edit customer",
+    "newTitle": "New customer",
+    "description": "Add a phone number or an email so you can reach them.",
+    "name": "Name",
+    "saved": "Customer saved",
+    "added": "{name} added",
+    "submitNew": "Add customer",
+    "duplicate": "Email or phone already used by another customer.",
+    "errors": {
+      "nameRequired": "Enter the customer's name",
+      "phoneInvalid": "Enter a valid phone number",
+      "emailInvalid": "Enter a valid email",
+      "contactRequired": "Add a phone number or an email"
+    }
+  }
+}

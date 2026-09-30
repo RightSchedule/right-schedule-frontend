@@ -1,0 +1,21 @@
+{
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening"
+  },
+  "today": "{weekday}, {day} {month} {year}",
+  "stats": {
+    "total": "Total today",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "upcoming": {
+    "title": "Upcoming today",
+    "empty": "No upcoming bookings for today.",
+    "feature": "Bookings",
+    "count": "{count, plural, one {# booking} other {# bookings}}"
+  },
+  "new": "New"
+}

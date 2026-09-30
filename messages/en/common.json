@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "RightSchedule",
+    "description": "Online booking for local businesses"
+  },
+  "actions": {
+    "add": "Add",
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "next": "Next",
+    "remove": "Remove",
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "search": "Search",
+    "skip": "Skip for now",
+    "tryAgain": "Try again"
+  },
+  "status": {
+    "CONFIRMED": "Confirmed",
+    "CANCELLED": "Cancelled",
+    "COMPLETED": "Completed",
+    "NO_SHOW": "No-show"
+  },
+  "weekdays": {
+    "MONDAY": "Monday",
+    "TUESDAY": "Tuesday",
+    "WEDNESDAY": "Wednesday",
+    "THURSDAY": "Thursday",
+    "FRIDAY": "Friday",
+    "SATURDAY": "Saturday",
+    "SUNDAY": "Sunday"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "pt": "Português"
+  },
+  "nav": {
+    "main": "Main",
+    "more": "More",
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "customers": "Customers",
+    "quotes": "Quotes",
+    "pendingCount": "{count} pending",
+    "services": "Services",
+    "staff": "Staff",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "skipToContent": "Skip to content"
+  },
+  "shared": {
+    "loadErrorTitle": "Couldn't load data",
+    "unavailableTitle": "{feature} isn't available yet",
+    "unavailableTitleGeneric": "This feature isn't available yet",
+    "unavailableDescription": "The server doesn't expose this yet. It will appear here as soon as the backend supports it."
+  },
+  "toast": {
+    "dismiss": "Dismiss notification"
+  },
+  "loading": "Loading…",
+  "optional": "optional"
+}

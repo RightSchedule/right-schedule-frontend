@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "RightSchedule",
+    "description": "Marcações online para negócios locais"
+  },
+  "actions": {
+    "add": "Adicionar",
+    "back": "Voltar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "continue": "Continuar",
+    "create": "Criar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "next": "Seguinte",
+    "remove": "Remover",
+    "save": "Guardar",
+    "saveChanges": "Guardar alterações",
+    "search": "Pesquisar",
+    "skip": "Saltar por agora",
+    "tryAgain": "Tentar novamente"
+  },
+  "status": {
+    "CONFIRMED": "Confirmada",
+    "CANCELLED": "Cancelada",
+    "COMPLETED": "Concluída",
+    "NO_SHOW": "Não compareceu"
+  },
+  "weekdays": {
+    "MONDAY": "Segunda-feira",
+    "TUESDAY": "Terça-feira",
+    "WEDNESDAY": "Quarta-feira",
+    "THURSDAY": "Quinta-feira",
+    "FRIDAY": "Sexta-feira",
+    "SATURDAY": "Sábado",
+    "SUNDAY": "Domingo"
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "English",
+    "pt": "Português"
+  },
+  "nav": {
+    "main": "Principal",
+    "more": "Mais",
+    "dashboard": "Painel",
+    "calendar": "Calendário",
+    "customers": "Clientes",
+    "quotes": "Orçamentos",
+    "pendingCount": "{count} pendentes",
+    "services": "Serviços",
+    "staff": "Equipa",
+    "settings": "Definições",
+    "signOut": "Terminar sessão",
+    "expandSidebar": "Expandir barra lateral",
+    "collapseSidebar": "Recolher barra lateral",
+    "skipToContent": "Saltar para o conteúdo"
+  },
+  "shared": {
+    "loadErrorTitle": "Não foi possível carregar os dados",
+    "unavailableTitle": "{feature} ainda não está disponível",
+    "unavailableTitleGeneric": "Esta funcionalidade ainda não está disponível",
+    "unavailableDescription": "O servidor ainda não disponibiliza esta funcionalidade. Aparecerá aqui assim que for suportada."
+  },
+  "toast": {
+    "dismiss": "Fechar notificação"
+  },
+  "loading": "A carregar…",
+  "optional": "opcional"
+}

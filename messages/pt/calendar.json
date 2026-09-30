@@ -1,0 +1,56 @@
+{
+  "page": {
+    "title": "Calendário",
+    "description": "Todas as marcações, por dia ou por semana.",
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "today": "Hoje",
+    "newBooking": "Nova marcação",
+    "day": "Dia",
+    "week": "Semana",
+    "dayLabel": "{weekday}, {day} de {month} de {year}",
+    "weekLabel": "{start} – {end}",
+    "feature": "Marcações"
+  },
+  "views": {
+    "customerFallback": "Cliente",
+    "serviceFallback": "Serviço",
+    "statusPrefix": "{status}:",
+    "other": "Outro",
+    "emptyTitle": "Sem marcações",
+    "emptyDescription": "Ainda não há marcações para este dia.",
+    "openDay": "Abrir {weekday}, {day} de {month}",
+    "bookingsCount": "{count, plural, one {# marcação} other {# marcações}}",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "summary": "{minutes} min · {price}"
+  },
+  "detail": {
+    "fallbackTitle": "Marcação",
+    "date": "{weekday}, {day} de {month} de {year}",
+    "duration": "{minutes} min",
+    "unassigned": "Sem profissional atribuído",
+    "unknownCustomer": "Cliente desconhecido",
+    "deletedCustomer": "cliente eliminado",
+    "cancelBooking": "Cancelar marcação",
+    "complete": "Concluir",
+    "toast": {
+      "cancelled": "Marcação cancelada",
+      "noShow": "Marcada como não compareceu",
+      "completed": "Marcada como concluída"
+    }
+  },
+  "create": {
+    "title": "Nova marcação",
+    "description": "Adicione um cliente por telemóvel ou email. Basta um dos dois.",
+    "date": "Data",
+    "time": "Hora",
+    "professional": "Profissional",
+    "service": "Serviço",
+    "noServices": "Este profissional não tem serviços ativos.",
+    "serviceOption": "{name} · {minutes} min",
+    "customerName": "Nome do cliente",
+    "submit": "Criar marcação",
+    "created": "Marcação criada"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "progress": "Progresso da configuração",
+  "steps": {
+    "business": "Negócio",
+    "service": "Primeiro serviço",
+    "team": "A sua equipa"
+  },
+  "copy": {
+    "business": {
+      "title": "Configure o seu negócio",
+      "description": "Demora cerca de dois minutos. Pode alterar tudo mais tarde."
+    },
+    "service": {
+      "title": "Adicione o seu primeiro serviço",
+      "description": "Algo que os clientes possam marcar. Pode adicionar mais depois."
+    },
+    "team": {
+      "title": "Quem recebe as marcações?",
+      "description": "Adicione-se a si ou a um membro da equipa e defina quando está disponível."
+    },
+    "done": {
+      "title": "Está pronto para receber marcações",
+      "description": "Partilhe esta ligação onde quiser: Instagram, WhatsApp, o seu website."
+    }
+  },
+  "business": {
+    "name": "Nome do negócio",
+    "namePlaceholder": "Estúdio Aurora",
+    "slug": "Ligação de marcação",
+    "slugHint": "Este é o endereço que os clientes usam para fazer marcações consigo.",
+    "timezone": "Fuso horário",
+    "slugTaken": "Essa ligação já está em uso. Experimente outra."
+  },
+  "validation": {
+    "nameRequired": "Introduza o nome do seu negócio",
+    "slugMin": "Pelo menos 3 caracteres",
+    "slugPattern": "Use letras minúsculas, números e hífenes"
+  },
+  "team": {
+    "finish": "Concluir configuração",
+    "workingHours": "Horário de trabalho"
+  },
+  "done": {
+    "goToDashboard": "Ir para o painel"
+  },
+  "stepOf": "Passo {current} de {total}"
+}

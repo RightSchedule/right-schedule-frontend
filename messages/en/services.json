@@ -1,0 +1,48 @@
+{
+  "page": {
+    "title": "Services",
+    "description": "What customers can book. Hidden services don't appear on your booking page.",
+    "newButton": "New service",
+    "addButton": "Add service",
+    "emptyTitle": "No services yet",
+    "emptyDescription": "Add your first service so customers have something to book.",
+    "active": "Active",
+    "hidden": "Hidden",
+    "minutes": "{count} min",
+    "bookable": "Bookable",
+    "toggleAria": "Toggle {name}",
+    "editAria": "Edit {name}",
+    "deleteAria": "Delete {name}",
+    "hiddenToast": "{name} hidden from booking page",
+    "bookableToast": "{name} is now bookable",
+    "deleted": "Service deleted",
+    "deleteTitle": "Delete {name}?",
+    "deleteTitleFallback": "Delete service?",
+    "deleteDescription": "This can't be undone. Consider hiding it instead if you may offer it again."
+  },
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "Haircut",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "What's included?",
+    "duration": "Duration (min)",
+    "price": "Price (€)",
+    "errors": {
+      "nameRequired": "Name is required",
+      "durationRequired": "Enter a duration",
+      "durationInteger": "Whole minutes only",
+      "durationMin": "At least 5 minutes",
+      "durationMax": "At most 12 hours",
+      "priceRequired": "Enter a price",
+      "priceMin": "Price can't be negative"
+    }
+  },
+  "dialog": {
+    "editTitle": "Edit service",
+    "newTitle": "New service",
+    "description": "Customers see the name, duration and price when booking.",
+    "submitNew": "Create service",
+    "created": "Service created",
+    "updated": "Service updated"
+  }
+}

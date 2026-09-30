@@ -1,0 +1,103 @@
+{
+  "list": {
+    "title": "Team",
+    "description": "The people customers can book. Set each person's services and hours.",
+    "addButton": "Add team member",
+    "emptyTitle": "No team members yet",
+    "emptyDescription": "Add the first person who takes bookings. You can add yourself.",
+    "noContact": "No contact details",
+    "inactive": "Inactive"
+  },
+  "detail": {
+    "back": "Team",
+    "notFound": "Team member not found",
+    "active": "Active",
+    "inactive": "Inactive",
+    "deactivate": "Deactivate",
+    "deactivated": "Team member deactivated",
+    "deactivateTitle": "Deactivate {name}?",
+    "deactivateDescription": "They'll no longer appear on your booking page. Existing bookings are kept.",
+    "tabs": {
+      "profile": "Profile",
+      "services": "Services",
+      "hours": "Hours",
+      "timeOff": "Time off"
+    }
+  },
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "Ana Costa",
+    "email": "Email (optional)",
+    "emailPlaceholder": "ana@example.com",
+    "phone": "Phone (optional)",
+    "phonePlaceholder": "+351 900 000 000",
+    "errors": {
+      "nameRequired": "Name is required",
+      "emailInvalid": "Enter a valid email"
+    }
+  },
+  "dialog": {
+    "title": "Add team member",
+    "description": "You'll set their services and working hours next.",
+    "submit": "Add team member",
+    "added": "{name} added",
+    "saveProfile": "Save profile",
+    "profileSaved": "Profile saved"
+  },
+  "servicesPanel": {
+    "emptyTitle": "Create a service first",
+    "emptyDescription": "Add at least one service, then come back to choose who performs it.",
+    "summary": "{minutes} min · {price}",
+    "hidden": "Hidden",
+    "unsaved": "Unsaved changes",
+    "save": "Save services",
+    "saved": "Services updated"
+  },
+  "hoursPanel": {
+    "save": "Save working hours",
+    "saved": "Working hours saved"
+  },
+  "hoursEditor": {
+    "closed": "Closed",
+    "openAria": "{day} open",
+    "startAria": "{day} start {n}",
+    "endAria": "{day} end {n}",
+    "removeAria": "Remove {day} range {n}",
+    "addRange": "Add another range",
+    "errors": {
+      "fillBoth": "{day}: fill in both times",
+      "endBeforeStart": "{day}: end time must be after start time",
+      "overlap": "{day}: time ranges overlap"
+    }
+  },
+  "timeOff": {
+    "add": "Add time off",
+    "emptyTitle": "No time off scheduled",
+    "emptyDescription": "Block out vacations, appointments or any time this person can't take bookings.",
+    "allDay": "All day",
+    "removeAria": "Remove time off",
+    "removed": "Time off removed",
+    "added": "Time off added",
+    "types": {
+      "VACATION": "Vacation",
+      "PERSONAL": "Personal",
+      "OTHER": "Other"
+    },
+    "dialog": {
+      "title": "Add time off",
+      "description": "Customers won't be able to book this person during this time.",
+      "date": "Date",
+      "type": "Type",
+      "allDay": "All day",
+      "from": "From",
+      "until": "Until",
+      "note": "Note (optional)",
+      "notePlaceholder": "Christmas holiday",
+      "submit": "Add time off",
+      "errors": {
+        "pickDate": "Pick a date",
+        "endAfterStart": "End time must be after start time"
+      }
+    }
+  }
+}

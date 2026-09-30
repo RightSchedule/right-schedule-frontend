@@ -1,0 +1,48 @@
+{
+  "page": {
+    "title": "Serviços",
+    "description": "O que os clientes podem marcar. Os serviços ocultos não aparecem na sua página de marcações.",
+    "newButton": "Novo serviço",
+    "addButton": "Adicionar serviço",
+    "emptyTitle": "Ainda não há serviços",
+    "emptyDescription": "Adicione o seu primeiro serviço para que os clientes tenham algo para marcar.",
+    "active": "Ativo",
+    "hidden": "Oculto",
+    "minutes": "{count} min",
+    "bookable": "Disponível para marcação",
+    "toggleAria": "Alternar {name}",
+    "editAria": "Editar {name}",
+    "deleteAria": "Eliminar {name}",
+    "hiddenToast": "{name} ocultado da página de marcações",
+    "bookableToast": "{name} já pode ser marcado",
+    "deleted": "Serviço eliminado",
+    "deleteTitle": "Eliminar {name}?",
+    "deleteTitleFallback": "Eliminar serviço?",
+    "deleteDescription": "Esta ação não pode ser anulada. Considere ocultá-lo em vez disso, caso volte a oferecê-lo."
+  },
+  "form": {
+    "name": "Nome",
+    "namePlaceholder": "Corte de cabelo",
+    "description": "Descrição (opcional)",
+    "descriptionPlaceholder": "O que está incluído?",
+    "duration": "Duração (min)",
+    "price": "Preço (€)",
+    "errors": {
+      "nameRequired": "O nome é obrigatório",
+      "durationRequired": "Introduza a duração",
+      "durationInteger": "Apenas minutos inteiros",
+      "durationMin": "No mínimo 5 minutos",
+      "durationMax": "No máximo 12 horas",
+      "priceRequired": "Introduza o preço",
+      "priceMin": "O preço não pode ser negativo"
+    }
+  },
+  "dialog": {
+    "editTitle": "Editar serviço",
+    "newTitle": "Novo serviço",
+    "description": "Os clientes veem o nome, a duração e o preço ao fazer a marcação.",
+    "submitNew": "Criar serviço",
+    "created": "Serviço criado",
+    "updated": "Serviço atualizado"
+  }
+}

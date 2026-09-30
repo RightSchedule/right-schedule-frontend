@@ -1,0 +1,102 @@
+{
+  "list": {
+    "title": "Pedidos de orçamento",
+    "description": "Clientes que pedem um preço. Responda uma vez e eles recebem um email.",
+    "errorFeature": "Pedidos de orçamento",
+    "emptyTitle": "Ainda não há pedidos de orçamento",
+    "emptyDescription": "Quando um cliente pedir um preço na sua página de marcações, aparece aqui.",
+    "emptyFilteredTitle": "Nada por aqui",
+    "emptyFilteredDescription": "Não há pedidos com este estado.",
+    "generalRequest": "Pedido geral",
+    "filters": {
+      "label": "Filtrar por estado",
+      "all": "Todos",
+      "PENDING": "Pendentes",
+      "QUOTED": "Orçamentados",
+      "DECLINED": "Recusados"
+    },
+    "pagination": {
+      "label": "Paginação",
+      "previous": "Anterior",
+      "next": "Seguinte",
+      "page": "Página {page} de {total}"
+    }
+  },
+  "status": {
+    "PENDING": "Pendente",
+    "QUOTED": "Orçamentado",
+    "DECLINED": "Recusado"
+  },
+  "detail": {
+    "received": "Recebido a {date}",
+    "service": "Serviço",
+    "request": "Pedido",
+    "customer": "Cliente",
+    "yourAnswer": "A sua resposta",
+    "quotedAmount": "Preço indicado",
+    "answeredOn": "Respondido a {date}",
+    "noMessage": "Sem mensagem.",
+    "sendQuote": "Enviar orçamento",
+    "decline": "Recusar",
+    "close": "Fechar",
+    "back": "Voltar"
+  },
+  "quoteForm": {
+    "title": "Enviar orçamento",
+    "description": "{name} recebe o seu preço por email em {email}. Não pode alterar depois.",
+    "amount": "Preço",
+    "amountHint": "Apenas números. A moeda não é guardada, por isso indique-a na mensagem se for importante.",
+    "message": "Mensagem (opcional)",
+    "messagePlaceholder": "O que está incluído, até quando é válido, próximos passos…",
+    "submit": "Enviar orçamento",
+    "sent": "Orçamento enviado para {email}",
+    "errors": {
+      "amountRequired": "Indique um preço",
+      "amountInvalid": "Indique um preço válido, como 85 ou 85,50",
+      "amountTooLarge": "O preço é demasiado grande",
+      "messageTooLong": "A mensagem deve ter menos de 2000 caracteres"
+    }
+  },
+  "declineForm": {
+    "title": "Recusar este pedido?",
+    "description": "{name} é informado(a) por email de que não pode ajudar. Não pode desfazer.",
+    "message": "Motivo (opcional)",
+    "messagePlaceholder": "Uma nota curta e cordial para o cliente",
+    "submit": "Recusar pedido",
+    "declined": "Pedido recusado"
+  },
+  "landing": {
+    "cta": "Pedir orçamento"
+  },
+  "public": {
+    "title": "Pedir orçamento",
+    "description": "Diga a {business} o que precisa. Respondem por email com um preço.",
+    "exit": "Voltar à página de marcações",
+    "service": "Serviço",
+    "serviceGeneral": "Pedido geral",
+    "name": "Nome completo",
+    "email": "Email",
+    "emailHint": "A resposta é enviada para aqui.",
+    "phone": "Telefone (opcional)",
+    "description_label": "O que precisa?",
+    "descriptionPlaceholder": "Descreva o trabalho: dimensão, datas, tudo o que afete o preço.",
+    "characters": "{count}/2000",
+    "submit": "Enviar pedido",
+    "footer": "Não precisa de conta. Usamos os seus dados apenas para responder a este pedido.",
+    "errors": {
+      "nameRequired": "Indique o seu nome",
+      "emailInvalid": "Indique um email válido",
+      "phoneInvalid": "Indique um telefone válido",
+      "descriptionRequired": "Diga-nos o que precisa",
+      "descriptionTooLong": "Use menos de 2000 caracteres",
+      "unavailable": "Este negócio ou serviço já não está disponível."
+    },
+    "success": {
+      "title": "Pedido enviado",
+      "description": "{business} vai analisar e responder para {email}.",
+      "note": "Não recebe email de confirmação agora. Terá notícias quando responderem.",
+      "another": "Enviar outro pedido",
+      "back": "Voltar a {business}"
+    }
+  }
+}

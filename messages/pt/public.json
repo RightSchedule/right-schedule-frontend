@@ -1,0 +1,77 @@
+{
+  "shell": {
+    "poweredBy": "Powered by <brand>RightSchedule</brand>",
+    "notFound": {
+      "title": "Página de marcações não encontrada",
+      "description": "Este link pode estar errado ou o negócio já não aceita marcações online.",
+      "ownerSignIn": "É proprietário de um negócio? Inicie sessão"
+    }
+  },
+  "landing": {
+    "book": "Fazer uma marcação",
+    "services": "Serviços",
+    "closed": "As marcações online ainda não estão abertas. Volte a consultar em breve."
+  },
+  "service": {
+    "duration": "{count, plural, one {# min} other {# min}}"
+  },
+  "wizard": {
+    "steps": {
+      "service": "Escolha um serviço",
+      "staff": "Escolha um profissional",
+      "when": "Escolha a data e a hora",
+      "details": "Os seus dados"
+    },
+    "exit": "Sair da marcação",
+    "progress": "Passo {current} de {total}",
+    "staff": {
+      "any": "Qualquer profissional",
+      "anyHint": "Maior disponibilidade"
+    },
+    "when": {
+      "chooseDate": "Escolha uma data",
+      "noTimes": "Sem horários disponíveis",
+      "tryAnotherDay": "Experimente outro dia.",
+      "partOfDay": {
+        "morning": "Manhã",
+        "afternoon": "Tarde",
+        "evening": "Noite"
+      }
+    },
+    "details": {
+      "emailHint": "Enviaremos a confirmação para este endereço.",
+      "submit": "Confirmar marcação",
+      "footer": "Não precisa de criar conta. Pode cancelar contactando {business}."
+    },
+    "errors": {
+      "unavailable": "Este serviço ou profissional já não está disponível."
+    }
+  },
+  "ticket": {
+    "when": "Quando",
+    "with": "Com"
+  },
+  "confirmation": {
+    "title": "Marcação confirmada!",
+    "sentTo": "Foi enviada uma confirmação para {email}.",
+    "confirmed": "A sua marcação foi confirmada.",
+    "reference": "Referência: <mono>{code}</mono>",
+    "backTo": "Voltar a {name}",
+    "backToPage": "Voltar à página de marcações"
+  },
+  "customer": {
+    "fullName": "Nome completo",
+    "phone": "Telemóvel",
+    "phoneOptional": "Telemóvel (opcional)",
+    "email": "E-mail",
+    "emailOptional": "E-mail (opcional)",
+    "notesOptional": "Notas (opcional)"
+  },
+  "validation": {
+    "nameRequired": "Introduza o seu nome",
+    "customerNameRequired": "Introduza o nome do cliente",
+    "phoneInvalid": "Introduza um número de telefone válido",
+    "emailInvalid": "Introduza um e-mail válido",
+    "contactRequired": "Adicione um número de telefone ou um e-mail"
+  }
+}

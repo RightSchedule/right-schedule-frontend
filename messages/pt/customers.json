@@ -1,0 +1,49 @@
+{
+  "list": {
+    "title": "Clientes",
+    "description": "Todos os clientes que já fizeram marcações consigo, mais os que adicionar manualmente.",
+    "newButton": "Novo cliente",
+    "errorFeature": "Clientes",
+    "emptyTitle": "Ainda não há clientes",
+    "emptyDescription": "Aparecerão aqui após a primeira marcação, ou pode adicionar um cliente manualmente.",
+    "searchPlaceholder": "Pesquisar por nome, email ou telemóvel",
+    "searchLabel": "Pesquisar clientes",
+    "noMatch": "Nenhum cliente corresponde a “{query}”.",
+    "pagination": {
+      "label": "Paginação",
+      "previous": "Anterior",
+      "next": "Seguinte",
+      "page": "Página {page} de {total}"
+    }
+  },
+  "detail": {
+    "back": "Clientes",
+    "notFound": "Cliente não encontrado",
+    "deleted": "Cliente eliminado",
+    "deleteTitle": "Eliminar {name}?",
+    "deleteDescription": "As marcações do cliente são mantidas e continuam a mostrar o nome e os contactos com que foram feitas.",
+    "deleteConfirm": "Eliminar cliente",
+    "history": {
+      "title": "Histórico de marcações",
+      "errorFeature": "Histórico de marcações",
+      "empty": "Ainda não há marcações",
+      "fallbackService": "Marcação"
+    }
+  },
+  "form": {
+    "editTitle": "Editar cliente",
+    "newTitle": "Novo cliente",
+    "description": "Adicione um telemóvel ou um email para poder contactar o cliente.",
+    "name": "Nome",
+    "saved": "Cliente guardado",
+    "added": "{name} adicionado",
+    "submitNew": "Adicionar cliente",
+    "duplicate": "O email ou telemóvel já está a ser usado por outro cliente.",
+    "errors": {
+      "nameRequired": "Introduza o nome do cliente",
+      "phoneInvalid": "Introduza um número de telemóvel válido",
+      "emailInvalid": "Introduza um email válido",
+      "contactRequired": "Adicione um telemóvel ou um email"
+    }
+  }
+}

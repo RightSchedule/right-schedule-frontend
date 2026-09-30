@@ -1,0 +1,77 @@
+{
+  "shell": {
+    "poweredBy": "Powered by <brand>RightSchedule</brand>",
+    "notFound": {
+      "title": "Booking page not found",
+      "description": "This link may be mistyped or the business is no longer taking online bookings.",
+      "ownerSignIn": "Are you a business owner? Sign in"
+    }
+  },
+  "landing": {
+    "book": "Book an appointment",
+    "services": "Services",
+    "closed": "Online booking isn't open yet. Please check back soon."
+  },
+  "service": {
+    "duration": "{count, plural, one {# min} other {# min}}"
+  },
+  "wizard": {
+    "steps": {
+      "service": "Choose a service",
+      "staff": "Choose a professional",
+      "when": "Pick a date and time",
+      "details": "Your details"
+    },
+    "exit": "Exit booking",
+    "progress": "Step {current} of {total}",
+    "staff": {
+      "any": "Any professional",
+      "anyHint": "Most availability"
+    },
+    "when": {
+      "chooseDate": "Choose a date",
+      "noTimes": "No times available",
+      "tryAnotherDay": "Try another day.",
+      "partOfDay": {
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
+      }
+    },
+    "details": {
+      "emailHint": "We'll send your confirmation here.",
+      "submit": "Confirm booking",
+      "footer": "No account needed. You can cancel by contacting {business}."
+    },
+    "errors": {
+      "unavailable": "This service or professional is no longer available."
+    }
+  },
+  "ticket": {
+    "when": "When",
+    "with": "With"
+  },
+  "confirmation": {
+    "title": "You're booked!",
+    "sentTo": "A confirmation was sent to {email}.",
+    "confirmed": "Your appointment has been confirmed.",
+    "reference": "Reference: <mono>{code}</mono>",
+    "backTo": "Back to {name}",
+    "backToPage": "Back to booking page"
+  },
+  "customer": {
+    "fullName": "Full name",
+    "phone": "Phone",
+    "phoneOptional": "Phone (optional)",
+    "email": "Email",
+    "emailOptional": "Email (optional)",
+    "notesOptional": "Notes (optional)"
+  },
+  "validation": {
+    "nameRequired": "Enter your name",
+    "customerNameRequired": "Enter the customer's name",
+    "phoneInvalid": "Enter a valid phone number",
+    "emailInvalid": "Enter a valid email",
+    "contactRequired": "Add a phone number or an email"
+  }
+}

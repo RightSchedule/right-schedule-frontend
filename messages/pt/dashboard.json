@@ -1,0 +1,21 @@
+{
+  "greeting": {
+    "morning": "Bom dia",
+    "afternoon": "Boa tarde",
+    "evening": "Boa noite"
+  },
+  "today": "{weekday}, {day} de {month} de {year}",
+  "stats": {
+    "total": "Total de hoje",
+    "confirmed": "Confirmadas",
+    "completed": "Concluídas",
+    "cancelled": "Canceladas"
+  },
+  "upcoming": {
+    "title": "Próximas marcações de hoje",
+    "empty": "Não há próximas marcações para hoje.",
+    "feature": "Marcações",
+    "count": "{count, plural, one {# marcação} other {# marcações}}"
+  },
+  "new": "Nova"
+}

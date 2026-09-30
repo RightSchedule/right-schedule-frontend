@@ -1,0 +1,33 @@
+{
+  "header": {
+    "title": "Definições",
+    "description": "O perfil do seu negócio e a sua página de marcações."
+  },
+  "bookingLink": {
+    "title": "A sua ligação de marcação",
+    "copy": "Copiar",
+    "copied": "Copiada",
+    "preview": "Pré-visualizar",
+    "copiedToast": "Ligação de marcação copiada",
+    "copyFailed": "Não foi possível copiar. Selecione a ligação e copie-a manualmente.",
+    "label": "Ligação de marcação",
+    "copyLink": "Copiar ligação"
+  },
+  "profile": {
+    "title": "Perfil do negócio",
+    "name": "Nome do negócio",
+    "email": "Email de contacto",
+    "phone": "Telefone",
+    "address": "Morada",
+    "timezone": "Fuso horário",
+    "timezoneHint": "As horas das marcações são apresentadas neste fuso horário.",
+    "emailLanguage": "Idioma dos emails",
+    "emailLanguageHint": "O idioma das notificações por email que o seu negócio recebe."
+  },
+  "validation": {
+    "nameRequired": "O nome do negócio é obrigatório",
+    "emailInvalid": "Introduza um email válido"
+  },
+  "saved": "Definições guardadas",
+  "notFound": "Negócio não encontrado"
+}

@@ -1,0 +1,47 @@
+{
+  "progress": "Setup progress",
+  "steps": {
+    "business": "Business",
+    "service": "First service",
+    "team": "Your team"
+  },
+  "copy": {
+    "business": {
+      "title": "Set up your business",
+      "description": "Takes about two minutes. You can change everything later."
+    },
+    "service": {
+      "title": "Add your first service",
+      "description": "Something customers can book. You can add more afterwards."
+    },
+    "team": {
+      "title": "Who takes the bookings?",
+      "description": "Add yourself or a team member and set when they're available."
+    },
+    "done": {
+      "title": "You're ready for bookings",
+      "description": "Share this link anywhere: Instagram, WhatsApp, your website."
+    }
+  },
+  "business": {
+    "name": "Business name",
+    "namePlaceholder": "Studio Aurora",
+    "slug": "Booking link",
+    "slugHint": "This is the address customers use to book you.",
+    "timezone": "Timezone",
+    "slugTaken": "That link is already taken. Try another."
+  },
+  "validation": {
+    "nameRequired": "Enter your business name",
+    "slugMin": "At least 3 characters",
+    "slugPattern": "Use lowercase letters, numbers and hyphens"
+  },
+  "team": {
+    "finish": "Finish setup",
+    "workingHours": "Working hours"
+  },
+  "done": {
+    "goToDashboard": "Go to dashboard"
+  },
+  "stepOf": "Step {current} of {total}"
+}

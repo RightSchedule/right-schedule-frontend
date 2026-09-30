@@ -1,0 +1,56 @@
+{
+  "page": {
+    "title": "Calendar",
+    "description": "All bookings, by day or week.",
+    "previous": "Previous",
+    "next": "Next",
+    "today": "Today",
+    "newBooking": "New booking",
+    "day": "Day",
+    "week": "Week",
+    "dayLabel": "{weekday}, {day} {month} {year}",
+    "weekLabel": "{start} – {end}",
+    "feature": "Bookings"
+  },
+  "views": {
+    "customerFallback": "Customer",
+    "serviceFallback": "Service",
+    "statusPrefix": "{status}:",
+    "other": "Other",
+    "emptyTitle": "Nothing booked",
+    "emptyDescription": "No bookings for this day yet.",
+    "openDay": "Open {weekday}, {day} {month}",
+    "bookingsCount": "{count, plural, one {# booking} other {# bookings}}",
+    "active": "Active",
+    "inactive": "Inactive",
+    "summary": "{minutes} min · {price}"
+  },
+  "detail": {
+    "fallbackTitle": "Booking",
+    "date": "{weekday}, {day} {month} {year}",
+    "duration": "{minutes} min",
+    "unassigned": "Unassigned",
+    "unknownCustomer": "Unknown customer",
+    "deletedCustomer": "deleted customer",
+    "cancelBooking": "Cancel booking",
+    "complete": "Complete",
+    "toast": {
+      "cancelled": "Booking cancelled",
+      "noShow": "Marked as no-show",
+      "completed": "Marked as completed"
+    }
+  },
+  "create": {
+    "title": "New booking",
+    "description": "Add a customer by phone or email. One is enough.",
+    "date": "Date",
+    "time": "Time",
+    "professional": "Professional",
+    "service": "Service",
+    "noServices": "This professional has no active services.",
+    "serviceOption": "{name} · {minutes} min",
+    "customerName": "Customer name",
+    "submit": "Create booking",
+    "created": "Booking created"
+  }
+}

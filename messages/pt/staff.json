@@ -1,0 +1,103 @@
+{
+  "list": {
+    "title": "Equipa",
+    "description": "As pessoas que os clientes podem marcar. Defina os serviços e o horário de cada uma.",
+    "addButton": "Adicionar membro da equipa",
+    "emptyTitle": "Ainda não há membros na equipa",
+    "emptyDescription": "Adicione a primeira pessoa que recebe marcações. Pode adicionar-se a si próprio.",
+    "noContact": "Sem contactos",
+    "inactive": "Inativo"
+  },
+  "detail": {
+    "back": "Equipa",
+    "notFound": "Membro da equipa não encontrado",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "deactivate": "Desativar",
+    "deactivated": "Membro da equipa desativado",
+    "deactivateTitle": "Desativar {name}?",
+    "deactivateDescription": "Deixará de aparecer na sua página de marcações. As marcações existentes são mantidas.",
+    "tabs": {
+      "profile": "Perfil",
+      "services": "Serviços",
+      "hours": "Horário",
+      "timeOff": "Ausências"
+    }
+  },
+  "form": {
+    "name": "Nome",
+    "namePlaceholder": "Ana Costa",
+    "email": "Email (opcional)",
+    "emailPlaceholder": "ana@exemplo.pt",
+    "phone": "Telemóvel (opcional)",
+    "phonePlaceholder": "+351 900 000 000",
+    "errors": {
+      "nameRequired": "O nome é obrigatório",
+      "emailInvalid": "Introduza um email válido"
+    }
+  },
+  "dialog": {
+    "title": "Adicionar membro da equipa",
+    "description": "A seguir, defina os serviços e o horário de trabalho.",
+    "submit": "Adicionar membro da equipa",
+    "added": "{name} adicionado",
+    "saveProfile": "Guardar perfil",
+    "profileSaved": "Perfil guardado"
+  },
+  "servicesPanel": {
+    "emptyTitle": "Crie primeiro um serviço",
+    "emptyDescription": "Adicione pelo menos um serviço e volte aqui para escolher quem o realiza.",
+    "summary": "{minutes} min · {price}",
+    "hidden": "Oculto",
+    "unsaved": "Alterações por guardar",
+    "save": "Guardar serviços",
+    "saved": "Serviços atualizados"
+  },
+  "hoursPanel": {
+    "save": "Guardar horário de trabalho",
+    "saved": "Horário de trabalho guardado"
+  },
+  "hoursEditor": {
+    "closed": "Encerrado",
+    "openAria": "{day} aberto",
+    "startAria": "{day} início {n}",
+    "endAria": "{day} fim {n}",
+    "removeAria": "Remover intervalo {n} de {day}",
+    "addRange": "Adicionar outro intervalo",
+    "errors": {
+      "fillBoth": "{day}: preencha as duas horas",
+      "endBeforeStart": "{day}: a hora de fim deve ser posterior à hora de início",
+      "overlap": "{day}: os intervalos de tempo sobrepõem-se"
+    }
+  },
+  "timeOff": {
+    "add": "Adicionar ausência",
+    "emptyTitle": "Nenhuma ausência agendada",
+    "emptyDescription": "Bloqueie férias, consultas ou qualquer período em que esta pessoa não possa receber marcações.",
+    "allDay": "Dia inteiro",
+    "removeAria": "Remover ausência",
+    "removed": "Ausência removida",
+    "added": "Ausência adicionada",
+    "types": {
+      "VACATION": "Férias",
+      "PERSONAL": "Pessoal",
+      "OTHER": "Outra"
+    },
+    "dialog": {
+      "title": "Adicionar ausência",
+      "description": "Os clientes não poderão fazer marcações com esta pessoa durante este período.",
+      "date": "Data",
+      "type": "Tipo",
+      "allDay": "Dia inteiro",
+      "from": "De",
+      "until": "Até",
+      "note": "Nota (opcional)",
+      "notePlaceholder": "Férias de Natal",
+      "submit": "Adicionar ausência",
+      "errors": {
+        "pickDate": "Escolha uma data",
+        "endAfterStart": "A hora de fim deve ser posterior à hora de início"
+      }
+    }
+  }
+}

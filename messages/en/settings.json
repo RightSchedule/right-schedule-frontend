@@ -1,0 +1,33 @@
+{
+  "header": {
+    "title": "Settings",
+    "description": "Your business profile and booking page."
+  },
+  "bookingLink": {
+    "title": "Your booking link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "preview": "Preview",
+    "copiedToast": "Booking link copied",
+    "copyFailed": "Couldn't copy. Select the link and copy it manually.",
+    "label": "Booking link",
+    "copyLink": "Copy link"
+  },
+  "profile": {
+    "title": "Business profile",
+    "name": "Business name",
+    "email": "Contact email",
+    "phone": "Phone",
+    "address": "Address",
+    "timezone": "Timezone",
+    "timezoneHint": "Booking times are shown in this timezone.",
+    "emailLanguage": "Email language",
+    "emailLanguageHint": "The language of the notification emails your business receives."
+  },
+  "validation": {
+    "nameRequired": "Business name is required",
+    "emailInvalid": "Enter a valid email"
+  },
+  "saved": "Settings saved",
+  "notFound": "Business not found"
+}
