@@ -5,6 +5,13 @@ export const authApi = {
   login: (email: string, password: string) =>
     apiClient.post<AuthResponse>("/api/v1/auth/login", { email, password }),
 
-  register: (email: string, password: string) =>
-    apiClient.post<RegisterResponse>("/api/v1/auth/register", { email, password }),
+  register: (email: string, password: string, termsVersion: string) =>
+    apiClient.post<RegisterResponse>("/api/v1/auth/register", {
+      email,
+      password,
+      termsAccepted: true,
+      termsVersion,
+    }),
+
+  logout: () => apiClient.post<void>("/api/v1/auth/logout", {}),
 };

@@ -39,7 +39,14 @@
     "sendQuote": "Send quote",
     "decline": "Decline",
     "close": "Close",
+    "delete": "Delete",
     "back": "Back"
+  },
+  "deleteForm": {
+    "title": "Delete this request?",
+    "description": "The request from {name} is permanently erased, including their email, phone and message. No email is sent. You can't undo it.",
+    "submit": "Delete request",
+    "deleted": "Request deleted"
   },
   "quoteForm": {
     "title": "Send a quote",

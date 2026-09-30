@@ -1,0 +1,47 @@
+{
+  "page": {
+    "title": "Por rever",
+    "description": "Marcações passadas ainda como Confirmadas. Diga-nos como correu cada uma para manter os números certos.",
+    "errorFeature": "Marcações por rever",
+    "emptyTitle": "Tudo em dia",
+    "emptyDescription": "Todas as marcações passadas foram registadas. As novas aparecem aqui umas horas depois de terminarem.",
+    "openCalendar": "Abrir calendário",
+    "unknownCustomer": "Cliente desconhecido",
+    "serviceFallback": "Serviço",
+    "ended": "Terminou {days, plural, =0 {hoje} =1 {ontem} other {há # dias}}",
+    "details": "Detalhes"
+  },
+  "select": {
+    "all": "Selecionar todas nesta página",
+    "row": "Selecionar marcação de {name}",
+    "count": "{count} selecionadas",
+    "clear": "Limpar"
+  },
+  "actions": {
+    "complete": "Concluir",
+    "noShow": "Não compareceu",
+    "completeSelected": "Concluir {count, plural, one {# marcação} other {# marcações}}"
+  },
+  "toast": {
+    "completed": "Marcada como concluída",
+    "noShow": "Marcada como não compareceu",
+    "bulkCompleted": "{count, plural, one {# marcação concluída} other {# marcações concluídas}}",
+    "bulkPartial": "{succeeded} concluídas, {failed} falharam. As que falharam continuam na lista."
+  },
+  "bulk": {
+    "title": "Concluir {count, plural, one {# marcação} other {# marcações}}?",
+    "description": "Não pode ser anulado. Se o cliente não compareceu, use Não compareceu em cada marcação.",
+    "confirm": "Concluir"
+  },
+  "pagination": {
+    "label": "Paginação",
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "page": "Página {page} de {total}"
+  },
+  "banner": {
+    "title": "{count, plural, one {# marcação por rever} other {# marcações por rever}}",
+    "description": "Terminaram há algum tempo e continuam como Confirmadas. Registe como correu cada uma para manter os números certos.",
+    "cta": "Rever agora"
+  }
+}

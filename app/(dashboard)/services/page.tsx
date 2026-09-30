@@ -89,7 +89,7 @@ export default function ServicesPage() {
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32 rounded-3xl" />
+            <Skeleton key={i} className="h-44 rounded-3xl" />
           ))}
         </div>
       ) : error ? (
@@ -110,30 +110,38 @@ export default function ServicesPage() {
           {services.map((service) => (
             <li key={service.id}>
               <Card className={service.active ? "" : "opacity-70"}>
-                <CardContent className="flex flex-col gap-3 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <h2 className="truncate font-bold">{service.name}</h2>
+                <CardContent className="flex flex-col gap-4 p-5 pt-5">
+                  <div className="flex items-start gap-3.5">
+                    <span
+                      aria-hidden
+                      className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-foreground"
+                    >
+                      <Scissors className="size-5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-lg font-bold leading-tight">{service.name}</h2>
                       {service.description && (
-                        <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
                           {service.description}
                         </p>
                       )}
                     </div>
-                    <Badge variant={service.active ? "success" : "secondary"}>
+                    <Badge variant={service.active ? "success" : "secondary"} className="shrink-0 gap-1.5">
+                      <span aria-hidden className="size-1.5 rounded-full bg-current" />
                       {service.active ? t("active") : t("hidden")}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Clock className="size-3.5" /> {t("minutes", { count: service.durationMinutes })}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted px-2.5 py-1 text-sm text-muted-foreground">
+                      <Clock className="size-3.5 text-primary" aria-hidden />
+                      {t("minutes", { count: service.durationMinutes })}
                     </span>
-                    <span className="font-medium text-foreground">
+                    <span className="rounded-lg bg-muted px-2.5 py-1 font-mono text-sm font-bold text-foreground">
                       {price(service.price)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between border-t border-border pt-3">
-                    <label className="flex items-center gap-2 text-sm">
+                  <div className="flex items-center justify-between border-t border-border pt-4">
+                    <label className="flex items-center gap-2.5 text-sm">
                       <Switch
                         checked={service.active}
                         onCheckedChange={() => onToggle(service)}

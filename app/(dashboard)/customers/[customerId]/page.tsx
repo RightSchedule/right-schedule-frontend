@@ -4,7 +4,7 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, CalendarX, Mail, NotebookText, Pencil, Phone, Trash2 } from "lucide-react";
+import { ArrowLeft, CalendarX, Download, Mail, NotebookText, Pencil, Phone, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,7 +16,7 @@ import {
 } from "@/features/bookings/components/BookingDetailDialog";
 import { useBookingsRange } from "@/features/bookings/hooks/useBookings";
 import { CustomerFormDialog } from "@/features/customers/components/CustomerFormDialog";
-import { useCustomer, useDeleteCustomer } from "@/features/customers/hooks/useCustomers";
+import { useCustomer, useDeleteCustomer, useExportCustomer } from "@/features/customers/hooks/useCustomers";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import type { Booking } from "@/types/domain";
@@ -37,6 +37,7 @@ export default function CustomerDetailPage({
   const router = useRouter();
   const toast = useToast();
   const remove = useDeleteCustomer();
+  const exportData = useExportCustomer();
   const [selected, setSelected] = useState<Booking | null>(null);
   const [editing, setEditing] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -48,6 +49,16 @@ export default function CustomerDetailPage({
       router.push("/customers");
     } catch (e) {
       setConfirmingDelete(false);
+      toast.error(errorMessage(e));
+    }
+  }
+
+  async function exportCustomerData() {
+    if (!customer.data) return;
+    try {
+      await exportData.mutateAsync({ id: customerId, name: customer.data.name });
+      toast.success(t("exported"));
+    } catch (e) {
       toast.error(errorMessage(e));
     }
   }
@@ -108,7 +119,10 @@ export default function CustomerDetailPage({
                 </p>
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" disabled={exportData.isPending} onClick={exportCustomerData}>
+                <Download /> {t("export")}
+              </Button>
               <Button variant="outline" onClick={() => setEditing(true)}>
                 <Pencil /> {tc("edit")}
               </Button>

@@ -21,6 +21,7 @@ import {
 import { BookingTicket, ticketName } from "@/features/bookings/components/BookingTicket";
 import { useAvailability } from "@/features/bookings/hooks/useAvailability";
 import { CustomerFields } from "@/features/bookings/components/CustomerFields";
+import { PrivacyNoticeLink } from "@/features/legal/components/PrivacyNoticeLink";
 import { useCreatePublicBooking } from "@/features/bookings/hooks/useCreatePublicBooking";
 import { publicStaffOptions, usePublicStaff } from "@/features/bookings/hooks/usePublicStaff";
 import { usePublicBusiness } from "@/features/bookings/hooks/usePublicBusiness";
@@ -556,9 +557,12 @@ export function BookingWizard({
           {step === "details" && service && state.date && state.startTime && (
             <div className="flex flex-col gap-6">
               <DetailsForm onSubmit={submit} error={createBooking.error} />
-              <p className="text-center text-xs text-muted-foreground">
-                {t("details.footer", { business: business.name })}
-              </p>
+              <div className="flex flex-col gap-2">
+                <p className="text-center text-xs text-muted-foreground">
+                  {t("details.footer", { business: business.name })}
+                </p>
+                <PrivacyNoticeLink slug={slug} business={business.name} />
+              </div>
             </div>
           )}
         </div>

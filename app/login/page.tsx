@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, type UseFormRegisterReturn } from "react-hook-form";
+import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
@@ -10,7 +11,9 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Aurora, stagger } from "@/components/ui/aurora";
 import { Wordmark } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { LegalLinks } from "@/features/legal/components/LegalLinks";
 import { Field, FormError } from "@/components/shared";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { useErrorMessage } from "@/lib/i18n/errors";
@@ -25,13 +28,15 @@ function makeLoginSchema(t: Translator) {
   });
 }
 
-function makeRegisterSchema(t: Translator) {
+function makeRegisterSchema(t: Translator, termsRequired: string) {
   return makeLoginSchema(t).extend({
     password: z.string().min(8, t("validation.passwordMin")),
+    acceptedTerms: z.boolean().refine((v) => v, termsRequired),
   });
 }
 
 type LoginForm = z.infer<ReturnType<typeof makeLoginSchema>>;
+type RegisterValues = z.infer<ReturnType<typeof makeRegisterSchema>>;
 
 function IconInput({
   icon: Icon,
@@ -60,7 +65,7 @@ function PasswordInput({
   id: string;
   placeholder: string;
   autoComplete: string;
-  registration: ReturnType<ReturnType<typeof useForm<LoginForm>>["register"]>;
+  registration: UseFormRegisterReturn;
 }) {
   const t = useTranslations("auth.fields");
   const [visible, setVisible] = useState(false);
@@ -149,17 +154,22 @@ function LoginForm() {
 function RegisterForm() {
   const t = useTranslations("auth");
   const errorMessage = useErrorMessage();
+  const tLegal = useTranslations("legal.register");
   const { register: registerUser } = useAuth();
   const [error, setError] = useState<string | null>(null);
-  const schema = useMemo(() => makeRegisterSchema(t), [t]);
+  const schema = useMemo(() => makeRegisterSchema(t, tLegal("required")), [t, tLegal]);
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginForm>({ resolver: zodResolver(schema) });
+  } = useForm<RegisterValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { acceptedTerms: false },
+  });
 
-  async function onSubmit(data: LoginForm) {
+  async function onSubmit(data: RegisterValues) {
     setError(null);
     try {
       await registerUser(data.email, data.password);
@@ -191,6 +201,48 @@ function RegisterForm() {
           registration={register("password")}
         />
       </Field>
+
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-start gap-3">
+          <Controller
+            control={control}
+            name="acceptedTerms"
+            render={({ field }) => (
+              <Checkbox
+                id="reg-terms"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+                aria-invalid={!!errors.acceptedTerms}
+                className="mt-0.5"
+              />
+            )}
+          />
+          <label htmlFor="reg-terms" className="text-xs leading-relaxed text-muted-foreground">
+            {tLegal.rich("accept", {
+              terms: (c) => (
+                <Link href="/terms" target="_blank" className="font-medium text-primary hover:underline">
+                  {c}
+                </Link>
+              ),
+              privacy: (c) => (
+                <Link href="/privacy" target="_blank" className="font-medium text-primary hover:underline">
+                  {c}
+                </Link>
+              ),
+              dpa: (c) => (
+                <Link href="/dpa" target="_blank" className="font-medium text-primary hover:underline">
+                  {c}
+                </Link>
+              ),
+            })}
+          </label>
+        </div>
+        {errors.acceptedTerms && (
+          <p role="alert" className="text-xs text-destructive">
+            {errors.acceptedTerms.message}
+          </p>
+        )}
+      </div>
 
       <FormError message={error} />
 
@@ -254,6 +306,7 @@ export default function LoginPage() {
             </button>
           </p>
         </div>
+        <LegalLinks className="mt-6 justify-center" />
       </div>
     </main>
   );

@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Aurora } from "@/components/ui/aurora";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { LegalLinks } from "@/features/legal/components/LegalLinks";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations("public.shell");
@@ -11,12 +12,15 @@ export default async function PublicLayout({ children }: { children: React.React
         <LanguageSwitcher />
       </div>
       <div className="flex-1">{children}</div>
-      <footer className="py-6 text-center text-xs text-muted-foreground">
-        {t.rich("poweredBy", {
-          brand: (chunks) => (
-            <span className="text-sm font-bold text-primary">{chunks}</span>
-          ),
-        })}
+      <footer className="flex flex-col items-center gap-2 py-6 text-center text-xs text-muted-foreground">
+        <span>
+          {t.rich("poweredBy", {
+            brand: (chunks) => (
+              <span className="text-sm font-bold text-primary">{chunks}</span>
+            ),
+          })}
+        </span>
+        <LegalLinks keys={["privacy", "terms"]} />
       </footer>
     </div>
   );

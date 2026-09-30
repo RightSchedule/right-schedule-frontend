@@ -2,7 +2,7 @@ import { format, parseISO } from "date-fns";
 import { enGB, pt } from "date-fns/locale";
 import type { Locale as DateFnsLocale } from "date-fns";
 import { useLocale } from "next-intl";
-import { defaultLocale, isLocale, type AppLocale } from "@/i18n/config";
+import { defaultLocale, intlTag, isLocale, type AppLocale } from "@/i18n/config";
 import { formatPrice } from "@/lib/utils/currency";
 
 const dateFnsLocales: Record<AppLocale, DateFnsLocale> = { en: enGB, pt };
@@ -24,5 +24,12 @@ export function useLocaleFormat() {
     locale,
     date: (date: Date | string, pattern: string) => formatLocalized(date, pattern, locale),
     price: (amount: number) => formatPrice(amount, locale),
+    /** `ratio` is a fraction (0.25 -> "25%"). */
+    percent: (ratio: number, options: Intl.NumberFormatOptions = {}) =>
+      new Intl.NumberFormat(intlTag[resolve(locale)], {
+        style: "percent",
+        maximumFractionDigits: 1,
+        ...options,
+      }).format(ratio),
   };
 }

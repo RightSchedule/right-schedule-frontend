@@ -26,6 +26,7 @@
     "INVALID_SLUG": "Use lowercase letters, numbers and hyphens for the link.",
     "INVALID_TIMEZONE": "That timezone isn't valid.",
     "INVALID_TIME_RANGE": "The end time must be after the start time.",
+    "INVALID_DATE_RANGE": "The date range isn't valid. Choose a range of up to 366 days.",
     "BOOKING_IN_PAST": "You can't book a time in the past.",
     "STAFF_DOES_NOT_OFFER_SERVICE": "That team member doesn't offer this service.",
     "INVALID_IDEMPOTENCY_KEY": "That request couldn't be processed. Please try again.",

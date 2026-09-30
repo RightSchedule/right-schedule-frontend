@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CalendarDays, Clock, CircleCheck, CircleX, Users, Plus } from "lucide-react";
+import { CalendarDays, ClipboardCheck, Clock, CircleCheck, CircleX, Users, Plus } from "lucide-react";
 import { stagger } from "@/components/ui/aurora";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared";
@@ -15,7 +15,7 @@ import {
   type BookingDraft,
 } from "@/features/bookings/components/CreateBookingDialog";
 import { BookingLinkCard } from "@/features/business/components/BookingLinkCard";
-import { useBookingsRange } from "@/features/bookings/hooks/useBookings";
+import { useBookingsRange, useReviewCount } from "@/features/bookings/hooks/useBookings";
 import { useBusiness } from "@/features/business/hooks/useBusiness";
 import { toMinutes } from "@/features/bookings/calendarGeometry";
 import { useLocaleFormat } from "@/lib/i18n/format";
@@ -80,6 +80,8 @@ function StatCard({
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
+  const tReview = useTranslations("review");
+  const { data: reviewCount } = useReviewCount();
   const f = useLocaleFormat();
   const business = useBusiness();
   const timezone = business.data?.timezone;
@@ -124,6 +126,27 @@ export default function DashboardPage() {
           <Plus /> {t("new")}
         </Button>
       </div>
+
+      {!!reviewCount && (
+        <Card className="reveal mb-5 border-warning/40 bg-warning-muted" style={stagger(1)}>
+          <CardContent className="flex flex-col gap-4 p-4 pt-4 sm:flex-row sm:items-center sm:p-5 sm:pt-5">
+            <div className="flex min-w-0 flex-1 items-start gap-3.5">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-card text-warning-foreground">
+                <ClipboardCheck className="size-5" aria-hidden />
+              </span>
+              <div className="min-w-0">
+                <p className="font-semibold text-warning-foreground">
+                  {tReview("banner.title", { count: reviewCount })}
+                </p>
+                <p className="mt-0.5 text-sm text-warning-foreground/80">{tReview("banner.description")}</p>
+              </div>
+            </div>
+            <Link href="/review" className={buttonVariants({ className: "shrink-0" })}>
+              {tReview("banner.cta")}
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard

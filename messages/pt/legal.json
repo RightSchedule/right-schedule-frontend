@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "dpa": "Acordo de Tratamento de Dados",
+    "subProcessors": "Subcontratantes",
+    "back": "Voltar"
+  },
+  "lastUpdated": "Última atualização: {date}",
+  "subProcessors": {
+    "title": "Subcontratantes",
+    "intro": "Terceiros que tratam dados pessoais por nossa conta. Anunciaremos alterações antes de produzirem efeitos.",
+    "purpose": "Finalidade",
+    "provider": "Fornecedor",
+    "region": "Região",
+    "transfer": "Mecanismo de transferência"
+  },
+  "register": {
+    "accept": "Tenho 18 anos ou mais, atuo em nome de um negócio e aceito os <terms>Termos de Serviço</terms>, a <privacy>Política de Privacidade</privacy> e o <dpa>Acordo de Tratamento de Dados</dpa>.",
+    "required": "Tem de aceitar para criar conta"
+  },
+  "customerNotice": {
+    "line": "Ao continuar, confirma que leu o <notice>aviso de privacidade</notice> de {business}.",
+    "notFound": "Aviso de privacidade indisponível"
+  },
+  "sensitiveHint": "Não introduza dados de saúde nem outras informações sensíveis.",
+  "footerLinks": "Legal"
+}

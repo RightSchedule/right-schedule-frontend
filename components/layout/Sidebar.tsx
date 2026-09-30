@@ -8,6 +8,8 @@ import {
   Users,
   Scissors,
   IdCard,
+  ChartColumn,
+  ClipboardCheck,
   MessageSquareQuote,
   Settings,
   LogOut,
@@ -20,12 +22,15 @@ import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useBusiness } from "@/features/business/hooks/useBusiness";
+import { useReviewCount } from "@/features/bookings/hooks/useBookings";
 import { usePendingQuotesCount } from "@/features/quotes/hooks/useQuotes";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 type NavKey =
   | "dashboard"
   | "calendar"
+  | "analytics"
+  | "review"
   | "customers"
   | "quotes"
   | "services"
@@ -41,6 +46,8 @@ interface NavEntry {
 const NAV_ITEMS: NavEntry[] = [
   { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
   { href: "/calendar", labelKey: "calendar", icon: CalendarDays },
+  { href: "/analytics", labelKey: "analytics", icon: ChartColumn },
+  { href: "/review", labelKey: "review", icon: ClipboardCheck },
   { href: "/quotes", labelKey: "quotes", icon: MessageSquareQuote },
   { href: "/customers", labelKey: "customers", icon: Users },
   { href: "/services", labelKey: "services", icon: Scissors },
@@ -48,16 +55,15 @@ const NAV_ITEMS: NavEntry[] = [
   { href: "/settings", labelKey: "settings", icon: Settings },
 ];
 
-const MOBILE_TABS = NAV_ITEMS.slice(0, 5);
-const MOBILE_MORE = NAV_ITEMS.slice(5);
+// Review and analytics live in "More" on mobile; the dashboard banner is review's primary entry point there.
+const MOBILE_MORE_ONLY: NavKey[] = ["review", "analytics"];
+const MOBILE_TABS = NAV_ITEMS.filter((item) => !MOBILE_MORE_ONLY.includes(item.labelKey)).slice(0, 5);
+const MOBILE_MORE = NAV_ITEMS.filter((item) => !MOBILE_TABS.includes(item));
 
-function PendingDot({ className }: { className?: string }) {
-  const t = useTranslations("common.nav");
-  const { data: count } = usePendingQuotesCount();
-  if (!count) return null;
+function CountPill({ count, label, className }: { count: number; label: string; className?: string }) {
   return (
     <span
-      aria-label={t("pendingCount", { count })}
+      aria-label={label}
       className={cn(
         "flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[0.65rem] font-bold leading-5 text-primary-foreground",
         className
@@ -66,6 +72,20 @@ function PendingDot({ className }: { className?: string }) {
       {count > 99 ? "99+" : count}
     </span>
   );
+}
+
+function PendingDot({ className }: { className?: string }) {
+  const t = useTranslations("common.nav");
+  const { data: count } = usePendingQuotesCount();
+  if (!count) return null;
+  return <CountPill count={count} label={t("pendingCount", { count })} className={className} />;
+}
+
+function ReviewDot({ className }: { className?: string }) {
+  const t = useTranslations("common.nav");
+  const { data: count } = useReviewCount();
+  if (!count) return null;
+  return <CountPill count={count} label={t("reviewCount", { count })} className={className} />;
 }
 
 export function BrandMark({ className }: { className?: string }) {
@@ -131,6 +151,7 @@ function NavItem({
       <Icon className="size-[1.15rem] shrink-0" aria-hidden />
       {!collapsed && <span>{label}</span>}
       {!collapsed && labelKey === "quotes" && <PendingDot className="ml-auto" />}
+      {!collapsed && labelKey === "review" && <ReviewDot className="ml-auto" />}
     </Link>
   );
 }
@@ -246,6 +267,7 @@ export function MobileTopBar() {
                 >
                   <Icon className="size-5" aria-hidden />
                   {t(labelKey)}
+                  {labelKey === "review" && <ReviewDot className="ml-auto" />}
                 </Link>
               );
             })}

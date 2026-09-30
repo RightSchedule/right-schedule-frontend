@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/lib/api/auth";
 import { businessApi } from "@/lib/api/businesses";
 import { isStatus } from "@/lib/api/client";
-import { setToken, clearTokens } from "@/lib/auth/session";
+import { TERMS_VERSION } from "@/lib/legal";
 
 function redirectTarget(): string {
   const target = new URLSearchParams(window.location.search).get("redirect");
@@ -19,15 +19,15 @@ export function useAuth() {
   const queryClient = useQueryClient();
 
   async function login(email: string, password: string) {
-    const { token } = await authApi.login(email, password);
-    setToken(token);
+    // The backend sets the HttpOnly session cookie; the token is never exposed to scripts.
+    await authApi.login(email, password);
 
     try {
       await businessApi.getMe();
       router.push(redirectTarget());
     } catch (e) {
       if (!isStatus(e, 404)) {
-        clearTokens();
+        await authApi.logout().catch(() => undefined);
         throw e;
       }
       router.push("/onboarding");
@@ -35,13 +35,13 @@ export function useAuth() {
   }
 
   async function register(email: string, password: string) {
-    await authApi.register(email, password);
+    await authApi.register(email, password, TERMS_VERSION);
     await login(email, password);
   }
 
-  function logout() {
+  async function logout() {
     queryClient.clear();
-    clearTokens();
+    await authApi.logout().catch(() => undefined);
     router.push("/login");
   }
 

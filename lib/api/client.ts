@@ -16,27 +16,30 @@ interface RequestOptions {
   headers?: Record<string, string>;
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+const PUBLIC_PREFIXES = ["/login", "/b/", "/privacy", "/terms", "/dpa", "/sub-processors"];
 
+function onPublicPage(): boolean {
+  return PUBLIC_PREFIXES.some((p) => window.location.pathname.startsWith(p));
+}
+
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     ...init,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...init.headers,
     },
   });
 
   if (res.status === 204) return undefined as T;
 
-  if (res.status === 401 && typeof window !== "undefined" && token) {
-    localStorage.removeItem("access_token");
-    document.cookie = "access_token=; path=/; max-age=0";
-    if (!window.location.pathname.startsWith("/login")) {
-      window.location.assign("/login");
-    }
+  if (res.status === 401 && typeof window !== "undefined" && !onPublicPage()) {
+    // Session cookie is HttpOnly: only the backend can clear it.
+    await fetch(`${BASE_URL}/api/v1/auth/logout`, { method: "POST", credentials: "include" }).catch(
+      () => undefined
+    );
+    window.location.assign("/login");
   }
 
   if (!res.ok) {

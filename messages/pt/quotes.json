@@ -39,7 +39,14 @@
     "sendQuote": "Enviar orçamento",
     "decline": "Recusar",
     "close": "Fechar",
+    "delete": "Eliminar",
     "back": "Voltar"
+  },
+  "deleteForm": {
+    "title": "Eliminar este pedido?",
+    "description": "O pedido de {name} é apagado definitivamente, incluindo o email, telefone e mensagem. Não é enviado nenhum email. Não pode desfazer.",
+    "submit": "Eliminar pedido",
+    "deleted": "Pedido eliminado"
   },
   "quoteForm": {
     "title": "Enviar orçamento",

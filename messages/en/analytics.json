@@ -1,0 +1,62 @@
+{
+  "page": {
+    "title": "Analytics",
+    "description": "How your business is doing: revenue, bookings and what drives them.",
+    "errorFeature": "Analytics",
+    "emptyTitle": "No bookings in this period",
+    "emptyDescription": "Pick a longer range, or come back once you have bookings. Revenue only counts bookings marked as completed.",
+    "comparing": "{from} – {to}, compared with {prevFrom} – {prevTo}",
+    "completedHint": "Revenue only counts completed bookings. You have confirmed bookings in this period that haven't been marked completed yet."
+  },
+  "range": {
+    "label": "Date range",
+    "preset": {
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "90d": "Last 90 days",
+      "month": "This month"
+    },
+    "custom": "Custom",
+    "from": "From",
+    "to": "To",
+    "apply": "Apply",
+    "problem": {
+      "incomplete": "Choose both a start and an end date.",
+      "reversed": "The end date can't be before the start date.",
+      "tooLong": "The range can be at most {days} days."
+    }
+  },
+  "kpi": {
+    "revenue": "Revenue",
+    "projected": "{amount} projected from confirmed bookings",
+    "bookings": "Bookings",
+    "completed": "{count, plural, one {# completed} other {# completed}}",
+    "averageTicket": "Average ticket",
+    "averageTicketHint": "Per completed booking",
+    "cancellationRate": "Cancellation rate",
+    "noShowRate": "No-show rate: {rate}",
+    "noComparison": "No previous data to compare with",
+    "vsPrevious": "vs previous period"
+  },
+  "chart": {
+    "title": "Revenue over time",
+    "aria": "Bar chart of revenue over the selected period",
+    "weekOf": "Week of {date}",
+    "tooltipRevenue": "Revenue: {amount}",
+    "tooltipBookings": "{count, plural, one {# completed booking} other {# completed bookings}}"
+  },
+  "funnel": {
+    "title": "Booking outcomes",
+    "completed": "Completed",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "noShow": "No-show"
+  },
+  "top": {
+    "servicesTitle": "Top services",
+    "staffTitle": "Top team members",
+    "empty": "No completed bookings in this period.",
+    "bookings": "{count, plural, one {# completed booking} other {# completed bookings}}",
+    "staffDetail": "{count, plural, one {# completed booking} other {# completed bookings}} · {hours} h"
+  }
+}

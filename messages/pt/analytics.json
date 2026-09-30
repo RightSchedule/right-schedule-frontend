@@ -1,0 +1,62 @@
+{
+  "page": {
+    "title": "Estatísticas",
+    "description": "Como está o seu negócio: receita, marcações e o que as impulsiona.",
+    "errorFeature": "Estatísticas",
+    "emptyTitle": "Sem marcações neste período",
+    "emptyDescription": "Escolha um intervalo maior ou volte quando tiver marcações. A receita só conta marcações concluídas.",
+    "comparing": "{from} – {to}, comparado com {prevFrom} – {prevTo}",
+    "completedHint": "A receita só conta marcações concluídas. Tem marcações confirmadas neste período que ainda não foram marcadas como concluídas."
+  },
+  "range": {
+    "label": "Intervalo de datas",
+    "preset": {
+      "7d": "Últimos 7 dias",
+      "30d": "Últimos 30 dias",
+      "90d": "Últimos 90 dias",
+      "month": "Este mês"
+    },
+    "custom": "Personalizado",
+    "from": "De",
+    "to": "Até",
+    "apply": "Aplicar",
+    "problem": {
+      "incomplete": "Escolha a data de início e a data de fim.",
+      "reversed": "A data de fim não pode ser anterior à data de início.",
+      "tooLong": "O intervalo pode ter no máximo {days} dias."
+    }
+  },
+  "kpi": {
+    "revenue": "Receita",
+    "projected": "{amount} previstos das marcações confirmadas",
+    "bookings": "Marcações",
+    "completed": "{count, plural, one {# concluída} other {# concluídas}}",
+    "averageTicket": "Ticket médio",
+    "averageTicketHint": "Por marcação concluída",
+    "cancellationRate": "Taxa de cancelamento",
+    "noShowRate": "Taxa de faltas: {rate}",
+    "noComparison": "Sem dados anteriores para comparar",
+    "vsPrevious": "face ao período anterior"
+  },
+  "chart": {
+    "title": "Receita ao longo do tempo",
+    "aria": "Gráfico de barras da receita no período selecionado",
+    "weekOf": "Semana de {date}",
+    "tooltipRevenue": "Receita: {amount}",
+    "tooltipBookings": "{count, plural, one {# marcação concluída} other {# marcações concluídas}}"
+  },
+  "funnel": {
+    "title": "Resultado das marcações",
+    "completed": "Concluídas",
+    "confirmed": "Confirmadas",
+    "cancelled": "Canceladas",
+    "noShow": "Faltas"
+  },
+  "top": {
+    "servicesTitle": "Serviços mais vendidos",
+    "staffTitle": "Equipa com mais receita",
+    "empty": "Sem marcações concluídas neste período.",
+    "bookings": "{count, plural, one {# marcação concluída} other {# marcações concluídas}}",
+    "staffDetail": "{count, plural, one {# marcação concluída} other {# marcações concluídas}} · {hours} h"
+  }
+}

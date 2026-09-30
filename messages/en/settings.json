@@ -28,6 +28,19 @@
     "nameRequired": "Business name is required",
     "emailInvalid": "Enter a valid email"
   },
+  "privacy": {
+    "title": "Privacy and data",
+    "description": "Export everything stored for your account, or delete it permanently.",
+    "export": "Export my data",
+    "exported": "Your data was downloaded",
+    "delete": "Delete account",
+    "deleteTitle": "Delete your account?",
+    "deleteDescription": "Your business, staff, services, customers, bookings and quote requests are permanently erased. This can't be undone. Export your data first if you need it.",
+    "password": "Confirm with your password",
+    "wrongPassword": "Wrong password.",
+    "deleteConfirm": "Delete everything",
+    "legal": "Legal"
+  },
   "saved": "Settings saved",
   "notFound": "Business not found"
 }

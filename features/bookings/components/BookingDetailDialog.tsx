@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CircleCheck, Clock, Mail, NotebookText, Phone, User, UserRound } from "lucide-react";
+import { CircleCheck, Clock, Mail, NotebookText, Phone, TriangleAlert, User, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -121,6 +121,16 @@ export function BookingDetailDialog({
                 })}
               </DialogDescription>
             </DialogHeader>
+
+            {actionable && booking.needsReviewAt && (
+              <div role="status" className="flex items-start gap-3 rounded-2xl bg-warning-muted p-3.5 text-warning-foreground">
+                <TriangleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />
+                <div className="text-sm">
+                  <p className="font-semibold">{t("needsReviewTitle")}</p>
+                  <p className="mt-0.5 opacity-90">{t("needsReviewDescription")}</p>
+                </div>
+              </div>
+            )}
 
             <div className="flex flex-col gap-4 border-y border-border py-5">
               <Row icon={Clock}>

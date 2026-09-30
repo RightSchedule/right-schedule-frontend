@@ -17,6 +17,7 @@ import {
   PageContainer,
   PageHeader,
 } from "@/components/shared";
+import { PrivacyCard } from "@/features/account/components/PrivacyCard";
 import { BookingLinkCard } from "@/features/business/components/BookingLinkCard";
 import { useBusiness, useUpdateBusiness } from "@/features/business/hooks/useBusiness";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
@@ -158,6 +159,8 @@ export default function SettingsPage() {
               </LoadingButton>
             </div>
           </form>
+
+          <PrivacyCard />
         </div>
       )}
     </PageContainer>

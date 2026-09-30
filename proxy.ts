@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/b/"];
+const PUBLIC_PATHS = ["/login", "/b/", "/privacy", "/terms", "/dpa", "/sub-processors"];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -9,7 +9,7 @@ export function proxy(request: NextRequest) {
   const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
   if (isPublic) return NextResponse.next();
 
-  // Check for access token in cookies (set by the auth API route)
+  // HttpOnly session cookie set by the backend; presence only, the backend validates it.
   const token = request.cookies.get("access_token")?.value;
 
   if (!token) {

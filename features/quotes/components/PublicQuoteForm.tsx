@@ -18,6 +18,7 @@ import {
   PublicNotFound,
 } from "@/features/bookings/components/PublicShell";
 import { usePublicBusiness } from "@/features/bookings/hooks/usePublicBusiness";
+import { PrivacyNoticeLink } from "@/features/legal/components/PrivacyNoticeLink";
 import { useCreatePublicQuote } from "@/features/quotes/hooks/useQuotes";
 import { useErrorMessage } from "@/lib/i18n/errors";
 
@@ -45,6 +46,7 @@ type Values = z.infer<ReturnType<typeof makeSchema>>;
 export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; initialServiceId?: string }) {
   const t = useTranslations("quotes.public");
   const tErrors = useTranslations("quotes.public.errors");
+  const tLegal = useTranslations("legal");
   const errorMessage = useErrorMessage();
   const { data: business, isLoading, error: loadError } = usePublicBusiness(slug);
   const create = useCreatePublicQuote();
@@ -174,7 +176,12 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
               {...register("phone")}
             />
           </Field>
-          <Field label={t("description_label")} htmlFor="qr-description" error={errors.description?.message}>
+          <Field
+            label={t("description_label")}
+            htmlFor="qr-description"
+            error={errors.description?.message}
+            hint={tLegal("sensitiveHint")}
+          >
             <Textarea
               id="qr-description"
               rows={5}
@@ -197,6 +204,7 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
             {t("submit")}
           </LoadingButton>
           <p className="text-center text-xs text-muted-foreground">{t("footer")}</p>
+          <PrivacyNoticeLink slug={slug} business={business.name} />
         </form>
       </div>
     </main>

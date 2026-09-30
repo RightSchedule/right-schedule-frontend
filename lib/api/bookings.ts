@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import { listAll } from "./page";
+import { fetchPage, listAll, type PageResponse } from "./page";
 import type { Booking, BookingStatus } from "@/types/domain";
 
 export interface PublicBookingRequest {
@@ -26,6 +26,7 @@ export interface BookingResponse {
   customerPhone?: string | null;
   customerEmail?: string | null;
   notes?: string | null;
+  needsReviewAt?: string | null;
 }
 
 function normalizeBooking(r: BookingResponse): Booking {
@@ -40,6 +41,7 @@ function normalizeBooking(r: BookingResponse): Booking {
     endTime: r.endDateTime.slice(11, 16),
     status: r.status,
     notes: r.notes,
+    needsReviewAt: r.needsReviewAt,
     customer: {
       id: r.customerId ?? "",
       businessId: r.businessId,
@@ -59,6 +61,12 @@ export interface ListBookingsParams {
 }
 
 export const bookingsApi = {
+  /** One page of overdue bookings, oldest first (the backend sorts by start time). */
+  reviewPage: async ({ page = 0, size = 25 }: { page?: number; size?: number } = {}): Promise<PageResponse<Booking>> => {
+    const res = await fetchPage<BookingResponse>("/api/v1/bookings", { needsReview: true, page, size });
+    return { ...res, content: res.content.map(normalizeBooking) };
+  },
+
   createPublic: async (payload: PublicBookingRequest, idempotencyKey?: string) => {
     const body = { ...payload, staffId: payload.staffId ?? undefined };
     const res = await apiClient.post<BookingResponse>("/api/v1/public/bookings", body, {

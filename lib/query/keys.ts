@@ -12,6 +12,12 @@ export const qk = {
     all: ["bookings"] as const,
     range: (from?: string, to?: string, customerId?: string) =>
       ["bookings", "range", from ?? null, to ?? null, customerId ?? null] as const,
+    review: (page: number) => ["bookings", "review", page] as const,
+    reviewCount: ["bookings", "review-count"] as const,
+  },
+  analytics: {
+    all: ["analytics"] as const,
+    dashboard: (from: string, to: string) => ["analytics", "dashboard", from, to] as const,
   },
   customers: {
     all: ["customers"] as const,

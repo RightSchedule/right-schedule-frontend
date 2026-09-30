@@ -9,7 +9,7 @@
     "active": "Active",
     "hidden": "Hidden",
     "minutes": "{count} min",
-    "bookable": "Bookable",
+    "bookable": "Available for booking",
     "toggleAria": "Toggle {name}",
     "editAria": "Edit {name}",
     "deleteAria": "Delete {name}",

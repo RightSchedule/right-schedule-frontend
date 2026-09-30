@@ -29,6 +29,8 @@ export const quotesApi = {
   quote: (id: string, payload: { amount: number; message?: string }) =>
     apiClient.patch<QuoteRequest>(`/api/v1/quote-requests/${id}/quote`, payload),
 
+  remove: (id: string) => apiClient.delete<void>(`/api/v1/quote-requests/${id}`),
+
   decline: (id: string, payload: { message?: string } = {}) =>
     apiClient.patch<QuoteRequest>(`/api/v1/quote-requests/${id}/decline`, payload),
 };

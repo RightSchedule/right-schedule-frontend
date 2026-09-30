@@ -22,4 +22,6 @@ export const customersApi = {
     apiClient.put<Customer>(`/api/v1/customers/${id}`, payload),
 
   remove: (id: string) => apiClient.delete<void>(`/api/v1/customers/${id}`),
+
+  export: (id: string) => apiClient.get<unknown>(`/api/v1/customers/${id}/export`),
 };

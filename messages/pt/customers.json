@@ -21,8 +21,10 @@
     "notFound": "Cliente não encontrado",
     "deleted": "Cliente eliminado",
     "deleteTitle": "Eliminar {name}?",
-    "deleteDescription": "As marcações do cliente são mantidas e continuam a mostrar o nome e os contactos com que foram feitas.",
+    "deleteDescription": "Os dados pessoais do cliente são apagados definitivamente: a ficha do cliente e o nome, contactos e notas nas marcações, bem como os pedidos de orçamento com o mesmo email. As marcações ficam como registos anónimos. Não pode desfazer.",
     "deleteConfirm": "Eliminar cliente",
+    "export": "Exportar dados",
+    "exported": "Dados do cliente descarregados",
     "history": {
       "title": "Histórico de marcações",
       "errorFeature": "Histórico de marcações",

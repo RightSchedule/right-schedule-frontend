@@ -21,3 +21,16 @@ export function useUpdateBookingStatus() {
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.bookings.all }),
   });
 }
+
+/** Completes many bookings at once. Failures don't abort the rest; the result reports both counts. */
+export function useBulkCompleteBookings() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const results = await Promise.allSettled(ids.map((id) => bookingsApi.complete(id)));
+      const succeeded = results.filter((r) => r.status === "fulfilled").length;
+      return { succeeded, failed: results.length - succeeded };
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: qk.bookings.all }),
+  });
+}

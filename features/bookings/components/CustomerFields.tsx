@@ -25,6 +25,7 @@ export function CustomerFields({
   showNotes?: boolean;
 }) {
   const t = useTranslations("public.customer");
+  const tLegal = useTranslations("legal");
   return (
     <>
       <Field label={nameLabel ?? t("fullName")} htmlFor={`${idPrefix}-name`} error={errors.name?.message}>
@@ -60,7 +61,12 @@ export function CustomerFields({
         />
       </Field>
       {showNotes && (
-        <Field label={t("notesOptional")} htmlFor={`${idPrefix}-notes`} error={errors.notes?.message}>
+        <Field
+          label={t("notesOptional")}
+          htmlFor={`${idPrefix}-notes`}
+          error={errors.notes?.message}
+          hint={tLegal("sensitiveHint")}
+        >
           <Textarea id={`${idPrefix}-notes`} rows={3} {...register("notes")} />
         </Field>
       )}

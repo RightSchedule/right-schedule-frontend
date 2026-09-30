@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "dpa": "Data Processing Agreement",
+    "subProcessors": "Sub-processors",
+    "back": "Back"
+  },
+  "lastUpdated": "Last updated {date}",
+  "subProcessors": {
+    "title": "Sub-processors",
+    "intro": "Third parties that process personal data on our behalf. We will announce changes before they take effect.",
+    "purpose": "Purpose",
+    "provider": "Provider",
+    "region": "Region",
+    "transfer": "Transfer mechanism"
+  },
+  "register": {
+    "accept": "I am 18 or older, I act for a business, and I accept the <terms>Terms of Service</terms>, <privacy>Privacy Policy</privacy> and <dpa>Data Processing Agreement</dpa>.",
+    "required": "You must accept to create an account"
+  },
+  "customerNotice": {
+    "line": "By continuing you acknowledge the <notice>privacy notice</notice> of {business}.",
+    "notFound": "Privacy notice not available"
+  },
+  "sensitiveHint": "Don't enter health or other sensitive information.",
+  "footerLinks": "Legal"
+}

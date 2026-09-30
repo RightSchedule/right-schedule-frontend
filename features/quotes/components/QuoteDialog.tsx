@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FormError, LoadingButton } from "@/components/shared";
-import { useDeclineQuote, useSendQuote } from "@/features/quotes/hooks/useQuotes";
+import { useDeclineQuote, useDeleteQuote, useSendQuote } from "@/features/quotes/hooks/useQuotes";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import type { QuoteRequest, QuoteStatus } from "@/types/domain";
@@ -190,17 +190,58 @@ function DeclineForm({ request, onBack, onDone }: { request: QuoteRequest; onBac
   );
 }
 
+function DeleteForm({ request, onBack, onDone }: { request: QuoteRequest; onBack: () => void; onDone: () => void }) {
+  const t = useTranslations("quotes.deleteForm");
+  const tDetail = useTranslations("quotes.detail");
+  const errorMessage = useErrorMessage();
+  const toast = useToast();
+  const remove = useDeleteQuote();
+  const [error, setError] = useState<string | null>(null);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    try {
+      await remove.mutateAsync(request.id);
+      toast.success(t("deleted"));
+      onDone();
+    } catch (err) {
+      setError(errorMessage(err));
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <DialogHeader>
+        <DialogTitle>{t("title")}</DialogTitle>
+        <DialogDescription>{t("description", { name: request.customerName })}</DialogDescription>
+      </DialogHeader>
+      <FormError message={error} />
+      <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button type="button" variant="outline" onClick={onBack}>
+          {tDetail("back")}
+        </Button>
+        <LoadingButton type="submit" variant="destructive" loading={remove.isPending}>
+          {t("submit")}
+        </LoadingButton>
+      </div>
+    </form>
+  );
+}
+
 function QuoteDetail({
   request,
   serviceName,
   onQuote,
   onDecline,
+  onDelete,
   onClose,
 }: {
   request: QuoteRequest;
   serviceName?: string;
   onQuote: () => void;
   onDecline: () => void;
+  onDelete: () => void;
   onClose: () => void;
 }) {
   const t = useTranslations("quotes");
@@ -266,6 +307,9 @@ function QuoteDetail({
       )}
 
       <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button variant="ghost" className="text-destructive sm:mr-auto" onClick={onDelete}>
+          {t("detail.delete")}
+        </Button>
         {answered ? (
           <Button variant="outline" onClick={onClose}>
             {t("detail.close")}
@@ -292,7 +336,7 @@ export function QuoteDialog({
   serviceName?: string;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [mode, setMode] = useState<"view" | "quote" | "decline">("view");
+  const [mode, setMode] = useState<"view" | "quote" | "decline" | "delete">("view");
 
   function handleOpenChange(open: boolean) {
     if (!open) setMode("view");
@@ -308,6 +352,7 @@ export function QuoteDialog({
             serviceName={serviceName}
             onQuote={() => setMode("quote")}
             onDecline={() => setMode("decline")}
+            onDelete={() => setMode("delete")}
             onClose={() => handleOpenChange(false)}
           />
         )}
@@ -316,6 +361,9 @@ export function QuoteDialog({
         )}
         {request && mode === "decline" && (
           <DeclineForm request={request} onBack={() => setMode("view")} onDone={() => handleOpenChange(false)} />
+        )}
+        {request && mode === "delete" && (
+          <DeleteForm request={request} onBack={() => setMode("view")} onDone={() => handleOpenChange(false)} />
         )}
       </DialogContent>
     </Dialog>

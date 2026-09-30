@@ -45,6 +45,14 @@ export function useDeclineQuote() {
   });
 }
 
+export function useDeleteQuote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => quotesApi.remove(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.quotes.all }),
+  });
+}
+
 export function useCreatePublicQuote() {
   return useMutation({
     mutationFn: (payload: PublicQuoteRequest) => quotesApi.createPublic(payload),

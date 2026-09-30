@@ -28,6 +28,19 @@
     "nameRequired": "O nome do negócio é obrigatório",
     "emailInvalid": "Introduza um email válido"
   },
+  "privacy": {
+    "title": "Privacidade e dados",
+    "description": "Exporte tudo o que está guardado na sua conta ou elimine-o definitivamente.",
+    "export": "Exportar os meus dados",
+    "exported": "Os seus dados foram descarregados",
+    "delete": "Eliminar conta",
+    "deleteTitle": "Eliminar a sua conta?",
+    "deleteDescription": "O seu negócio, equipa, serviços, clientes, marcações e pedidos de orçamento são apagados definitivamente. Não pode desfazer. Exporte primeiro os dados se precisar deles.",
+    "password": "Confirme com a sua palavra-passe",
+    "wrongPassword": "Palavra-passe errada.",
+    "deleteConfirm": "Eliminar tudo",
+    "legal": "Legal"
+  },
   "saved": "Definições guardadas",
   "notFound": "Negócio não encontrado"
 }

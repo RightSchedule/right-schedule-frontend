@@ -26,6 +26,7 @@
     "INVALID_SLUG": "Use letras minúsculas, números e hífenes no link.",
     "INVALID_TIMEZONE": "Este fuso horário não é válido.",
     "INVALID_TIME_RANGE": "A hora de fim tem de ser posterior à hora de início.",
+    "INVALID_DATE_RANGE": "O intervalo de datas não é válido. Escolha um intervalo até 366 dias.",
     "BOOKING_IN_PAST": "Não é possível marcar num horário já passado.",
     "STAFF_DOES_NOT_OFFER_SERVICE": "Este membro da equipa não presta este serviço.",
     "INVALID_IDEMPOTENCY_KEY": "Não foi possível processar o pedido. Tente novamente.",

@@ -93,6 +93,8 @@ export interface Booking {
   endTime: string;
   status: BookingStatus;
   notes?: string | null;
+  /** Set while a CONFIRMED booking is overdue for resolution; cleared by complete, no-show or cancel. */
+  needsReviewAt?: string | null;
   /** Language of emails sent to the customer ("en" | "pt"). */
   locale?: string;
   service?: Service;

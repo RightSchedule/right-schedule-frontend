@@ -1,0 +1,47 @@
+{
+  "page": {
+    "title": "Needs review",
+    "description": "Past bookings still marked Confirmed. Tell us how each one went so your numbers stay accurate.",
+    "errorFeature": "Bookings to review",
+    "emptyTitle": "All caught up",
+    "emptyDescription": "Every past booking has been marked. New ones show up here a couple of hours after they end.",
+    "openCalendar": "Open calendar",
+    "unknownCustomer": "Unknown customer",
+    "serviceFallback": "Service",
+    "ended": "Ended {days, plural, =0 {today} =1 {yesterday} other {# days ago}}",
+    "details": "Details"
+  },
+  "select": {
+    "all": "Select all on this page",
+    "row": "Select booking for {name}",
+    "count": "{count} selected",
+    "clear": "Clear"
+  },
+  "actions": {
+    "complete": "Complete",
+    "noShow": "No-show",
+    "completeSelected": "Mark {count, plural, one {# booking} other {# bookings}} completed"
+  },
+  "toast": {
+    "completed": "Marked as completed",
+    "noShow": "Marked as no-show",
+    "bulkCompleted": "{count, plural, one {# booking} other {# bookings}} marked as completed",
+    "bulkPartial": "{succeeded} completed, {failed} failed. The failed ones are still in the list."
+  },
+  "bulk": {
+    "title": "Mark {count, plural, one {# booking} other {# bookings}} as completed?",
+    "description": "This can't be undone. Use No-show on a booking individually if the customer didn't turn up.",
+    "confirm": "Mark completed"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {total}"
+  },
+  "banner": {
+    "title": "{count, plural, one {# booking needs review} other {# bookings need review}}",
+    "description": "These ended a while ago and are still marked Confirmed. Mark how each went to keep your numbers accurate.",
+    "cta": "Review now"
+  }
+}

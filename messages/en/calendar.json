@@ -16,6 +16,7 @@
     "customerFallback": "Customer",
     "serviceFallback": "Service",
     "statusPrefix": "{status}:",
+    "needsReview": "Needs review:",
     "other": "Other",
     "emptyTitle": "Nothing booked",
     "emptyDescription": "No bookings for this day yet.",
@@ -32,6 +33,8 @@
     "unassigned": "Unassigned",
     "unknownCustomer": "Unknown customer",
     "deletedCustomer": "deleted customer",
+    "needsReviewTitle": "This booking has ended",
+    "needsReviewDescription": "Mark how it went. Cancelling still emails the customer.",
     "cancelBooking": "Cancel booking",
     "complete": "Complete",
     "toast": {

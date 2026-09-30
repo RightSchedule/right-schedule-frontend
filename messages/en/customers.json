@@ -21,8 +21,10 @@
     "notFound": "Customer not found",
     "deleted": "Customer deleted",
     "deleteTitle": "Delete {name}?",
-    "deleteDescription": "Their bookings are kept and still show the name and contact details they were made with.",
+    "deleteDescription": "Their personal data is permanently erased: the customer record, and the name, contact details and notes on their bookings, plus any quote requests from the same email. The bookings stay as anonymous entries. This can't be undone.",
     "deleteConfirm": "Delete customer",
+    "export": "Export data",
+    "exported": "Customer data downloaded",
     "history": {
       "title": "Booking history",
       "errorFeature": "Booking history",

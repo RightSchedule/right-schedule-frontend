@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-query";
 import { customersApi, type CustomerPayload } from "@/lib/api/customers";
 import { qk } from "@/lib/query/keys";
+import { downloadJson } from "@/lib/utils/download";
 
 export function useCustomersPage(search: string, page: number) {
   return useQuery({
@@ -50,6 +51,16 @@ export function useDeleteCustomer() {
       Promise.all([
         qc.invalidateQueries({ queryKey: qk.customers.lists }),
         qc.invalidateQueries({ queryKey: qk.bookings.all }),
+        qc.invalidateQueries({ queryKey: qk.quotes.all }),
       ]),
+  });
+}
+
+export function useExportCustomer() {
+  return useMutation({
+    mutationFn: async ({ id, name }: { id: string; name: string }) => {
+      const data = await customersApi.export(id);
+      downloadJson(data, `customer-${name.trim().replace(/\s+/g, "-").toLowerCase() || id}.json`);
+    },
   });
 }

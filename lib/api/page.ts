@@ -10,7 +10,7 @@ export interface PageResponse<T> {
 
 const MAX_PAGE_SIZE = 200;
 
-type Params = Record<string, string | number | undefined | null>;
+type Params = Record<string, string | number | boolean | undefined | null>;
 
 function toQuery(params: Params): string {
   const query = new URLSearchParams();

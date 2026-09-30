@@ -3,7 +3,7 @@
 import { ViewTransition } from "react";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
-import { CalendarCheck, CalendarX, CheckCheck, UserX } from "lucide-react";
+import { CalendarCheck, CalendarX, CheckCheck, TriangleAlert, UserX } from "lucide-react";
 import { cn } from "cn";
 import { EmptyState, initials } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
@@ -29,14 +29,22 @@ const STATUS_ICON: Record<BookingStatus, React.ElementType> = {
   NO_SHOW: UserX,
 };
 
-function StatusMark({ status }: { status: BookingStatus }) {
-  const Icon = STATUS_ICON[status];
+const NEEDS_REVIEW_STYLE = "border-warning/60 bg-warning-muted text-warning-foreground";
+
+function blockStyle(b: Booking) {
+  return b.needsReviewAt ? NEEDS_REVIEW_STYLE : BLOCK_STYLE[b.status];
+}
+
+function StatusMark({ booking }: { booking: Booking }) {
+  const Icon = booking.needsReviewAt ? TriangleAlert : STATUS_ICON[booking.status];
   const t = useTranslations("calendar.views");
   const statusLabel = useStatusLabel();
   return (
     <>
       <Icon className="mr-1 inline size-3 shrink-0 align-[-1px]" aria-hidden />
-      <span className="sr-only">{t("statusPrefix", { status: statusLabel(status) })} </span>
+      <span className="sr-only">
+        {booking.needsReviewAt ? t("needsReview") : t("statusPrefix", { status: statusLabel(booking.status) })}{" "}
+      </span>
     </>
   );
 }
@@ -62,12 +70,12 @@ export function BookingChip({
       onClick={(e) => onSelect(booking, e.currentTarget)}
       className={cn(
         "w-full rounded-2xl border px-3 py-2 text-left text-xs transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:py-2.5",
-        BLOCK_STYLE[booking.status],
+        blockStyle(booking),
         BLOCK_HOVER
       )}
     >
       <span className="block font-semibold">
-        <StatusMark status={booking.status} />
+        <StatusMark booking={booking} />
         {showDate && `${f.date(booking.date, "EEE")} `}
         <span className="font-mono">{booking.startTime.slice(0, 5)}</span> · {booking.customer?.name ?? t("customerFallback")}
       </span>
@@ -172,7 +180,7 @@ function StaffTimeline({
                 style={{ top, minHeight: blockHeight }}
                 className={cn(
                   "absolute inset-x-1 flex flex-col justify-center gap-1 overflow-hidden rounded-2xl border px-3.5 py-2 text-left transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  BLOCK_STYLE[b.status],
+                  blockStyle(b),
                   BLOCK_HOVER
                 )}
               >
@@ -369,12 +377,12 @@ function DayGrid({
                         onClick={(e) => onSelect(b, e.currentTarget)}
                         className={cn(
                           "h-full w-full overflow-hidden rounded-xl border px-2 py-1 text-left text-xs transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                          BLOCK_STYLE[b.status],
+                          blockStyle(b),
                           BLOCK_HOVER
                         )}
                       >
                         <span className="block truncate font-semibold">
-                          <StatusMark status={b.status} />
+                          <StatusMark booking={b} />
                           <span className="font-mono">{b.startTime.slice(0, 5)}</span> · {b.customer?.name ?? t("customerFallback")}
                         </span>
                         <span className="block truncate opacity-80">{b.service?.name}</span>
