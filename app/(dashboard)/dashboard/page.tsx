@@ -111,7 +111,7 @@ export default function DashboardPage() {
       <div className="mb-5 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="reveal text-[1.6rem] font-bold leading-tight tracking-tight sm:text-3xl">
-            {t(`greeting.${greetingKey(nowMinute)}`)} <span aria-hidden>👋</span>
+            {t(`greeting.${greetingKey(nowMinute)}`)}
           </h1>
           <p className="mt-0.5 text-[0.95rem] text-muted-foreground">
             {t("today", {

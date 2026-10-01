@@ -161,6 +161,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const { logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const { data: business } = useBusiness();
 
   return (
     <aside
@@ -173,6 +174,18 @@ export function Sidebar() {
         <BrandMark />
         {!collapsed && <Wordmark />}
       </div>
+
+      {business && (
+        <div
+          className="flex items-center gap-2.5 border-b border-border px-4 py-3"
+          title={collapsed ? business.name : undefined}
+        >
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+            {initialsOf(business.name)}
+          </span>
+          {!collapsed && <span className="min-w-0 truncate text-sm font-semibold">{business.name}</span>}
+        </div>
+      )}
 
       <nav aria-label={t("main")} className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
         {NAV_ITEMS.map((item) => (

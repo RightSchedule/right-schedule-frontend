@@ -298,7 +298,7 @@ function QuoteDetail({
       )}
 
       <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button variant="ghost" className="text-destructive sm:mr-auto" onClick={onDelete}>
+        <Button variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive sm:mr-auto" onClick={onDelete}>
           {t("detail.delete")}
         </Button>
         {answered ? (
