@@ -1,3 +1,5 @@
+import { isPublicPath } from "@/lib/routes";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
 class ApiError extends Error {
@@ -16,10 +18,17 @@ interface RequestOptions {
   headers?: Record<string, string>;
 }
 
-const PUBLIC_PREFIXES = ["/login", "/b/", "/privacy", "/terms", "/dpa", "/sub-processors"];
+let signingOut = false;
 
-function onPublicPage(): boolean {
-  return PUBLIC_PREFIXES.some((p) => window.location.pathname.startsWith(p));
+/** Concurrent 401s share one logout + redirect. */
+async function signOut() {
+  if (signingOut) return;
+  signingOut = true;
+  // Session cookie is HttpOnly: only the backend can clear it.
+  await fetch(`${BASE_URL}/api/v1/auth/logout`, { method: "POST", credentials: "include" }).catch(
+    () => undefined
+  );
+  window.location.assign("/login");
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -34,12 +43,8 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   if (res.status === 204) return undefined as T;
 
-  if (res.status === 401 && typeof window !== "undefined" && !onPublicPage()) {
-    // Session cookie is HttpOnly: only the backend can clear it.
-    await fetch(`${BASE_URL}/api/v1/auth/logout`, { method: "POST", credentials: "include" }).catch(
-      () => undefined
-    );
-    window.location.assign("/login");
+  if (res.status === 401 && typeof window !== "undefined" && !isPublicPath(window.location.pathname)) {
+    await signOut();
   }
 
   if (!res.ok) {

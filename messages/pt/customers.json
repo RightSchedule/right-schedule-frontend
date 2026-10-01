@@ -29,7 +29,9 @@
       "title": "Histórico de marcações",
       "errorFeature": "Histórico de marcações",
       "empty": "Ainda não há marcações",
-      "fallbackService": "Marcação"
+      "fallbackService": "Marcação",
+      "sortNewest": "Mais recentes primeiro",
+      "sortOldest": "Mais antigas primeiro"
     }
   },
   "form": {

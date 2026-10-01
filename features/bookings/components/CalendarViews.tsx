@@ -15,7 +15,7 @@ import type { Booking, BookingStatus, Staff } from "@/types/domain";
 
 const BLOCK_STYLE: Record<BookingStatus, string> = {
   CONFIRMED: "border-primary/25 bg-accent/70 text-foreground",
-  COMPLETED: "border-border bg-muted text-muted-foreground",
+  COMPLETED: "border-success/40 bg-success-muted text-success-foreground",
   CANCELLED: "border-destructive/30 bg-destructive/5 text-muted-foreground line-through",
   NO_SHOW: "border-warning/50 bg-warning-muted text-warning-foreground",
 };
@@ -84,6 +84,78 @@ export function BookingChip({
         {booking.staff ? ` · ${booking.staff.name}` : ""}
       </span>
       {booking.notes && <span className="block truncate opacity-70">{booking.notes}</span>}
+    </button>
+  );
+}
+
+const BLOCK_ACCENT: Record<BookingStatus, string> = {
+  CONFIRMED: "bg-primary",
+  COMPLETED: "bg-success",
+  CANCELLED: "bg-destructive/60",
+  NO_SHOW: "bg-warning",
+};
+
+function DayCard({
+  booking: b,
+  height,
+  onSelect,
+}: {
+  booking: Booking;
+  height: number;
+  onSelect: (b: Booking, origin?: HTMLElement) => void;
+}) {
+  const t = useTranslations("calendar.views");
+  const customer = b.customer?.name ?? t("customerFallback");
+  const service = b.service?.name ?? t("serviceFallback");
+  const start = b.startTime.slice(0, 5);
+  const end = b.endTime.slice(0, 5);
+  const compact = height < 36;
+  const stacked = height >= 64;
+  const roomy = height >= 88;
+  const accent = b.needsReviewAt ? "bg-warning" : BLOCK_ACCENT[b.status];
+
+  return (
+    <button
+      type="button"
+      onClick={(e) => onSelect(b, e.currentTarget)}
+      title={`${start}–${end} · ${customer} · ${service}`}
+      className={cn(
+        "group relative flex h-full w-full overflow-hidden rounded-lg border text-left text-xs shadow-xs transition-[filter,box-shadow] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        compact ? "items-center py-0.5 pl-3 pr-2" : "flex-col justify-center gap-0.5 py-1 pl-3.5 pr-2.5 leading-4",
+        blockStyle(b),
+        BLOCK_HOVER
+      )}
+    >
+      <span aria-hidden className={cn("absolute inset-y-0 left-0 w-1", accent)} />
+      {compact ? (
+        <span className="flex min-w-0 flex-1 items-center gap-1.5 whitespace-nowrap">
+          <StatusMark booking={b} />
+          <span className="shrink-0 font-mono font-semibold">{start}</span>
+          <span className="min-w-0 truncate font-semibold">{customer}</span>
+          <span className="min-w-0 shrink-[3] truncate opacity-70">· {service}</span>
+        </span>
+      ) : (
+        <>
+          <span className="flex min-w-0 items-center gap-1 font-semibold">
+            <StatusMark booking={b} />
+            <span className="min-w-0 truncate">{customer}</span>
+          </span>
+          {stacked ? (
+            <>
+              <span className="truncate font-mono opacity-80">
+                {start} – {end}
+              </span>
+              <span className="truncate opacity-80">{service}</span>
+            </>
+          ) : (
+            <span className="flex min-w-0 gap-1 whitespace-nowrap opacity-80">
+              <span className="shrink-0 font-mono">{start}–{end}</span>
+              <span className="min-w-0 truncate">· {service}</span>
+            </span>
+          )}
+          {roomy && b.notes && <span className="truncate italic opacity-70">{b.notes}</span>}
+        </>
+      )}
     </button>
   );
 }
@@ -341,9 +413,7 @@ function DayGrid({
           </div>
 
           {columns.map((c) => {
-            const mine = bookings
-              .filter((b) => (c.id === "__other" ? !staffIds.has(b.staffId) : b.staffId === c.id))
-              .sort((a, b) => Number(a.status === "CONFIRMED") - Number(b.status === "CONFIRMED"));
+            const mine = bookingsOf(c).sort((a, b) => Number(a.status === "CONFIRMED") - Number(b.status === "CONFIRMED"));
             return (
               <div
                 key={c.id}
@@ -372,24 +442,7 @@ function DayGrid({
                   const height = Math.max(((end - start) / 60) * HOUR_PX - 2, 28);
                   return (
                     <div key={b.id} className="absolute inset-x-1" style={{ top, height }}>
-                      <button
-                        type="button"
-                        onClick={(e) => onSelect(b, e.currentTarget)}
-                        className={cn(
-                          "h-full w-full overflow-hidden rounded-xl border px-2 py-1 text-left text-xs transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                          blockStyle(b),
-                          BLOCK_HOVER
-                        )}
-                      >
-                        <span className="block truncate font-semibold">
-                          <StatusMark booking={b} />
-                          <span className="font-mono">{b.startTime.slice(0, 5)}</span> · {b.customer?.name ?? t("customerFallback")}
-                        </span>
-                        <span className="block truncate opacity-80">{b.service?.name}</span>
-                        {b.notes && height >= 64 && (
-                          <span className="block truncate opacity-70">{b.notes}</span>
-                        )}
-                      </button>
+                      <DayCard booking={b} height={height} onSelect={onSelect} />
                     </div>
                   );
                 })}

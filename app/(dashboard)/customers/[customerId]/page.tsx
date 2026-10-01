@@ -4,19 +4,39 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, CalendarX, Download, Mail, NotebookText, Pencil, Phone, Trash2 } from "lucide-react";
+import {
+  ArrowDownWideNarrow,
+  ArrowLeft,
+  ArrowUpNarrowWide,
+  CalendarX,
+  Download,
+  Mail,
+  NotebookText,
+  Pencil,
+  Phone,
+  Trash2,
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
-import { ConfirmDialog, EmptyState, ErrorState, PageContainer, initials } from "@/components/shared";
+import {
+  ConfirmDialog,
+  EmptyState,
+  ErrorState,
+  ListContainer,
+  PageContainer,
+  PaginationNav,
+  initials,
+} from "@/components/shared";
 import {
   BookingDetailDialog,
   BookingStatusBadge,
 } from "@/features/bookings/components/BookingDetailDialog";
-import { useBookingsRange } from "@/features/bookings/hooks/useBookings";
+import { useCustomerBookingsPage } from "@/features/bookings/hooks/useBookings";
 import { CustomerFormDialog } from "@/features/customers/components/CustomerFormDialog";
 import { useCustomer, useDeleteCustomer, useExportCustomer } from "@/features/customers/hooks/useCustomers";
+import type { SortDirection } from "@/lib/api/bookings";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import type { Booking } from "@/types/domain";
@@ -33,7 +53,9 @@ export default function CustomerDetailPage({
   const errorMessage = useErrorMessage();
   const fmt = useLocaleFormat();
   const customer = useCustomer(customerId);
-  const bookings = useBookingsRange(undefined, undefined, { customerId });
+  const [page, setPage] = useState(0);
+  const [sort, setSort] = useState<SortDirection>("desc");
+  const history = useCustomerBookingsPage(customerId, sort, page);
   const router = useRouter();
   const toast = useToast();
   const remove = useDeleteCustomer();
@@ -62,10 +84,6 @@ export default function CustomerDetailPage({
       toast.error(errorMessage(e));
     }
   }
-
-  const history = [...(bookings.data ?? [])].sort((a, b) =>
-    `${b.date}${b.startTime}`.localeCompare(`${a.date}${a.startTime}`)
-  );
 
   return (
     <PageContainer className="max-w-3xl">
@@ -144,40 +162,71 @@ export default function CustomerDetailPage({
             onConfirm={deleteCustomer}
           />
 
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            {t("history.title")}
-          </h2>
-          {bookings.isLoading ? (
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("history.title")}
+            </h2>
+            {(history.bookings?.length ?? 0) > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSort((s) => (s === "desc" ? "asc" : "desc"));
+                  setPage(0);
+                }}
+              >
+                {sort === "desc" ? <ArrowDownWideNarrow /> : <ArrowUpNarrowWide />}
+                {sort === "desc" ? t("history.sortNewest") : t("history.sortOldest")}
+              </Button>
+            )}
+          </div>
+          {history.isLoading ? (
             <Skeleton className="h-40 rounded-3xl" />
-          ) : bookings.error ? (
+          ) : history.error ? (
             <ErrorState
-              error={bookings.error}
+              error={history.error}
               feature={t("history.errorFeature")}
-              onRetry={() => bookings.refetch()}
+              onRetry={() => history.refetch()}
             />
-          ) : history.length === 0 ? (
+          ) : (history.bookings ?? []).length === 0 && page === 0 ? (
             <EmptyState icon={CalendarX} title={t("history.empty")} />
           ) : (
-            <ul className="divide-y divide-border overflow-hidden rounded-3xl border border-border bg-card shadow-card">
-              {history.map((b) => (
-                <li key={b.id}>
-                  <button
-                    type="button"
-                    onClick={() => setSelected(b)}
-                    className="flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:outline-none"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{b.service?.name ?? t("history.fallbackService")}</p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {fmt.date(b.date, "dd MMM yyyy")} · {b.startTime.slice(0, 5)}
-                        {b.staff ? ` · ${b.staff.name}` : ""}
-                      </p>
-                    </div>
-                    <BookingStatusBadge status={b.status} />
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="flex flex-col gap-4">
+              <ListContainer>
+                {(history.bookings ?? []).map((b) => (
+                  <li key={b.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelected(b)}
+                      className="flex w-full items-center gap-3 p-3 text-left transition-colors hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:outline-none"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">{b.service?.name ?? t("history.fallbackService")}</p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {fmt.date(b.date, "dd MMM yyyy")} · {b.startTime.slice(0, 5)}
+                          {b.staff ? ` · ${b.staff.name}` : ""}
+                        </p>
+                      </div>
+                      <BookingStatusBadge status={b.status} />
+                    </button>
+                  </li>
+                ))}
+              </ListContainer>
+
+              <PaginationNav
+                page={page}
+                totalPages={history.totalPages}
+                disabled={history.isPlaceholderData}
+                onPageChange={setPage}
+                label={tCustomers("list.pagination.label")}
+                previousLabel={tCustomers("list.pagination.previous")}
+                nextLabel={tCustomers("list.pagination.next")}
+                pageLabel={tCustomers("list.pagination.page", {
+                  page: page + 1,
+                  total: history.totalPages,
+                })}
+              />
+            </div>
           )}
         </>
       )}

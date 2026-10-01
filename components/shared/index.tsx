@@ -1,7 +1,10 @@
 "use client";
 
-import { AlertCircle, Loader2, Hourglass } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, ChevronLeft, ChevronRight, Loader2, Hourglass } from "lucide-react";
 import { cn } from "cn";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import { isUnavailable } from "@/lib/api/client";
 import { useErrorMessage } from "@/lib/i18n/errors";
@@ -230,6 +233,145 @@ export function ConfirmDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+export function SkeletonList({
+  count = 4,
+  className = "h-16",
+}: {
+  count?: number;
+  className?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      {Array.from({ length: count }, (_, i) => (
+        <Skeleton key={i} className={cn("rounded-3xl", className)} />
+      ))}
+    </div>
+  );
+}
+
+export function ListContainer({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <ul
+      className={cn(
+        "divide-y divide-border overflow-hidden rounded-3xl border border-border bg-card shadow-card",
+        className
+      )}
+    >
+      {children}
+    </ul>
+  );
+}
+
+const ROW_CLASS =
+  "flex w-full items-center gap-3.5 p-4 text-left transition-colors hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:outline-none";
+
+export function EntityListRow({
+  name,
+  photoUrl,
+  href,
+  onClick,
+  trailing,
+  children,
+}: {
+  name: string;
+  photoUrl?: string | null;
+  href?: string;
+  onClick?: () => void;
+  trailing?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const content = (
+    <>
+      <Avatar className="size-11">
+        {photoUrl && <AvatarImage src={photoUrl} alt="" />}
+        <AvatarFallback>{initials(name)}</AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1">{children}</div>
+      {trailing}
+      <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+    </>
+  );
+  return (
+    <li>
+      {href ? (
+        <Link href={href} className={ROW_CLASS}>
+          {content}
+        </Link>
+      ) : (
+        <button type="button" onClick={onClick} className={ROW_CLASS}>
+          {content}
+        </button>
+      )}
+    </li>
+  );
+}
+
+export function PaginationNav({
+  page,
+  totalPages,
+  disabled,
+  onPageChange,
+  label,
+  previousLabel,
+  nextLabel,
+  pageLabel,
+}: {
+  page: number;
+  totalPages: number;
+  disabled?: boolean;
+  onPageChange: (page: number) => void;
+  label: string;
+  previousLabel: string;
+  nextLabel: string;
+  pageLabel: string;
+}) {
+  if (totalPages <= 1) return null;
+  return (
+    <nav aria-label={label} className="flex items-center justify-between text-sm">
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page === 0 || disabled}
+        onClick={() => onPageChange(page - 1)}
+      >
+        <ChevronLeft /> {previousLabel}
+      </Button>
+      <span className="text-muted-foreground" aria-live="polite">
+        {pageLabel}
+      </span>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={page + 1 >= totalPages || disabled}
+        onClick={() => onPageChange(page + 1)}
+      >
+        {nextLabel} <ChevronRight />
+      </Button>
+    </nav>
+  );
+}
+
+export function DetailsRow({
+  icon: Icon,
+  children,
+}: {
+  icon: React.ElementType;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-3.5 text-[0.95rem]">
+      <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+      <div className="min-w-0">{children}</div>
+    </div>
   );
 }
 

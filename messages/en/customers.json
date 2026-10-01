@@ -29,7 +29,9 @@
       "title": "Booking history",
       "errorFeature": "Booking history",
       "empty": "No bookings yet",
-      "fallbackService": "Booking"
+      "fallbackService": "Booking",
+      "sortNewest": "Newest first",
+      "sortOldest": "Oldest first"
     }
   },
   "form": {

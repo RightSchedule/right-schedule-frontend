@@ -1,8 +1,11 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { servicesApi, type ServicePayload } from "@/lib/api/services";
 import { qk } from "@/lib/query/keys";
+import { useInvalidatingMutation } from "@/lib/query/useInvalidatingMutation";
+
+const servicesKey = () => qk.services;
 
 export function useServices() {
   return useQuery({
@@ -12,34 +15,20 @@ export function useServices() {
 }
 
 export function useCreateService() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (payload: ServicePayload) => servicesApi.create(payload),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.services }),
-  });
+  return useInvalidatingMutation((payload: ServicePayload) => servicesApi.create(payload), servicesKey);
 }
 
 export function useUpdateService() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, ...payload }: ServicePayload & { id: string }) =>
-      servicesApi.update(id, payload),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.services }),
-  });
+  return useInvalidatingMutation(
+    ({ id, ...payload }: ServicePayload & { id: string }) => servicesApi.update(id, payload),
+    servicesKey
+  );
 }
 
 export function useToggleService() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => servicesApi.toggle(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.services }),
-  });
+  return useInvalidatingMutation((id: string) => servicesApi.toggle(id), servicesKey);
 }
 
 export function useDeleteService() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => servicesApi.delete(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.services }),
-  });
+  return useInvalidatingMutation((id: string) => servicesApi.delete(id), servicesKey);
 }

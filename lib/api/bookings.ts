@@ -52,6 +52,8 @@ function normalizeBooking(r: BookingResponse): Booking {
   };
 }
 
+export type SortDirection = "asc" | "desc";
+
 export interface ListBookingsParams {
   from?: string;
   to?: string;
@@ -64,6 +66,27 @@ export const bookingsApi = {
   /** One page of overdue bookings, oldest first (the backend sorts by start time). */
   reviewPage: async ({ page = 0, size = 25 }: { page?: number; size?: number } = {}): Promise<PageResponse<Booking>> => {
     const res = await fetchPage<BookingResponse>("/api/v1/bookings", { needsReview: true, page, size });
+    return { ...res, content: res.content.map(normalizeBooking) };
+  },
+
+  /** One page of a customer's bookings; ordering uses the backend `direction` param (ASC | DESC). */
+  customerHistoryPage: async ({
+    customerId,
+    sort = "desc",
+    page = 0,
+    size = 10,
+  }: {
+    customerId: string;
+    sort?: SortDirection;
+    page?: number;
+    size?: number;
+  }): Promise<PageResponse<Booking>> => {
+    const res = await fetchPage<BookingResponse>("/api/v1/bookings", {
+      customerId,
+      direction: sort.toUpperCase(),
+      page,
+      size,
+    });
     return { ...res, content: res.content.map(normalizeBooking) };
   },
 

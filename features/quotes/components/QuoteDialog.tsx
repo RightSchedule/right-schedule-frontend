@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FormError, LoadingButton } from "@/components/shared";
+import { DetailsRow, Field, FormError, LoadingButton } from "@/components/shared";
 import { useDeclineQuote, useDeleteQuote, useSendQuote } from "@/features/quotes/hooks/useQuotes";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
@@ -60,15 +60,6 @@ function makeQuoteSchema(t: ErrorsTranslator) {
 }
 
 type QuoteValues = z.infer<ReturnType<typeof makeQuoteSchema>>;
-
-function Row({ icon: Icon, children }: { icon: React.ElementType; children: React.ReactNode }) {
-  return (
-    <div className="flex items-start gap-3.5 text-[0.95rem]">
-      <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
-      <div className="min-w-0">{children}</div>
-    </div>
-  );
-}
 
 function QuoteForm({ request, onBack, onDone }: { request: QuoteRequest; onBack: () => void; onDone: () => void }) {
   const t = useTranslations("quotes.quoteForm");
@@ -261,25 +252,25 @@ function QuoteDetail({
       </DialogHeader>
 
       <div className="flex flex-col gap-4 border-y border-border py-5">
-        <Row icon={Scissors}>{serviceName ?? t("list.generalRequest")}</Row>
-        <Row icon={User}>
+        <DetailsRow icon={Scissors}>{serviceName ?? t("list.generalRequest")}</DetailsRow>
+        <DetailsRow icon={User}>
           <span className="font-medium">{request.customerName}</span>
-        </Row>
-        <Row icon={Mail}>
+        </DetailsRow>
+        <DetailsRow icon={Mail}>
           <a href={`mailto:${request.customerEmail}`} className="break-all hover:underline">
             {request.customerEmail}
           </a>
-        </Row>
+        </DetailsRow>
         {request.customerPhone && (
-          <Row icon={Phone}>
+          <DetailsRow icon={Phone}>
             <a href={`tel:${request.customerPhone}`} className="hover:underline">
               {request.customerPhone}
             </a>
-          </Row>
+          </DetailsRow>
         )}
-        <Row icon={NotebookText}>
+        <DetailsRow icon={NotebookText}>
           <p className="whitespace-pre-wrap break-words">{request.description}</p>
-        </Row>
+        </DetailsRow>
       </div>
 
       {answered && (

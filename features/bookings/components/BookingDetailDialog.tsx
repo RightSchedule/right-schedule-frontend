@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { LoadingButton } from "@/components/shared";
+import { DetailsRow, LoadingButton } from "@/components/shared";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { morphFromRect } from "@/lib/utils/motion";
@@ -24,13 +24,13 @@ import type { Booking, BookingStatus } from "@/types/domain";
 export function statusVariant(status: BookingStatus) {
   switch (status) {
     case "CONFIRMED":
-      return "success" as const;
+      return "secondary" as const;
     case "CANCELLED":
       return "destructive" as const;
     case "NO_SHOW":
       return "warning" as const;
     case "COMPLETED":
-      return "secondary" as const;
+      return "success" as const;
   }
 }
 
@@ -51,15 +51,6 @@ export function BookingStatusBadge({
     <Badge variant={statusVariant(status)} className={className}>
       {statusLabel(status)}
     </Badge>
-  );
-}
-
-function Row({ icon: Icon, children }: { icon: React.ElementType; children: React.ReactNode }) {
-  return (
-    <div className="flex items-start gap-3.5 text-[0.95rem]">
-      <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
-      <div className="min-w-0">{children}</div>
-    </div>
   );
 }
 
@@ -133,7 +124,7 @@ export function BookingDetailDialog({
             )}
 
             <div className="flex flex-col gap-4 border-y border-border py-5">
-              <Row icon={Clock}>
+              <DetailsRow icon={Clock}>
                 <span className="font-mono font-bold">
                   {booking.startTime.slice(0, 5)} – {booking.endTime.slice(0, 5)}
                 </span>
@@ -144,9 +135,9 @@ export function BookingDetailDialog({
                     {f.price(booking.service.price)}
                   </span>
                 )}
-              </Row>
-              <Row icon={UserRound}>{booking.staff?.name ?? t("unassigned")}</Row>
-              <Row icon={User}>
+              </DetailsRow>
+              <DetailsRow icon={UserRound}>{booking.staff?.name ?? t("unassigned")}</DetailsRow>
+              <DetailsRow icon={User}>
                 {booking.customerId ? (
                   <Link
                     href={`/customers/${booking.customerId}`}
@@ -160,25 +151,25 @@ export function BookingDetailDialog({
                     <span className="text-muted-foreground"> · {t("deletedCustomer")}</span>
                   </span>
                 )}
-              </Row>
+              </DetailsRow>
               {booking.customer?.phone && (
-                <Row icon={Phone}>
+                <DetailsRow icon={Phone}>
                   <a href={`tel:${booking.customer.phone}`} className="hover:underline">
                     {booking.customer.phone}
                   </a>
-                </Row>
+                </DetailsRow>
               )}
               {booking.customer?.email && (
-                <Row icon={Mail}>
+                <DetailsRow icon={Mail}>
                   <a href={`mailto:${booking.customer.email}`} className="break-all hover:underline">
                     {booking.customer.email}
                   </a>
-                </Row>
+                </DetailsRow>
               )}
               {booking.notes && (
-                <Row icon={NotebookText}>
+                <DetailsRow icon={NotebookText}>
                   <p className="whitespace-pre-wrap">{booking.notes}</p>
-                </Row>
+                </DetailsRow>
               )}
             </div>
 

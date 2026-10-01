@@ -26,10 +26,9 @@ export function fetchPage<T>(path: string, params: Params = {}): Promise<PageRes
 
 /** Fetches every page of a paginated endpoint and returns the flattened items. */
 export async function listAll<T>(path: string, params: Params = {}): Promise<T[]> {
-  const items: T[] = [];
-  for (let page = 0; ; page++) {
-    const res = await fetchPage<T>(path, { ...params, size: MAX_PAGE_SIZE, page });
-    items.push(...res.content);
-    if (page + 1 >= res.totalPages) return items;
-  }
+  const fetchAt = (page: number) => fetchPage<T>(path, { ...params, size: MAX_PAGE_SIZE, page });
+  const first = await fetchAt(0);
+  if (first.totalPages <= 1) return first.content;
+  const rest = await Promise.all(Array.from({ length: first.totalPages - 1 }, (_, i) => fetchAt(i + 1)));
+  return [first, ...rest].flatMap((res) => res.content);
 }

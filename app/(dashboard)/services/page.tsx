@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Clock, Pencil, Plus, Scissors, Trash2 } from "lucide-react";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -109,8 +110,8 @@ export default function ServicesPage() {
         <ul className="grid gap-4 sm:grid-cols-2">
           {services.map((service) => (
             <li key={service.id}>
-              <Card className={service.active ? "" : "opacity-70"}>
-                <CardContent className="flex flex-col gap-4 p-5 pt-5">
+              <Card className={cn("h-full", !service.active && "opacity-70")}>
+                <CardContent className="flex h-full flex-col gap-4 p-5 pt-5 sm:p-6 sm:pt-6">
                   <div className="flex items-start gap-3.5">
                     <span
                       aria-hidden
@@ -140,7 +141,7 @@ export default function ServicesPage() {
                       {price(service.price)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between border-t border-border pt-4">
+                  <div className="flex items-center justify-between mt-auto border-t border-border pt-4">
                     <label className="flex items-center gap-2.5 text-sm">
                       <Switch
                         checked={service.active}

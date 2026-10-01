@@ -2,10 +2,11 @@
 
 import { useMemo } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { bookingsApi } from "@/lib/api/bookings";
+import { bookingsApi, type SortDirection } from "@/lib/api/bookings";
 import { qk } from "@/lib/query/keys";
 import { useServices } from "@/features/services/hooks/useServices";
 import { useStaff } from "@/features/staff/hooks/useStaff";
+import type { Booking } from "@/types/domain";
 
 interface RangeOptions {
   customerId?: string;
@@ -13,6 +14,27 @@ interface RangeOptions {
 }
 
 export const REVIEW_PAGE_SIZE = 25;
+export const CUSTOMER_HISTORY_PAGE_SIZE = 10;
+
+/** Joins bookings with cached service and staff records using O(1) lookups. */
+function useEnrichedBookings(bookings: Booking[] | undefined) {
+  const services = useServices().data;
+  const staff = useStaff().data;
+
+  return useMemo(() => {
+    if (!bookings) return undefined;
+    const serviceById = new Map(services?.map((s) => [s.id, s]));
+    const staffById = new Map(staff?.map((s) => [s.id, s]));
+    return bookings.map((b) => {
+      const member = staffById.get(b.staffId);
+      return {
+        ...b,
+        service: serviceById.get(b.serviceId),
+        staff: member && { id: member.id, name: member.name },
+      };
+    });
+  }, [bookings, services, staff]);
+}
 
 /** One page of overdue bookings, joined with cached service and staff records. */
 export function useReviewBookings(page: number) {
@@ -21,25 +43,32 @@ export function useReviewBookings(page: number) {
     queryFn: () => bookingsApi.reviewPage({ page, size: REVIEW_PAGE_SIZE }),
     placeholderData: keepPreviousData,
   });
-  const services = useServices().data;
-  const staff = useStaff().data;
-
-  const bookings = useMemo(
-    () =>
-      query.data?.content.map((b) => {
-        const member = staff?.find((s) => s.id === b.staffId);
-        return {
-          ...b,
-          service: services?.find((s) => s.id === b.serviceId),
-          staff: member && { id: member.id, name: member.name },
-        };
-      }),
-    [query.data, services, staff]
-  );
+  const bookings = useEnrichedBookings(query.data?.content);
 
   return {
     bookings,
     totalElements: query.data?.totalElements ?? 0,
+    totalPages: query.data?.totalPages ?? 0,
+    isLoading: query.isLoading,
+    isPlaceholderData: query.isPlaceholderData,
+    error: query.error,
+    refetch: query.refetch,
+  };
+}
+
+/** One page of a customer's booking history, newest first, joined with cached service and staff records. */
+export function useCustomerBookingsPage(customerId: string, sort: SortDirection, page: number) {
+  const query = useQuery({
+    queryKey: qk.bookings.customerHistory(customerId, sort, page),
+    queryFn: () =>
+      bookingsApi.customerHistoryPage({ customerId, sort, page, size: CUSTOMER_HISTORY_PAGE_SIZE }),
+    enabled: !!customerId,
+    placeholderData: keepPreviousData,
+  });
+  const bookings = useEnrichedBookings(query.data?.content);
+
+  return {
+    bookings,
     totalPages: query.data?.totalPages ?? 0,
     isLoading: query.isLoading,
     isPlaceholderData: query.isPlaceholderData,
@@ -64,21 +93,7 @@ export function useBookingsRange(from: string | undefined, to: string | undefine
     queryFn: () => bookingsApi.list({ from, to, customerId: opts.customerId }),
     enabled: opts.enabled ?? true,
   });
-  const services = useServices().data;
-  const staff = useStaff().data;
-
-  const data = useMemo(
-    () =>
-      query.data?.map((b) => {
-        const member = staff?.find((s) => s.id === b.staffId);
-        return {
-          ...b,
-          service: services?.find((s) => s.id === b.serviceId),
-          staff: member && { id: member.id, name: member.name },
-        };
-      }),
-    [query.data, services, staff]
-  );
+  const data = useEnrichedBookings(query.data);
 
   return {
     data,

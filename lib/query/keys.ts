@@ -12,6 +12,8 @@ export const qk = {
     all: ["bookings"] as const,
     range: (from?: string, to?: string, customerId?: string) =>
       ["bookings", "range", from ?? null, to ?? null, customerId ?? null] as const,
+    customerHistory: (customerId: string, sort: string, page: number) =>
+      ["bookings", "customer-history", customerId, sort, page] as const,
     review: (page: number) => ["bookings", "review", page] as const,
     reviewCount: ["bookings", "review-count"] as const,
   },

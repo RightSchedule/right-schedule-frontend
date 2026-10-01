@@ -2,17 +2,17 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight, MessageSquareQuote } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { MessageSquareQuote } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   EmptyState,
+  EntityListRow,
   ErrorState,
+  ListContainer,
   PageContainer,
   PageHeader,
-  initials,
+  PaginationNav,
+  SkeletonList,
 } from "@/components/shared";
 import { QuoteDialog, QuoteStatusBadge } from "@/features/quotes/components/QuoteDialog";
 import { useQuotesPage } from "@/features/quotes/hooks/useQuotes";
@@ -62,11 +62,7 @@ export default function QuotesPage() {
       </Tabs>
 
       {isLoading ? (
-        <div className="flex flex-col gap-2">
-          {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-20 rounded-3xl" />
-          ))}
-        </div>
+        <SkeletonList className="h-20" />
       ) : error ? (
         <ErrorState error={error} feature={t("errorFeature")} onRetry={() => refetch()} />
       ) : requests.length === 0 && page === 0 ? (
@@ -77,57 +73,36 @@ export default function QuotesPage() {
         />
       ) : (
         <div className="flex flex-col gap-4">
-          <ul className="divide-y divide-border overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+          <ListContainer>
             {requests.map((r) => (
-              <li key={r.id}>
-                <button
-                  type="button"
-                  onClick={() => setSelected(r)}
-                  className="flex w-full items-center gap-3.5 p-4 text-left transition-colors hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:outline-none"
-                >
-                  <Avatar className="size-11">
-                    <AvatarFallback>{initials(r.customerName)}</AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate text-[0.95rem] font-semibold">{r.customerName}</p>
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {f.date(r.createdAt, "d MMM")}
-                      </span>
-                    </div>
-                    <p className="truncate text-xs font-medium text-primary">{serviceName(r)}</p>
-                    <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">{r.description}</p>
-                  </div>
-                  <QuoteStatusBadge status={r.status} className="shrink-0" />
-                  <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
-                </button>
-              </li>
+              <EntityListRow
+                key={r.id}
+                name={r.customerName}
+                onClick={() => setSelected(r)}
+                trailing={<QuoteStatusBadge status={r.status} className="shrink-0" />}
+              >
+                <div className="flex items-center gap-2">
+                  <p className="truncate text-[0.95rem] font-semibold">{r.customerName}</p>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {f.date(r.createdAt, "d MMM")}
+                  </span>
+                </div>
+                <p className="truncate text-xs font-medium text-primary">{serviceName(r)}</p>
+                <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">{r.description}</p>
+              </EntityListRow>
             ))}
-          </ul>
+          </ListContainer>
 
-          {totalPages > 1 && (
-            <nav aria-label={t("pagination.label")} className="flex items-center justify-between text-sm">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page === 0 || isPlaceholderData}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                <ChevronLeft /> {t("pagination.previous")}
-              </Button>
-              <span className="text-muted-foreground" aria-live="polite">
-                {t("pagination.page", { page: page + 1, total: totalPages })}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page + 1 >= totalPages || isPlaceholderData}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                {t("pagination.next")} <ChevronRight />
-              </Button>
-            </nav>
-          )}
+          <PaginationNav
+            page={page}
+            totalPages={totalPages}
+            disabled={isPlaceholderData}
+            onPageChange={setPage}
+            label={t("pagination.label")}
+            previousLabel={t("pagination.previous")}
+            nextLabel={t("pagination.next")}
+            pageLabel={t("pagination.page", { page: page + 1, total: totalPages })}
+          />
         </div>
       )}
 

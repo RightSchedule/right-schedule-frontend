@@ -4,18 +4,20 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { differenceInCalendarDays, parseISO } from "date-fns";
-import { CalendarDays, ChevronLeft, ChevronRight, CircleCheck, UserX } from "lucide-react";
+import { CalendarDays, CircleCheck, UserX } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import {
   ConfirmDialog,
   EmptyState,
   ErrorState,
+  ListContainer,
   LoadingButton,
   PageContainer,
   PageHeader,
+  PaginationNav,
+  SkeletonList,
 } from "@/components/shared";
 import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
 import {
@@ -179,11 +181,7 @@ export default function ReviewPage() {
       <PageHeader title={t("page.title")} description={t("page.description")} />
 
       {isLoading || business.isLoading ? (
-        <div className="flex flex-col gap-2">
-          {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-20 rounded-3xl" />
-          ))}
-        </div>
+        <SkeletonList className="h-20" />
       ) : error ? (
         <ErrorState error={error} feature={t("page.errorFeature")} onRetry={() => refetch()} />
       ) : bookings.length === 0 ? (
@@ -212,7 +210,7 @@ export default function ReviewPage() {
             </span>
           </div>
 
-          <ul className="divide-y divide-border overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+          <ListContainer>
             {bookings.map((b) => (
               <ReviewRow
                 key={b.id}
@@ -226,7 +224,7 @@ export default function ReviewPage() {
                 onResolve={(action) => resolve(b, action)}
               />
             ))}
-          </ul>
+          </ListContainer>
 
           {selected.length > 0 && (
             <div className="sticky bottom-20 z-20 flex items-center justify-between gap-3 rounded-3xl border border-border bg-card p-3 pl-5 shadow-lg md:bottom-4">
@@ -242,29 +240,16 @@ export default function ReviewPage() {
             </div>
           )}
 
-          {totalPages > 1 && (
-            <nav aria-label={t("pagination.label")} className="flex items-center justify-between text-sm">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page === 0 || isPlaceholderData}
-                onClick={() => goToPage(page - 1)}
-              >
-                <ChevronLeft /> {t("pagination.previous")}
-              </Button>
-              <span className="text-muted-foreground" aria-live="polite">
-                {t("pagination.page", { page: page + 1, total: totalPages })}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page + 1 >= totalPages || isPlaceholderData}
-                onClick={() => goToPage(page + 1)}
-              >
-                {t("pagination.next")} <ChevronRight />
-              </Button>
-            </nav>
-          )}
+          <PaginationNav
+            page={page}
+            totalPages={totalPages}
+            disabled={isPlaceholderData}
+            onPageChange={goToPage}
+            label={t("pagination.label")}
+            previousLabel={t("pagination.previous")}
+            nextLabel={t("pagination.next")}
+            pageLabel={t("pagination.page", { page: page + 1, total: totalPages })}
+          />
         </div>
       )}
 
