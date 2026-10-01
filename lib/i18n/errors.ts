@@ -28,6 +28,7 @@ export function useErrorMessage() {
           : t("tooManyAttempts");
       }
       if (error.status === 422) return t("requestChanged");
+      if (error.detail && error.status < 500) return error.detail;
       return fallback ?? t("generic");
     }
     if (error instanceof TypeError) return t("network");

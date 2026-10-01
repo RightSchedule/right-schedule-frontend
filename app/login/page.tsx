@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { CalendarDays, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useRateLimit } from "@/features/auth/hooks/useRateLimit";
 import { Aurora, stagger } from "@/components/ui/aurora";
 import { Wordmark } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,9 @@ import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-type Translator = ReturnType<typeof useTranslations<"auth">>;
+const MAX_NEW_PASSWORD_LENGTH = 128;
+
+type Translator =ReturnType<typeof useTranslations<"auth">>;
 
 function makeLoginSchema(t: Translator) {
   return z.object({
@@ -30,7 +33,7 @@ function makeLoginSchema(t: Translator) {
 
 function makeRegisterSchema(t: Translator, termsRequired: string) {
   return makeLoginSchema(t).extend({
-    password: z.string().min(8, t("validation.passwordMin")),
+    password: z.string().min(8, t("validation.passwordMin")).max(MAX_NEW_PASSWORD_LENGTH, t("validation.passwordMax")),
     acceptedTerms: z.boolean().refine((v) => v, termsRequired),
   });
 }
@@ -60,11 +63,13 @@ function PasswordInput({
   id,
   placeholder,
   autoComplete,
+  maxLength,
   registration,
 }: {
   id: string;
   placeholder: string;
   autoComplete: string;
+  maxLength?: number;
   registration: UseFormRegisterReturn;
 }) {
   const t = useTranslations("auth.fields");
@@ -76,6 +81,7 @@ function PasswordInput({
         type={visible ? "text" : "password"}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        maxLength={maxLength}
         className="px-11"
         {...registration}
       />
@@ -95,12 +101,14 @@ function LoginForm() {
   const t = useTranslations("auth");
   const errorMessage = useErrorMessage();
   const { login } = useAuth();
+  const rateLimit = useRateLimit();
   const [error, setError] = useState<string | null>(null);
   const schema = useMemo(() => makeLoginSchema(t), [t]);
 
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors, isSubmitting },
   } = useForm<LoginForm>({ resolver: zodResolver(schema) });
 
@@ -109,12 +117,15 @@ function LoginForm() {
     try {
       await login(data.email, data.password);
     } catch (e) {
+      if (rateLimit.handle(e)) return;
       setError(
         errorMessage(e, {
           overrides: { 401: t("login.wrongCredentials") },
           fallback: t("login.failed"),
         })
       );
+    } finally {
+      resetField("password");
     }
   }
 
@@ -142,9 +153,14 @@ function LoginForm() {
         />
       </Field>
 
-      <FormError message={error} />
+      <FormError message={rateLimit.message ?? error} />
 
-      <Button type="submit" disabled={isSubmitting} size="lg" className="mt-2 h-12 w-full text-base">
+      <Button
+        type="submit"
+        disabled={isSubmitting || rateLimit.limited}
+        size="lg"
+        className="mt-2 h-12 w-full text-base"
+      >
         {isSubmitting ? t("login.submitting") : t("login.submit")}
       </Button>
     </form>
@@ -156,6 +172,7 @@ function RegisterForm() {
   const errorMessage = useErrorMessage();
   const tLegal = useTranslations("legal.register");
   const { register: registerUser } = useAuth();
+  const rateLimit = useRateLimit();
   const [error, setError] = useState<string | null>(null);
   const schema = useMemo(() => makeRegisterSchema(t, tLegal("required")), [t, tLegal]);
 
@@ -163,6 +180,7 @@ function RegisterForm() {
     register,
     control,
     handleSubmit,
+    resetField,
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({
     resolver: zodResolver(schema),
@@ -174,7 +192,10 @@ function RegisterForm() {
     try {
       await registerUser(data.email, data.password);
     } catch (e) {
+      if (rateLimit.handle(e)) return;
       setError(errorMessage(e, { fallback: t("register.failed") }));
+    } finally {
+      resetField("password");
     }
   }
 
@@ -198,6 +219,7 @@ function RegisterForm() {
           id="reg-password"
           placeholder={t("fields.newPasswordPlaceholder")}
           autoComplete="new-password"
+          maxLength={MAX_NEW_PASSWORD_LENGTH}
           registration={register("password")}
         />
       </Field>
@@ -244,9 +266,14 @@ function RegisterForm() {
         )}
       </div>
 
-      <FormError message={error} />
+      <FormError message={rateLimit.message ?? error} />
 
-      <Button type="submit" disabled={isSubmitting} size="lg" className="mt-2 h-12 w-full text-base">
+      <Button
+        type="submit"
+        disabled={isSubmitting || rateLimit.limited}
+        size="lg"
+        className="mt-2 h-12 w-full text-base"
+      >
         {isSubmitting ? t("register.submitting") : t("register.submit")}
       </Button>
     </form>

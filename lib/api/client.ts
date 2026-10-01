@@ -7,7 +7,8 @@ class ApiError extends Error {
     public status: number,
     message: string,
     public retryAfter?: number,
-    public code?: string
+    public code?: string,
+    public detail?: string
   ) {
     super(message);
     this.name = "ApiError";
@@ -18,20 +19,42 @@ interface RequestOptions {
   headers?: Record<string, string>;
 }
 
+const AUTH_PATH = "/api/v1/auth/";
+const LOGOUT_TIMEOUT_MS = 3000;
+const DEFAULT_RETRY_AFTER_SECONDS = 30;
+
 let signingOut = false;
+let refreshing: Promise<boolean> | null = null;
+
+/** Session cookies are HttpOnly: only the backend can clear them. Never rejects. */
+export async function requestLogout() {
+  await fetch(`${BASE_URL}${AUTH_PATH}logout`, {
+    method: "POST",
+    credentials: "include",
+    signal: AbortSignal.timeout(LOGOUT_TIMEOUT_MS),
+  }).catch(() => undefined);
+}
 
 /** Concurrent 401s share one logout + redirect. */
 async function signOut() {
   if (signingOut) return;
   signingOut = true;
-  // Session cookie is HttpOnly: only the backend can clear it.
-  await fetch(`${BASE_URL}/api/v1/auth/logout`, { method: "POST", credentials: "include" }).catch(
-    () => undefined
-  );
+  await requestLogout();
   window.location.assign("/login");
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+/** One shared refresh for all parallel 401s; the backend rotates the HttpOnly cookies. */
+function refreshSession(): Promise<boolean> {
+  refreshing ??= fetch(`${BASE_URL}${AUTH_PATH}refresh`, { method: "POST", credentials: "include" })
+    .then((res) => res.ok)
+    .catch(() => false)
+    .finally(() => {
+      refreshing = null;
+    });
+  return refreshing;
+}
+
+async function request<T>(path: string, init: RequestInit = {}, retried = false): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     ...init,
     credentials: "include",
@@ -43,18 +66,34 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   if (res.status === 204) return undefined as T;
 
-  if (res.status === 401 && typeof window !== "undefined" && !isPublicPath(window.location.pathname)) {
+  if (
+    res.status === 401 &&
+    !path.startsWith(AUTH_PATH) &&
+    typeof window !== "undefined" &&
+    !isPublicPath(window.location.pathname)
+  ) {
+    if (!retried && (await refreshSession())) return request<T>(path, init, true);
     await signOut();
+  }
+
+  if (res.status === 429) {
+    const retryAfter = Number(res.headers.get("Retry-After"));
+    throw new ApiError(
+      429,
+      "Too many requests",
+      Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : DEFAULT_RETRY_AFTER_SECONDS
+    );
   }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }));
-    const retryAfter = Number(res.headers.get("Retry-After"));
+    const detail = body.detail ?? body.message;
     throw new ApiError(
       res.status,
-      body.detail ?? body.message ?? "Request failed",
-      Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : undefined,
-      typeof body.code === "string" ? body.code : undefined
+      detail ?? "Request failed",
+      undefined,
+      typeof body.code === "string" ? body.code : undefined,
+      typeof detail === "string" && detail !== "" ? detail : undefined
     );
   }
 

@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { Field, FormError, LoadingButton } from "@/components/shared";
+import { useRateLimit } from "@/features/auth/hooks/useRateLimit";
 import { LegalLinks } from "@/features/legal/components/LegalLinks";
 import { accountApi } from "@/lib/api/account";
 import { useErrorMessage } from "@/lib/i18n/errors";
@@ -28,6 +29,7 @@ function DeleteAccountForm({ onCancel }: { onCancel: () => void }) {
   const errorMessage = useErrorMessage();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const rateLimit = useRateLimit();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const remove = useMutation({ mutationFn: () => accountApi.remove(password) });
@@ -40,7 +42,10 @@ function DeleteAccountForm({ onCancel }: { onCancel: () => void }) {
       queryClient.clear();
       router.push("/login");
     } catch (err) {
+      if (rateLimit.handle(err)) return;
       setError(errorMessage(err, { overrides: { 400: t("wrongPassword"), 401: t("wrongPassword") } }));
+    } finally {
+      setPassword("");
     }
   }
 
@@ -59,12 +64,17 @@ function DeleteAccountForm({ onCancel }: { onCancel: () => void }) {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Field>
-      <FormError message={error} />
+      <FormError message={rateLimit.message ?? error} />
       <DialogFooter>
         <Button type="button" variant="outline" onClick={onCancel}>
           {tActions("cancel")}
         </Button>
-        <LoadingButton type="submit" variant="destructive" loading={remove.isPending} disabled={!password}>
+        <LoadingButton
+          type="submit"
+          variant="destructive"
+          loading={remove.isPending}
+          disabled={!password || rateLimit.limited}
+        >
           {t("deleteConfirm")}
         </LoadingButton>
       </DialogFooter>

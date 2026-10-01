@@ -8,10 +8,13 @@ export function proxy(request: NextRequest) {
 
   if (isPublicPath(pathname)) return NextResponse.next();
 
-  // HttpOnly session cookie set by the backend; presence only, the backend validates it.
-  const token = request.cookies.get("access_token")?.value;
+  // HttpOnly cookies set by the backend; presence only, the backend validates them. The access token lives
+  // 15 min, so session_active (a secret-free marker that lasts as long as the refresh token) keeps the user on
+  // the page while the API client refreshes the session on its first 401.
+  const hasSession =
+    request.cookies.get("access_token")?.value || request.cookies.get("session_active")?.value;
 
-  if (!token) {
+  if (!hasSession) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);

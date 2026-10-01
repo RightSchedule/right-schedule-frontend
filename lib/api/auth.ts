@@ -1,4 +1,4 @@
-import { apiClient } from "./client";
+import { apiClient, requestLogout } from "./client";
 import type { AuthResponse, RegisterResponse } from "@/types/api";
 
 export const authApi = {
@@ -13,5 +13,5 @@ export const authApi = {
       termsVersion,
     }),
 
-  logout: () => apiClient.post<void>("/api/v1/auth/logout", {}),
+  logout: requestLogout,
 };
