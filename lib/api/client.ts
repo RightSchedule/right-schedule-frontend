@@ -40,6 +40,8 @@ async function signOut() {
   if (signingOut) return;
   signingOut = true;
   await requestLogout();
+  // Hard navigation on purpose: drops every in-memory cache and query state of the expired session.
+  // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   window.location.assign("/login");
 }
 
