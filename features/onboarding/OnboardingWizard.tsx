@@ -33,6 +33,7 @@ import {
 import { ApiError } from "@/lib/api/client";
 import { isLocale } from "@/i18n/config";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { requiredName } from "@/lib/validation";
 import {
   SLUG_PATTERN,
   browserTimezone,
@@ -97,7 +98,7 @@ type Translator = ReturnType<typeof useTranslations<"onboarding">>;
 
 function makeBusinessSchema(t: Translator) {
   return z.object({
-    name: z.string().trim().min(2, t("validation.nameRequired")).max(255),
+    name: requiredName(t("validation.nameRequired"), 2),
     slug: z
       .string()
       .min(3, t("validation.slugMin"))
@@ -283,8 +284,16 @@ export function OnboardingWizard() {
   const services = useServices();
   const [chosenStep, setStep] = useState<Step | null>(null);
   const [createdServiceIds, setCreatedServiceIds] = useState<string[]>([]);
-  const step: Step | null =
-    chosenStep ?? (business.isLoading ? null : business.data ? "service" : "business");
+  const resumeStep: Step | null = business.isLoading
+    ? null
+    : !business.data
+      ? "business"
+      : services.isLoading
+        ? null
+        : (services.data?.length ?? 0) > 0
+          ? "team"
+          : "service";
+  const step: Step | null = chosenStep ?? resumeStep;
 
   if (step === null) {
     return <Skeleton className="h-96 rounded-3xl" />;

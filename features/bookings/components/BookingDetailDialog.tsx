@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { CircleCheck, Clock, Mail, NotebookText, Phone, TriangleAlert, User, UserRound } from "lucide-react";
@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DetailsRow, LoadingButton } from "@/components/shared";
+import { ConfirmDialog, DetailsRow, LoadingButton } from "@/components/shared";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { morphFromRect } from "@/lib/utils/motion";
@@ -81,6 +81,7 @@ export function BookingDetailDialog({
   const toast = useToast();
   const mutation = useUpdateBookingStatus();
   const actionable = booking?.status === "CONFIRMED";
+  const [confirming, setConfirming] = useState<"cancel" | "no-show" | null>(null);
 
   async function run(action: "cancel" | "complete" | "no-show", message: string) {
     if (!booking) return;
@@ -93,7 +94,14 @@ export function BookingDetailDialog({
     }
   }
 
+  async function confirmAction() {
+    if (!confirming) return;
+    await run(confirming, confirming === "cancel" ? t("toast.cancelled") : t("toast.noShow"));
+    setConfirming(null);
+  }
+
   return (
+    <>
     <Dialog open={!!booking} onOpenChange={onOpenChange}>
       <DialogContent ref={popupRef} className="max-w-md">
         {booking && (
@@ -175,18 +183,17 @@ export function BookingDetailDialog({
 
             {actionable ? (
               <div className="mt-6 flex flex-wrap justify-end gap-2">
-                <LoadingButton
+                <Button
                   variant="destructive"
-                  loading={mutation.isPending && mutation.variables?.action === "cancel"}
                   disabled={mutation.isPending}
-                  onClick={() => run("cancel", t("toast.cancelled"))}
+                  onClick={() => setConfirming("cancel")}
                 >
                   {t("cancelBooking")}
-                </LoadingButton>
+                </Button>
                 <Button
                   variant="outline"
                   disabled={mutation.isPending}
-                  onClick={() => run("no-show", t("toast.noShow"))}
+                  onClick={() => setConfirming("no-show")}
                 >
                   {tStatus("NO_SHOW")}
                 </Button>
@@ -203,5 +210,17 @@ export function BookingDetailDialog({
         )}
       </DialogContent>
     </Dialog>
+    <ConfirmDialog
+      open={confirming !== null}
+      onOpenChange={(open) => !open && !mutation.isPending && setConfirming(null)}
+      title={confirming === "no-show" ? t("confirm.noShowTitle") : t("confirm.cancelTitle")}
+      description={confirming === "no-show" ? t("confirm.noShowDescription") : t("confirm.cancelDescription")}
+      confirmLabel={confirming === "no-show" ? t("confirm.noShowConfirm") : t("cancelBooking")}
+      cancelLabel={t("confirm.keep")}
+      destructive={confirming === "cancel"}
+      loading={mutation.isPending}
+      onConfirm={confirmAction}
+    />
+    </>
   );
 }

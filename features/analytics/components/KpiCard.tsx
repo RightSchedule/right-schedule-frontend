@@ -26,7 +26,7 @@ function Delta({ ratio }: { ratio: number | null }) {
       className={cn(
         "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-semibold",
         ratio > 0 && "bg-success-muted text-success-foreground",
-        ratio < 0 && "bg-destructive/10 text-destructive",
+        ratio < 0 && "bg-destructive/10 text-[oklch(0.45_0.2_27)]",
         ratio === 0 && "bg-muted text-muted-foreground"
       )}
     >

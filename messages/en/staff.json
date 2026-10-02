@@ -77,6 +77,11 @@
     "allDay": "All day",
     "removeAria": "Remove time off",
     "removed": "Time off removed",
+    "confirmRemove": {
+      "title": "Remove this time off?",
+      "description": "These hours become bookable again on your public page straight away.",
+      "confirm": "Remove"
+    },
     "added": "Time off added",
     "types": {
       "VACATION": "Vacation",

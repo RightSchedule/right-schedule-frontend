@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  ConfirmDialog,
   EmptyState,
   ErrorState,
   Field,
@@ -331,6 +332,7 @@ export function TimeOffPanel({ staffId }: { staffId: string }) {
   const exceptions = useExceptions(staffId);
   const remove = useDeleteException();
   const [open, setOpen] = useState(false);
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   async function onDelete(exceptionId: string) {
     try {
@@ -338,6 +340,8 @@ export function TimeOffPanel({ staffId }: { staffId: string }) {
       toast.success(t("removed"));
     } catch (e) {
       toast.error(errorMessage(e));
+    } finally {
+      setRemovingId(null);
     }
   }
 
@@ -382,7 +386,7 @@ export function TimeOffPanel({ staffId }: { staffId: string }) {
                 size="icon-sm"
                 aria-label={t("removeAria")}
                 disabled={remove.isPending}
-                onClick={() => onDelete(ex.id)}
+                onClick={() => setRemovingId(ex.id)}
               >
                 <Trash2 />
               </Button>
@@ -392,6 +396,17 @@ export function TimeOffPanel({ staffId }: { staffId: string }) {
       )}
 
       <AddTimeOffDialog staffId={staffId} open={open} onOpenChange={setOpen} />
+
+      <ConfirmDialog
+        open={removingId !== null}
+        onOpenChange={(o) => !o && !remove.isPending && setRemovingId(null)}
+        title={t("confirmRemove.title")}
+        description={t("confirmRemove.description")}
+        confirmLabel={t("confirmRemove.confirm")}
+        destructive
+        loading={remove.isPending}
+        onConfirm={() => removingId && onDelete(removingId)}
+      />
     </div>
   );
 }

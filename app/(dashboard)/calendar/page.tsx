@@ -46,8 +46,12 @@ export default function CalendarPage() {
   const dayIso = format(cursor, DAY_FORMAT);
   const range = view === "day" ? { from: dayIso, to: dayIso } : weekRange(cursor);
   const bookings = useBookingsRange(range.from, range.to, { enabled: !businessQuery.isLoading });
-  const { error } = bookings;
-  const loading = businessQuery.isLoading || bookings.isLoading;
+  const error = bookings.error ?? staff.error;
+  const loading = businessQuery.isLoading || bookings.isLoading || staff.isLoading;
+  const retry = () => {
+    if (bookings.error) bookings.refetch();
+    if (staff.error) staff.refetch();
+  };
 
   const bookingsByDay = useMemo(
     () =>
@@ -152,7 +156,7 @@ export default function CalendarPage() {
             <ErrorState
               error={error}
               feature={t("feature")}
-              onRetry={() => bookings.refetch()}
+              onRetry={retry}
             />
           ) : view === "day" ? (
             <DayView

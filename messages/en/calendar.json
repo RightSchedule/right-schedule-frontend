@@ -36,6 +36,14 @@
     "needsReviewTitle": "This booking has ended",
     "needsReviewDescription": "Mark how it went. Cancelling still emails the customer.",
     "cancelBooking": "Cancel booking",
+    "confirm": {
+      "cancelTitle": "Cancel this booking?",
+      "cancelDescription": "The time slot opens up again and the customer is emailed if they left an address. This can't be undone.",
+      "noShowTitle": "Mark as no-show?",
+      "noShowDescription": "The customer didn't turn up. This counts towards your no-show numbers and can't be undone.",
+      "noShowConfirm": "Mark no-show",
+      "keep": "Go back"
+    },
     "complete": "Complete",
     "toast": {
       "cancelled": "Booking cancelled",

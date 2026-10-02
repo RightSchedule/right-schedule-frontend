@@ -198,6 +198,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  cancelLabel,
   destructive,
   loading,
   onConfirm,
@@ -207,6 +208,7 @@ export function ConfirmDialog({
   title: string;
   description: string;
   confirmLabel?: string;
+  cancelLabel?: string;
   destructive?: boolean;
   loading?: boolean;
   onConfirm: () => void;
@@ -221,7 +223,7 @@ export function ConfirmDialog({
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t("cancel")}
+            {cancelLabel ?? t("cancel")}
           </Button>
           <LoadingButton
             variant={destructive ? "destructive" : "default"}

@@ -112,8 +112,7 @@ export const apiClient = {
 };
 
 export function isUnavailable(error: unknown): boolean {
-  if (error instanceof ApiError) return [404, 405, 501].includes(error.status);
-  return error instanceof TypeError;
+  return error instanceof ApiError && [404, 405, 501].includes(error.status);
 }
 
 export function isStatus(error: unknown, ...codes: number[]): boolean {

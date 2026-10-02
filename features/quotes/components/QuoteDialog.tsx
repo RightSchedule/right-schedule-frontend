@@ -22,6 +22,7 @@ import { DetailsRow, Field, FormError, LoadingButton } from "@/components/shared
 import { useDeclineQuote, useDeleteQuote, useSendQuote } from "@/features/quotes/hooks/useQuotes";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
+import { LIMITS } from "@/lib/validation";
 import type { QuoteRequest, QuoteStatus } from "@/types/domain";
 
 export function quoteStatusVariant(status: QuoteStatus) {
@@ -55,7 +56,7 @@ function makeQuoteSchema(t: ErrorsTranslator) {
       .trim()
       .min(1, t("amountRequired"))
       .regex(AMOUNT_PATTERN, t("amountInvalid")),
-    message: z.string().max(2000, t("messageTooLong")),
+    message: z.string().max(LIMITS.quoteMessage, t("messageTooLong")),
   });
 }
 
@@ -162,7 +163,7 @@ function DeclineForm({ request, onBack, onDone }: { request: QuoteRequest; onBac
         <Textarea
           id="decline-message"
           rows={3}
-          maxLength={2000}
+          maxLength={LIMITS.quoteMessage}
           placeholder={t("messagePlaceholder")}
           value={message}
           onChange={(e) => setMessage(e.target.value)}

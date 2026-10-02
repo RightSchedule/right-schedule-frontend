@@ -21,18 +21,18 @@ import { usePublicBusiness } from "@/features/bookings/hooks/usePublicBusiness";
 import { PrivacyNoticeLink } from "@/features/legal/components/PrivacyNoticeLink";
 import { useCreatePublicQuote } from "@/features/quotes/hooks/useQuotes";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { LIMITS, optionalPhone, requiredEmail, requiredName } from "@/lib/validation";
 
-const PHONE_PATTERN = /^[+\d][\d\s()-]{5,}$/;
-const MAX_DESCRIPTION = 2000;
+const MAX_DESCRIPTION = LIMITS.quoteMessage;
 
 type ErrorsTranslator = ReturnType<typeof useTranslations<"quotes.public.errors">>;
 
 function makeSchema(t: ErrorsTranslator) {
   return z.object({
     serviceId: z.string(),
-    name: z.string().trim().min(2, t("nameRequired")).max(255),
-    email: z.email(t("emailInvalid")).max(255),
-    phone: z.union([z.literal(""), z.string().trim().regex(PHONE_PATTERN, t("phoneInvalid")).max(50)]),
+    name: requiredName(t("nameRequired"), 2),
+    email: requiredEmail(t("emailInvalid")),
+    phone: optionalPhone(t("phoneInvalid")),
     description: z
       .string()
       .trim()

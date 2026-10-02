@@ -18,22 +18,21 @@ import { LegalLinks } from "@/features/legal/components/LegalLinks";
 import { Field, FormError } from "@/components/shared";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { LIMITS, newPassword, requiredEmail } from "@/lib/validation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const MAX_NEW_PASSWORD_LENGTH = 128;
-
-type Translator =ReturnType<typeof useTranslations<"auth">>;
+type Translator = ReturnType<typeof useTranslations<"auth">>;
 
 function makeLoginSchema(t: Translator) {
   return z.object({
-    email: z.string().email(t("validation.invalidEmail")),
+    email: requiredEmail(t("validation.invalidEmail")),
     password: z.string().min(1, t("validation.passwordRequired")),
   });
 }
 
 function makeRegisterSchema(t: Translator, termsRequired: string) {
   return makeLoginSchema(t).extend({
-    password: z.string().min(8, t("validation.passwordMin")).max(MAX_NEW_PASSWORD_LENGTH, t("validation.passwordMax")),
+    password: newPassword({ min: t("validation.passwordMin"), max: t("validation.passwordMax") }),
     acceptedTerms: z.boolean().refine((v) => v, termsRequired),
   });
 }
@@ -219,7 +218,7 @@ function RegisterForm() {
           id="reg-password"
           placeholder={t("fields.newPasswordPlaceholder")}
           autoComplete="new-password"
-          maxLength={MAX_NEW_PASSWORD_LENGTH}
+          maxLength={LIMITS.passwordMax}
           registration={register("password")}
         />
       </Field>

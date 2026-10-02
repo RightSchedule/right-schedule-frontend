@@ -77,6 +77,11 @@
     "allDay": "Dia inteiro",
     "removeAria": "Remover ausência",
     "removed": "Ausência removida",
+    "confirmRemove": {
+      "title": "Remover esta ausência?",
+      "description": "Estas horas voltam a ficar disponíveis para marcação na sua página pública de imediato.",
+      "confirm": "Remover"
+    },
     "added": "Ausência adicionada",
     "types": {
       "VACATION": "Férias",

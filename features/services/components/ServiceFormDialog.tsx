@@ -7,17 +7,11 @@ import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Field, FormError, LoadingButton } from "@/components/shared";
+import { Field, FormError } from "@/components/shared";
+import { FormActions, FormDialog } from "@/components/shared/FormDialog";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { LIMITS, optionalText, requiredName } from "@/lib/validation";
 import { useCreateService, useUpdateService } from "@/features/services/hooks/useServices";
 import type { Service } from "@/types/domain";
 
@@ -25,8 +19,8 @@ type ServiceErrorTranslator = ReturnType<typeof useTranslations<"services.form.e
 
 export function createServiceSchema(t: ServiceErrorTranslator) {
   return z.object({
-    name: z.string().trim().min(1, t("nameRequired")).max(255),
-    description: z.string().max(1000).optional(),
+    name: requiredName(t("nameRequired")),
+    description: optionalText(LIMITS.description),
     durationMinutes: z
       .number({ error: t("durationRequired") })
       .int(t("durationInteger"))
@@ -54,7 +48,6 @@ export function ServiceForm({
 }) {
   const t = useTranslations("services.form");
   const tErrors = useTranslations("services.form.errors");
-  const tc = useTranslations("common.actions");
   const errorMessage = useErrorMessage();
   const [error, setError] = useState<string | null>(null);
   const schema = useMemo(() => createServiceSchema(tErrors), [tErrors]);
@@ -128,16 +121,7 @@ export function ServiceForm({
         </Field>
       </div>
       <FormError message={error} />
-      <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel}>
-            {tc("cancel")}
-          </Button>
-        )}
-        <LoadingButton type="submit" loading={isSubmitting}>
-          {submitLabel}
-        </LoadingButton>
-      </div>
+      <FormActions submitLabel={submitLabel} loading={isSubmitting} onCancel={onCancel} />
     </form>
   );
 }
@@ -169,22 +153,19 @@ export function ServiceFormDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{service ? t("editTitle") : t("newTitle")}</DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
-        </DialogHeader>
-        {open && (
-          <ServiceForm
-            key={service?.id ?? "new"}
-            service={service}
-            submitLabel={service ? tc("saveChanges") : t("submitNew")}
-            onSubmit={onSubmit}
-            onCancel={() => onOpenChange(false)}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={service ? t("editTitle") : t("newTitle")}
+      description={t("description")}
+    >
+      <ServiceForm
+        key={service?.id ?? "new"}
+        service={service}
+        submitLabel={service ? tc("saveChanges") : t("submitNew")}
+        onSubmit={onSubmit}
+        onCancel={() => onOpenChange(false)}
+      />
+    </FormDialog>
   );
 }

@@ -23,15 +23,16 @@ import { useBusiness, useUpdateBusiness } from "@/features/business/hooks/useBus
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { timezones } from "@/lib/utils/booking-link";
+import { LIMITS, optionalEmail, optionalText, requiredName } from "@/lib/validation";
 
 type Translator = ReturnType<typeof useTranslations<"settings">>;
 
 function makeSchema(t: Translator) {
   return z.object({
-    name: z.string().trim().min(1, t("validation.nameRequired")).max(255),
-    email: z.union([z.literal(""), z.email(t("validation.emailInvalid"))]),
-    phone: z.string().max(50).optional(),
-    address: z.string().max(255).optional(),
+    name: requiredName(t("validation.nameRequired")),
+    email: optionalEmail(t("validation.emailInvalid")),
+    phone: optionalText(LIMITS.phone),
+    address: optionalText(LIMITS.address),
     timezone: z.string().min(1),
     locale: z.enum(locales),
   });

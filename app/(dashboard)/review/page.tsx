@@ -127,6 +127,7 @@ export default function ReviewPage() {
   const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
   const [detail, setDetail] = useState<Booking | null>(null);
   const [confirmingBulk, setConfirmingBulk] = useState(false);
+  const [noShowTarget, setNoShowTarget] = useState<Booking | null>(null);
 
   const { bookings = [], totalPages, isLoading, isPlaceholderData, error, refetch } =
     useReviewBookings(page);
@@ -221,7 +222,7 @@ export default function ReviewPage() {
                 disabled={busy}
                 onToggle={(c) => toggle(b.id, c)}
                 onOpen={() => setDetail(b)}
-                onResolve={(action) => resolve(b, action)}
+                onResolve={(action) => (action === "no-show" ? setNoShowTarget(b) : resolve(b, action))}
               />
             ))}
           </ListContainer>
@@ -263,6 +264,20 @@ export default function ReviewPage() {
         confirmLabel={t("bulk.confirm")}
         loading={bulk.isPending}
         onConfirm={completeSelected}
+      />
+
+      <ConfirmDialog
+        open={noShowTarget !== null}
+        onOpenChange={(open) => !open && !single.isPending && setNoShowTarget(null)}
+        title={t("noShowConfirm.title", { name: noShowTarget?.customer?.name || t("page.unknownCustomer") })}
+        description={t("noShowConfirm.description")}
+        confirmLabel={t("noShowConfirm.confirm")}
+        loading={single.isPending}
+        onConfirm={async () => {
+          if (!noShowTarget) return;
+          await resolve(noShowTarget, "no-show");
+          setNoShowTarget(null);
+        }}
       />
     </PageContainer>
   );

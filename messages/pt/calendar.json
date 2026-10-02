@@ -36,6 +36,14 @@
     "needsReviewTitle": "Esta marcação já terminou",
     "needsReviewDescription": "Registe como correu. Cancelar continua a enviar email ao cliente.",
     "cancelBooking": "Cancelar marcação",
+    "confirm": {
+      "cancelTitle": "Cancelar esta marcação?",
+      "cancelDescription": "O horário volta a ficar livre e o cliente recebe um email, se tiver deixado endereço. Não pode ser anulado.",
+      "noShowTitle": "Registar como não compareceu?",
+      "noShowDescription": "O cliente não apareceu. Conta para as suas faltas e não pode ser anulado.",
+      "noShowConfirm": "Não compareceu",
+      "keep": "Voltar"
+    },
     "complete": "Concluir",
     "toast": {
       "cancelled": "Marcação cancelada",

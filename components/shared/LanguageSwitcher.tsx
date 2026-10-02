@@ -17,7 +17,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   return (
     <label
       className={cn(
-        "relative inline-flex h-9 items-center gap-1.5 rounded-full border border-input bg-card px-3 text-sm focus-within:ring-3 focus-within:ring-ring/50",
+        "relative inline-flex h-9 items-center gap-1.5 rounded-full border border-input bg-card px-3 text-sm has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
         pending && "opacity-60",
         className
       )}
