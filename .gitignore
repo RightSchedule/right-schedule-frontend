@@ -48,3 +48,5 @@ next-env.d.ts
 /tests/e2e/reports/
 /tests/e2e/.tokens.json
 __pycache__/
+
+.claude/
