@@ -82,7 +82,7 @@ export default function QuotesPage() {
                 trailing={<QuoteStatusBadge status={r.status} className="shrink-0" />}
               >
                 <div className="flex items-center gap-2">
-                  <p className="truncate text-[0.95rem] font-semibold">{r.customerName}</p>
+                  <p className="truncate text-base font-medium">{r.customerName}</p>
                   <span className="shrink-0 text-xs text-muted-foreground">
                     {f.date(r.createdAt, "d MMM")}
                   </span>

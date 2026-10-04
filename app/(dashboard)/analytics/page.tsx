@@ -5,7 +5,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChartColumn, Info } from "lucide-react";
 import { cn } from "cn";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState, ErrorState, PageContainer, PageHeader } from "@/components/shared";
 import { DateRangePicker } from "@/features/analytics/components/DateRangePicker";
@@ -25,14 +24,14 @@ function LoadingSkeleton() {
     <div className="flex flex-col gap-4" aria-busy>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-28 rounded-3xl" />
+          <Skeleton key={i} className="h-28 rounded-lg" />
         ))}
       </div>
-      <Skeleton className="h-80 rounded-3xl" />
-      <Skeleton className="h-40 rounded-3xl" />
+      <Skeleton className="h-80 rounded-lg" />
+      <Skeleton className="h-40 rounded-lg" />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Skeleton className="h-64 rounded-3xl" />
-        <Skeleton className="h-64 rounded-3xl" />
+        <Skeleton className="h-64 rounded-lg" />
+        <Skeleton className="h-64 rounded-lg" />
       </div>
     </div>
   );
@@ -77,14 +76,14 @@ function DashboardContent({ data }: { data: DashboardResponse }) {
       {onlyUnresolved && (
         <div
           role="note"
-          className="flex items-start gap-3 rounded-3xl border border-border bg-info-muted p-4 text-sm text-info-foreground"
+          className="flex items-start gap-3 rounded-lg border border-border bg-info-muted p-4 text-sm text-info-foreground"
         >
           <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
           <span>{t("page.completedHint")}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 divide-y divide-border rounded-lg border border-border bg-card sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
         <KpiCard
           label={t("kpi.revenue")}
           value={f.price(summary.revenue)}
@@ -111,25 +110,17 @@ function DashboardContent({ data }: { data: DashboardResponse }) {
         />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("chart.title")}</CardTitle>
-        </CardHeader>
-        <div className="px-3 pb-5 sm:px-5">
-          <RevenueChart series={data.revenueSeries} granularity={data.granularity} />
-        </div>
-      </Card>
+      <section className="mt-4 border-t border-border pt-6">
+        <h2 className="mb-4 text-xl font-semibold">{t("chart.title")}</h2>
+        <RevenueChart series={data.revenueSeries} granularity={data.granularity} />
+      </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("funnel.title")}</CardTitle>
-        </CardHeader>
-        <div className="px-5 pb-6 sm:px-6">
-          <FunnelBar funnel={data.funnel} total={summary.bookings} />
-        </div>
-      </Card>
+      <section className="mt-4 border-t border-border pt-6">
+        <h2 className="mb-4 text-xl font-semibold">{t("funnel.title")}</h2>
+        <FunnelBar funnel={data.funnel} total={summary.bookings} />
+      </section>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="mt-4 grid grid-cols-1 gap-x-10 gap-y-8 border-t border-border pt-6 md:grid-cols-2">
         <TopList title={t("top.servicesTitle")} items={serviceItems} emptyLabel={t("top.empty")} />
         <TopList title={t("top.staffTitle")} items={staffItems} emptyLabel={t("top.empty")} />
       </div>
@@ -173,7 +164,7 @@ function AnalyticsContent() {
         {ready ? (
           <DateRangePicker range={range} today={today} onChange={setRange} />
         ) : (
-          <Skeleton className="h-9 w-72 rounded-2xl" />
+          <Skeleton className="h-9 w-72 rounded-md" />
         )}
       </div>
 

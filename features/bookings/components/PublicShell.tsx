@@ -6,19 +6,21 @@ import { MapPin, Phone, SearchX } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { initials } from "@/components/shared";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { isStatus } from "@/lib/api/client";
+import { useErrorMessage } from "@/lib/i18n/errors";
 import type { PublicBusiness } from "@/types/domain";
 
 export function BusinessBadge({ business }: { business: PublicBusiness }) {
   return (
     <Link href={`/b/${business.slug}`} className="flex items-center gap-3">
-      <Avatar className="size-11 rounded-2xl">
+      <Avatar className="size-11 rounded-md">
         {business.logoUrl && <AvatarImage src={business.logoUrl} alt="" />}
-        <AvatarFallback className="rounded-2xl bg-primary font-bold text-primary-foreground">
+        <AvatarFallback className="rounded-md bg-primary font-semibold text-primary-foreground">
           {initials(business.name)}
         </AvatarFallback>
       </Avatar>
-      <span className="font-bold">{business.name}</span>
+      <span className="font-semibold">{business.name}</span>
     </Link>
   );
 }
@@ -45,20 +47,43 @@ export function PublicLoading() {
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-8">
       <Skeleton className="mb-6 h-10 w-48" />
-      <Skeleton className="mb-3 h-24 rounded-3xl" />
-      <Skeleton className="mb-3 h-24 rounded-3xl" />
-      <Skeleton className="h-24 rounded-3xl" />
+      <Skeleton className="mb-3 h-24 rounded-lg" />
+      <Skeleton className="mb-3 h-24 rounded-lg" />
+      <Skeleton className="h-24 rounded-lg" />
     </div>
   );
 }
 
-export function PublicNotFound() {
+export function PublicNotFound({
+  error,
+  onRetry,
+}: {
+  error?: unknown;
+  onRetry?: () => void;
+}) {
   const t = useTranslations("public.shell.notFound");
+  const tShell = useTranslations("public.shell.loadError");
+  const tActions = useTranslations("common.actions");
+  const errorMessage = useErrorMessage();
+
+  if (error && !isStatus(error, 404)) {
+    return (
+      <div role="alert" className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-24 text-center">
+        <SearchX className="mb-4 size-6 text-muted-foreground" />
+        <h1 className="text-xl font-semibold">{tShell("title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{errorMessage(error)}</p>
+        {onRetry && (
+          <Button variant="outline" className="mt-6" onClick={onRetry}>
+            {tActions("tryAgain")}
+          </Button>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-24 text-center">
-      <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-        <SearchX className="size-5" />
-      </div>
+      <SearchX className="mb-4 size-6 text-muted-foreground" />
       <h1 className="text-xl font-semibold">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       <Link href="/login" className={buttonVariants({ variant: "outline", className: "mt-6" })}>

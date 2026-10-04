@@ -6,7 +6,7 @@ import { ChevronRight, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import { initials } from "@/components/shared";
-import { stagger } from "@/components/ui/aurora";
+import { stagger } from "@/lib/utils/motion";
 import {
   BusinessContact,
   PublicLoading,
@@ -19,29 +19,29 @@ export function BusinessLanding({ slug }: { slug: string }) {
   const t = useTranslations("public");
   const tQuotes = useTranslations("quotes");
   const { price } = useLocaleFormat();
-  const { data: business, isLoading, error } = usePublicBusiness(slug);
+  const { data: business, isLoading, error, refetch } = usePublicBusiness(slug);
 
   if (isLoading) return <PublicLoading />;
-  if (error || !business) return <PublicNotFound />;
+  if (error || !business) return <PublicNotFound error={error} onRetry={() => refetch()} />;
 
   const services = business.services;
 
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-8 sm:py-12">
-      <header className="mb-8 flex flex-col items-center rounded-3xl border border-border bg-card p-6 text-center shadow-card">
+      <header className="mb-10 flex flex-col items-start border-b border-border pb-8">
         <div className="reveal mb-4" style={stagger(0)}>
-          <Avatar className="size-20 rounded-3xl shadow-cta">
+          <Avatar className="size-16 rounded-md">
             {business.logoUrl && <AvatarImage src={business.logoUrl} alt="" />}
-            <AvatarFallback className="rounded-3xl bg-primary text-2xl font-bold text-primary-foreground">
+            <AvatarFallback className="rounded-md bg-primary text-xl font-semibold text-primary-foreground">
               {initials(business.name)}
             </AvatarFallback>
           </Avatar>
         </div>
-        <h1 className="reveal text-3xl font-bold tracking-tight" style={stagger(1)}>{business.name}</h1>
+        <h1 className="reveal text-3xl font-semibold" style={stagger(1)}>{business.name}</h1>
         <div className="reveal mt-3" style={stagger(2)}>
           <BusinessContact business={business} />
         </div>
-        <div className="mt-6 flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
+        <div className="mt-6 flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           {services.length > 0 && (
             <Link
               href={`/b/${slug}/booking`}
@@ -68,24 +68,24 @@ export function BusinessLanding({ slug }: { slug: string }) {
       <section aria-labelledby="services-heading">
         <h2
           id="services-heading"
-          className="mb-3 px-1 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+          className="mb-1 font-sans text-sm font-semibold text-muted-foreground"
         >
           {t("landing.services")}
         </h2>
         {services.length === 0 ? (
-          <p className="rounded-3xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
             {t("landing.closed")}
           </p>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col">
             {services.map((s, i) => (
-              <li key={s.id} className="reveal" style={stagger(i + 4)}>
+              <li key={s.id} className="reveal border-t border-border first:border-t-0" style={stagger(i + 4)}>
                 <Link
                   href={`/b/${slug}/booking?service=${s.id}`}
-                  className="lift flex items-center gap-3 rounded-3xl border border-border bg-card p-4 shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-3 py-4 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold">{s.name}</p>
+                    <p className="font-semibold">{s.name}</p>
                     {s.description && (
                       <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
                         {s.description}
@@ -95,7 +95,7 @@ export function BusinessLanding({ slug }: { slug: string }) {
                       <Clock className="size-3" /> {t("service.duration", { count: s.durationMinutes })}
                     </p>
                   </div>
-                  <span className="shrink-0 font-bold text-primary">{price(s.price)}</span>
+                  <span className="shrink-0 font-semibold text-primary">{price(s.price)}</span>
                   <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                 </Link>
               </li>

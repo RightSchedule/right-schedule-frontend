@@ -34,6 +34,24 @@
     "CONFLICT": "Isto entra em conflito com dados existentes.",
     "VALIDATION_FAILED": "Alguma informação não é válida. Verifique e tente novamente.",
     "MALFORMED_REQUEST": "Falta informação obrigatória ou é inválida.",
-    "INTERNAL_ERROR": "Algo correu mal do nosso lado. Tente novamente."
+    "INTERNAL_ERROR": "Algo correu mal do nosso lado. Tente novamente.",
+    "BOOKING_NOT_STARTED": "Esta marcação ainda não começou, por isso não pode ser concluída nem marcada como falta.",
+    "BUSINESS_ALREADY_EXISTS": "Já tem um negócio configurado.",
+    "EXCEPTION_DATE_IN_PAST": "Não é possível adicionar uma ausência numa data passada.",
+    "INVALID_BOOKING_RANGE": "O intervalo de datas não é válido. O fim tem de ser depois do início.",
+    "INVALID_PASSWORD": "Palavra-passe incorreta.",
+    "SERVICE_HAS_BOOKINGS": "Este serviço tem marcações, por isso não pode ser eliminado. Oculte-o em vez disso.",
+    "SERVICE_ASSIGNED_TO_STAFF": "Este serviço está atribuído a membros da equipa. Remova-o primeiro.",
+    "WORKING_HOURS_OVERLAP": "Os horários sobrepõem-se no mesmo dia. Ajuste as horas.",
+    "CONCURRENT_MODIFICATION": "Isto foi alterado por outra pessoa. Recarregue e tente novamente.",
+    "PAYLOAD_TOO_LARGE": "O ficheiro é demasiado grande.",
+    "TOO_MANY_REQUESTS": "Demasiadas tentativas. Aguarde um momento e tente novamente."
+  },
+  "page": {
+    "notFoundTitle": "Página não encontrada",
+    "notFoundDescription": "Esta página não existe ou foi movida.",
+    "errorTitle": "Algo correu mal",
+    "errorDescription": "Ocorreu um erro inesperado. Pode tentar novamente ou voltar ao início.",
+    "home": "Ir para o início"
   }
 }

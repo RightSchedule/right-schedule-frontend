@@ -11,7 +11,10 @@
     "copiedToast": "Booking link copied",
     "copyFailed": "Couldn't copy. Select the link and copy it manually.",
     "label": "Booking link",
-    "copyLink": "Copy link"
+    "copyLink": "Copy link",
+    "quoteTitle": "Your quote request link",
+    "quoteLabel": "Quote request link",
+    "quoteCopiedToast": "Quote request link copied"
   },
   "profile": {
     "title": "Business profile",

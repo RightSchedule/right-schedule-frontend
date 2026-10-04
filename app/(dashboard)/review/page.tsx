@@ -68,18 +68,18 @@ function ReviewRow({
           type="button"
           onClick={onOpen}
           aria-label={`${t("page.details")}: ${name}`}
-          className="flex min-w-0 flex-1 items-center gap-3.5 rounded-2xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex min-w-0 flex-1 items-center gap-3.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="flex h-12 w-16 shrink-0 flex-col items-center justify-center rounded-2xl bg-warning-muted text-warning-foreground">
-            <span className="text-xs font-bold uppercase leading-none">
+          <span className="flex h-12 w-16 shrink-0 flex-col items-center justify-center rounded-md bg-warning-muted text-warning-foreground">
+            <span className="text-xs font-semibold leading-none">
               {f.date(booking.date, "d MMM")}
             </span>
-            <span className="mt-1 font-mono text-sm font-bold leading-none">
+            <span className="mt-1 font-mono text-sm font-semibold leading-none">
               {booking.startTime.slice(0, 5)}
             </span>
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-[0.95rem] font-semibold">{name}</span>
+            <span className="block truncate text-base font-medium">{name}</span>
             <span className="block truncate text-sm text-muted-foreground">
               {booking.service?.name ?? t("page.serviceFallback")}
               {booking.staff ? ` · ${booking.staff.name}` : ""}
@@ -228,7 +228,7 @@ export default function ReviewPage() {
           </ListContainer>
 
           {selected.length > 0 && (
-            <div className="sticky bottom-20 z-20 flex items-center justify-between gap-3 rounded-3xl border border-border bg-card p-3 pl-5 shadow-lg md:bottom-4">
+            <div className="sticky bottom-20 z-20 flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 pl-5 md:bottom-4">
               <span className="text-sm font-semibold">{t("select.count", { count: selected.length })}</span>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" disabled={busy} onClick={() => setSelectedIds(new Set())}>

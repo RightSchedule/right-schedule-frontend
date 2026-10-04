@@ -55,18 +55,18 @@ export default function StaffDetailPage({
       </Link>
 
       {isLoading ? (
-        <Skeleton className="h-64 rounded-3xl" />
+        <Skeleton className="h-64 rounded-lg" />
       ) : error || !staff ? (
         <ErrorState error={error ?? new Error(t("notFound"))} onRetry={() => refetch()} />
       ) : (
         <>
-          <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-3xl border border-border bg-card p-4 shadow-card sm:p-5">
+          <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border border-border bg-card p-4 sm:p-5">
             <Avatar className="size-16">
               {staff.photoUrl && <AvatarImage src={staff.photoUrl} alt="" />}
-              <AvatarFallback className="text-lg font-bold">{initials(staff.name)}</AvatarFallback>
+              <AvatarFallback className="text-lg font-semibold">{initials(staff.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-2xl font-bold tracking-tight">{staff.name}</h1>
+              <h1 className="truncate text-2xl font-semibold">{staff.name}</h1>
               <div className="mt-1.5">
                 <Badge variant={staff.active ? "success" : "secondary"}>
                   {staff.active ? t("active") : t("inactive")}
@@ -93,7 +93,7 @@ export default function StaffDetailPage({
               <TabsTrigger value="time-off">{t("tabs.timeOff")}</TabsTrigger>
             </TabsList>
             <TabsContent value="profile">
-              <div className="rounded-3xl border border-border bg-card p-5 shadow-card sm:p-6">
+              <div className="rounded-lg border border-border bg-card p-5 sm:p-6">
                 <StaffProfileForm staff={staff} />
               </div>
             </TabsContent>

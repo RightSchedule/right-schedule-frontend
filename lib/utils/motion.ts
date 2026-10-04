@@ -1,4 +1,4 @@
-import { addTransitionType, startTransition } from "react";
+import { addTransitionType, startTransition, type CSSProperties } from "react";
 
 export const EASE_OUT_EXPO = "cubic-bezier(0.16, 1, 0.3, 1)";
 
@@ -54,3 +54,5 @@ export function morphFromRect(el: HTMLElement, from: DOMRect, source?: HTMLEleme
     });
   });
 }
+
+export const stagger = (i: number) => ({ "--i": i }) as CSSProperties;

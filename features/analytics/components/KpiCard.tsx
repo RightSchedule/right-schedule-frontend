@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import { cn } from "cn";
-import { Card } from "@/components/ui/card";
 import { useLocaleFormat } from "@/lib/i18n/format";
 
 function Delta({ ratio }: { ratio: number | null }) {
@@ -24,10 +23,10 @@ function Delta({ ratio }: { ratio: number | null }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-semibold",
-        ratio > 0 && "bg-success-muted text-success-foreground",
-        ratio < 0 && "bg-destructive/10 text-[oklch(0.45_0.2_27)]",
-        ratio === 0 && "bg-muted text-muted-foreground"
+        "inline-flex items-center gap-0.5 text-sm font-semibold tabular-nums",
+        ratio > 0 && "text-success-foreground",
+        ratio < 0 && "text-[oklch(0.45_0.2_27)]",
+        ratio === 0 && "text-muted-foreground"
       )}
     >
       <Icon className="size-3.5" aria-hidden />
@@ -52,13 +51,13 @@ export function KpiCard({
   secondary?: string;
 }) {
   return (
-    <Card className="flex flex-col gap-2 p-5">
-      <span className="text-sm font-medium text-muted-foreground">{label}</span>
+    <div className="flex flex-col gap-1.5 px-5 py-4">
+      <span className="text-sm text-muted-foreground">{label}</span>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <span className="text-2xl font-bold tracking-tight">{value}</span>
+        <span className="text-2xl font-semibold tabular-nums">{value}</span>
         {showDelta && <Delta ratio={delta ?? null} />}
       </div>
       {secondary && <span className="text-xs text-muted-foreground">{secondary}</span>}
-    </Card>
+    </div>
   );
 }

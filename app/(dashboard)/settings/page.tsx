@@ -91,23 +91,23 @@ export default function SettingsPage() {
   }
 
   return (
-    <PageContainer className="max-w-2xl">
+    <PageContainer>
       <PageHeader title={t("header.title")} description={t("header.description")} />
 
       {isLoading ? (
-        <Skeleton className="h-96 rounded-3xl" />
+        <Skeleton className="h-96 max-w-2xl rounded-lg" />
       ) : error || !business ? (
         <ErrorState error={error ?? new Error(t("notFound"))} onRetry={() => refetch()} />
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="flex max-w-2xl flex-col gap-8">
           <BookingLinkCard slug={business.slug} />
 
           <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-5 shadow-card sm:p-6"
+            className="flex flex-col gap-4 border-t border-border pt-6"
           >
-            <h2 className="border-b border-border pb-4 text-base font-bold">{t("profile.title")}</h2>
+            <h2 className="text-xl font-semibold">{t("profile.title")}</h2>
             <Field label={t("profile.name")} htmlFor="biz-name" error={errors.name?.message}>
               <Input id="biz-name" aria-invalid={!!errors.name} {...register("name")} />
             </Field>

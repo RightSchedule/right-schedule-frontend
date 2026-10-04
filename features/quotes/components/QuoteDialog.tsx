@@ -275,14 +275,14 @@ function QuoteDetail({
       </div>
 
       {answered && (
-        <div className="rounded-2xl bg-muted/60 p-4">
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-md bg-muted/60 p-4">
+          <p className="text-xs font-semibold text-muted-foreground">
             {t("detail.yourAnswer")}
           </p>
           {request.quotedAmount !== null && (
             <p className="mt-2 text-sm">
               <span className="text-muted-foreground">{t("detail.quotedAmount")}: </span>
-              <span className="font-mono text-base font-bold">{f.price(request.quotedAmount)}</span>
+              <span className="font-mono text-base font-semibold">{f.price(request.quotedAmount)}</span>
             </p>
           )}
           <p className="mt-2 whitespace-pre-wrap break-words text-sm">

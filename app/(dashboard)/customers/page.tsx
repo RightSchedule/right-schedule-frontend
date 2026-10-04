@@ -77,7 +77,7 @@ export default function CustomersPage() {
             <ListContainer>
               {customers.map((c) => (
                 <EntityListRow key={c.id} name={c.name} href={`/customers/${c.id}`}>
-                  <p className="truncate text-[0.95rem] font-semibold">{c.name}</p>
+                  <p className="truncate text-base font-medium">{c.name}</p>
                   <p className="truncate text-xs text-muted-foreground">
                     {[c.email, c.phone].filter(Boolean).join(" · ")}
                   </p>

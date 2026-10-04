@@ -11,11 +11,13 @@
     "completed": "Concluídas",
     "cancelled": "Canceladas"
   },
-  "upcoming": {
-    "title": "Próximas marcações de hoje",
-    "empty": "Não há próximas marcações para hoje.",
+  "new": "Nova",
+  "timeline": {
+    "title": "Hoje",
+    "empty": "Sem marcações para hoje.",
+    "now": "Agora",
+    "allDone": "Sem mais marcações hoje.",
     "feature": "Marcações",
-    "count": "{count, plural, one {# marcação} other {# marcações}}"
-  },
-  "new": "Nova"
+    "open": "Abrir calendário"
+  }
 }

@@ -5,6 +5,9 @@
       "title": "Booking page not found",
       "description": "This link may be mistyped or the business is no longer taking online bookings.",
       "ownerSignIn": "Are you a business owner? Sign in"
+    },
+    "loadError": {
+      "title": "Couldn't load this page"
     }
   },
   "landing": {

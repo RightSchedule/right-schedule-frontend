@@ -5,6 +5,9 @@
       "title": "Página de marcações não encontrada",
       "description": "Este link pode estar errado ou o negócio já não aceita marcações online.",
       "ownerSignIn": "É proprietário de um negócio? Inicie sessão"
+    },
+    "loadError": {
+      "title": "Não foi possível carregar esta página"
     }
   },
   "landing": {

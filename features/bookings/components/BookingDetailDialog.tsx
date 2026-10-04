@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CircleCheck, Clock, Mail, NotebookText, Phone, TriangleAlert, User, UserRound } from "lucide-react";
+import { CalendarCheck, CircleCheck, CircleX, Clock, Mail, NotebookText, Phone, TriangleAlert, User, UserRound, UserX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -34,6 +34,13 @@ export function statusVariant(status: BookingStatus) {
   }
 }
 
+const STATUS_ICON = {
+  CONFIRMED: CalendarCheck,
+  COMPLETED: CircleCheck,
+  CANCELLED: CircleX,
+  NO_SHOW: UserX,
+} as const;
+
 export function useStatusLabel(): (status: BookingStatus) => string {
   const t = useTranslations("common.status");
   return (status) => t(status);
@@ -47,8 +54,10 @@ export function BookingStatusBadge({
   className?: string;
 }) {
   const statusLabel = useStatusLabel();
+  const Icon = STATUS_ICON[status];
   return (
     <Badge variant={statusVariant(status)} className={className}>
+      <Icon aria-hidden />
       {statusLabel(status)}
     </Badge>
   );
@@ -122,7 +131,7 @@ export function BookingDetailDialog({
             </DialogHeader>
 
             {actionable && booking.needsReviewAt && (
-              <div role="status" className="flex items-start gap-3 rounded-2xl bg-warning-muted p-3.5 text-warning-foreground">
+              <div role="status" className="flex items-start gap-3 rounded-md bg-warning-muted p-3.5 text-warning-foreground">
                 <TriangleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />
                 <div className="text-sm">
                   <p className="font-semibold">{t("needsReviewTitle")}</p>
@@ -133,7 +142,7 @@ export function BookingDetailDialog({
 
             <div className="flex flex-col gap-4 border-y border-border py-5">
               <DetailsRow icon={Clock}>
-                <span className="font-mono font-bold">
+                <span className="font-mono font-semibold">
                   {booking.startTime.slice(0, 5)} – {booking.endTime.slice(0, 5)}
                 </span>
                 {booking.service && (

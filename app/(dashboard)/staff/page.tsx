@@ -61,7 +61,7 @@ export default function StaffPage() {
               href={`/staff/${member.id}`}
               trailing={!member.active && <Badge variant="secondary">{t("inactive")}</Badge>}
             >
-              <p className="truncate text-[0.95rem] font-semibold">{member.name}</p>
+              <p className="truncate text-base font-medium">{member.name}</p>
               <p className="truncate text-xs text-muted-foreground">
                 {member.email || member.phone || t("noContact")}
               </p>

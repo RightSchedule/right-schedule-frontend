@@ -44,20 +44,20 @@ export function BookingTicket({
     >
       <div
         className={cn(
-          "overflow-hidden rounded-3xl border border-border bg-card text-left text-sm shadow-card",
+          "overflow-hidden rounded-lg border border-border bg-card text-left text-sm",
           className
         )}
       >
         <div className="flex items-start justify-between gap-3 p-4">
           <div className="min-w-0">
-            <p className="font-bold">{serviceName}</p>
+            <p className="font-semibold">{serviceName}</p>
             {durationMinutes ? (
               <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
                 <Clock className="size-3" /> {t("service.duration", { count: durationMinutes })}
               </p>
             ) : null}
           </div>
-          <p className="shrink-0 font-bold tabular-nums text-primary">{f.price(price)}</p>
+          <p className="shrink-0 font-semibold tabular-nums text-primary">{f.price(price)}</p>
         </div>
 
         {showDetails && (

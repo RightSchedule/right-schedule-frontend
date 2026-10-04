@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Figtree, Fraunces, JetBrains_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const body = Figtree({
+  variable: "--font-body",
   subsets: ["latin"],
+});
+
+const display = Fraunces({
+  variable: "--font-display-face",
+  subsets: ["latin"],
+  axes: ["SOFT", "opsz"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -26,7 +32,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${body.variable} ${display.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>

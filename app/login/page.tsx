@@ -6,10 +6,9 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
-import { CalendarDays, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useRateLimit } from "@/features/auth/hooks/useRateLimit";
-import { Aurora, stagger } from "@/components/ui/aurora";
 import { Wordmark } from "@/components/layout/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,7 +18,6 @@ import { Field, FormError } from "@/components/shared";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { LIMITS, newPassword, requiredEmail } from "@/lib/validation";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 type Translator = ReturnType<typeof useTranslations<"auth">>;
 
@@ -40,24 +38,6 @@ function makeRegisterSchema(t: Translator, termsRequired: string) {
 type LoginForm = z.infer<ReturnType<typeof makeLoginSchema>>;
 type RegisterValues = z.infer<ReturnType<typeof makeRegisterSchema>>;
 
-function IconInput({
-  icon: Icon,
-  children,
-}: {
-  icon: React.ElementType;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative">
-      <Icon
-        className="pointer-events-none absolute left-4 top-1/2 size-[1.1rem] -translate-y-1/2 text-muted-foreground"
-        aria-hidden
-      />
-      {children}
-    </div>
-  );
-}
-
 function PasswordInput({
   id,
   placeholder,
@@ -74,25 +54,25 @@ function PasswordInput({
   const t = useTranslations("auth.fields");
   const [visible, setVisible] = useState(false);
   return (
-    <IconInput icon={Lock}>
+    <div className="relative">
       <Input
         id={id}
         type={visible ? "text" : "password"}
         placeholder={placeholder}
         autoComplete={autoComplete}
         maxLength={maxLength}
-        className="px-11"
+        className="pr-11"
         {...registration}
       />
       <button
         type="button"
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? t("hidePassword") : t("showPassword")}
-        className="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        {visible ? <EyeOff className="size-[1.1rem]" /> : <Eye className="size-[1.1rem]" />}
+        {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
       </button>
-    </IconInput>
+    </div>
   );
 }
 
@@ -131,16 +111,13 @@ function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
       <Field label={t("fields.email")} htmlFor="login-email" error={errors.email?.message}>
-        <IconInput icon={Mail}>
-          <Input
-            id="login-email"
-            type="email"
-            placeholder={t("fields.emailPlaceholder")}
-            autoComplete="email"
-            className="pl-11"
-            {...register("email")}
-          />
-        </IconInput>
+        <Input
+          id="login-email"
+          type="email"
+          placeholder={t("fields.emailPlaceholder")}
+          autoComplete="email"
+          {...register("email")}
+        />
       </Field>
 
       <Field label={t("fields.password")} htmlFor="login-password" error={errors.password?.message}>
@@ -158,7 +135,7 @@ function LoginForm() {
         type="submit"
         disabled={isSubmitting || rateLimit.limited}
         size="lg"
-        className="mt-2 h-12 w-full text-base"
+        className="mt-2 w-full"
       >
         {isSubmitting ? t("login.submitting") : t("login.submit")}
       </Button>
@@ -201,16 +178,13 @@ function RegisterForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
       <Field label={t("fields.email")} htmlFor="reg-email" error={errors.email?.message}>
-        <IconInput icon={Mail}>
-          <Input
-            id="reg-email"
-            type="email"
-            placeholder={t("fields.emailPlaceholder")}
-            autoComplete="email"
-            className="pl-11"
-            {...register("email")}
-          />
-        </IconInput>
+        <Input
+          id="reg-email"
+          type="email"
+          placeholder={t("fields.emailPlaceholder")}
+          autoComplete="email"
+          {...register("email")}
+        />
       </Field>
 
       <Field label={t("fields.password")} htmlFor="reg-password" error={errors.password?.message}>
@@ -271,7 +245,7 @@ function RegisterForm() {
         type="submit"
         disabled={isSubmitting || rateLimit.limited}
         size="lg"
-        className="mt-2 h-12 w-full text-base"
+        className="mt-2 w-full"
       >
         {isSubmitting ? t("register.submitting") : t("register.submit")}
       </Button>
@@ -281,59 +255,37 @@ function RegisterForm() {
 
 export default function LoginPage() {
   const t = useTranslations("auth");
-  const [tab, setTab] = useState("login");
+  const [tab, setTab] = useState<"login" | "register">("login");
+  const isLogin = tab === "login";
   return (
-    <main className="relative isolate flex min-h-dvh items-center justify-center bg-background px-4 py-10">
-      <Aurora className="fixed inset-0 -z-10" />
-      <div className="absolute right-4 top-4 z-10">
+    <main className="flex min-h-dvh flex-col bg-background px-6 py-6 sm:px-10">
+      <header className="flex items-center justify-between">
+        <Wordmark className="text-2xl" />
         <LanguageSwitcher />
-      </div>
-      <div className="w-full max-w-sm">
-        <div className="mb-7 flex flex-col items-center gap-3 text-center">
-          <div
-            className="reveal flex size-16 items-center justify-center rounded-3xl bg-primary text-primary-foreground shadow-cta"
-            style={stagger(0)}
-          >
-            <CalendarDays className="size-7" strokeWidth={2.2} />
-          </div>
-          <h1 className="reveal" style={stagger(1)}>
-            <Wordmark className="text-4xl" />
+      </header>
+
+      <div className="flex flex-1 items-center">
+        <div className="mx-auto w-full max-w-sm py-10">
+          <h1 className="text-4xl font-semibold leading-tight">
+            {isLogin ? t("tabs.signIn") : t("tabs.createAccount")}
           </h1>
-          <p className="reveal text-sm text-muted-foreground" style={stagger(2)}>
-            {t("tagline")}
-          </p>
-        </div>
+          <p className="mb-8 mt-2 text-muted-foreground">{t("tagline")}</p>
 
-        <div
-          className="reveal rounded-3xl border border-border bg-card p-5 shadow-pop sm:p-6"
-          style={stagger(3)}
-        >
-          <Tabs value={tab} onValueChange={(v) => setTab(v as string)}>
-            <TabsList className="mb-6 w-full">
-              <TabsTrigger value="login" className="flex-1">{t("tabs.signIn")}</TabsTrigger>
-              <TabsTrigger value="register" className="flex-1">{t("tabs.createAccount")}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="login">
-              <LoginForm />
-            </TabsContent>
-            <TabsContent value="register">
-              <RegisterForm />
-            </TabsContent>
-          </Tabs>
+          {isLogin ? <LoginForm /> : <RegisterForm />}
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            {tab === "login" ? t("switch.newHere") : t("switch.haveAccount")}{" "}
+          <p className="mt-6 text-sm text-muted-foreground">
+            {isLogin ? t("switch.newHere") : t("switch.haveAccount")}{" "}
             <button
               type="button"
-              onClick={() => setTab(tab === "login" ? "register" : "login")}
-              className="font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={() => setTab(isLogin ? "register" : "login")}
+              className="font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {tab === "login" ? t("switch.createAccount") : t("switch.signIn")}
+              {isLogin ? t("switch.createAccount") : t("switch.signIn")}
             </button>
           </p>
         </div>
-        <LegalLinks className="mt-6 justify-center" />
       </div>
+      <LegalLinks className="justify-center" />
     </main>
   );
 }

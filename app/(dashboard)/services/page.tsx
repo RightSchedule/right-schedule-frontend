@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Clock, Pencil, Plus, Scissors, Trash2 } from "lucide-react";
+import { Pencil, Plus, Scissors, Trash2 } from "lucide-react";
 import { cn } from "cn";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
@@ -14,6 +12,7 @@ import {
   ConfirmDialog,
   EmptyState,
   ErrorState,
+  ListContainer,
   PageContainer,
   PageHeader,
 } from "@/components/shared";
@@ -88,9 +87,9 @@ export default function ServicesPage() {
       />
 
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
           {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-44 rounded-3xl" />
+            <Skeleton key={i} className="h-16 rounded-lg" />
           ))}
         </div>
       ) : error ? (
@@ -107,74 +106,56 @@ export default function ServicesPage() {
           }
         />
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2">
+        <ListContainer>
           {services.map((service) => (
-            <li key={service.id}>
-              <Card className={cn("h-full", !service.active && "opacity-70")}>
-                <CardContent className="flex h-full flex-col gap-4 p-5 pt-5 sm:p-6 sm:pt-6">
-                  <div className="flex items-start gap-3.5">
-                    <span
-                      aria-hidden
-                      className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-foreground"
-                    >
-                      <Scissors className="size-5" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h2 className="truncate text-lg font-bold leading-tight">{service.name}</h2>
-                      {service.description && (
-                        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                          {service.description}
-                        </p>
-                      )}
-                    </div>
-                    <Badge variant={service.active ? "success" : "secondary"} className="shrink-0 gap-1.5">
-                      <span aria-hidden className="size-1.5 rounded-full bg-current" />
-                      {service.active ? t("active") : t("hidden")}
-                    </Badge>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted px-2.5 py-1 text-sm text-muted-foreground">
-                      <Clock className="size-3.5 text-primary" aria-hidden />
-                      {t("minutes", { count: service.durationMinutes })}
-                    </span>
-                    <span className="rounded-lg bg-muted px-2.5 py-1 font-mono text-sm font-bold text-foreground">
-                      {price(service.price)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between mt-auto border-t border-border pt-4">
-                    <label className="flex items-center gap-2.5 text-sm">
-                      <Switch
-                        checked={service.active}
-                        onCheckedChange={() => onToggle(service)}
-                        disabled={toggle.isPending}
-                        aria-label={t("toggleAria", { name: service.name })}
-                      />
-                      <span className="text-muted-foreground">{t("bookable")}</span>
-                    </label>
-                    <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={() => openEdit(service)}
-                        aria-label={t("editAria", { name: service.name })}
-                      >
-                        <Pencil />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={() => setDeleting(service)}
-                        aria-label={t("deleteAria", { name: service.name })}
-                      >
-                        <Trash2 />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <li
+              key={service.id}
+              className="flex flex-wrap items-center gap-x-4 gap-y-3 p-4 sm:flex-nowrap sm:px-5"
+            >
+              <div className={cn("min-w-0 flex-1 basis-full sm:basis-auto", !service.active && "text-muted-foreground")}>
+                <h2 className="truncate font-sans text-base font-semibold leading-tight">
+                  {service.name}
+                  {!service.active && (
+                    <span className="ml-2 text-xs font-medium text-muted-foreground">{t("hidden")}</span>
+                  )}
+                </h2>
+                {service.description && (
+                  <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">{service.description}</p>
+                )}
+              </div>
+              <p className="shrink-0 text-sm text-muted-foreground">
+                <span className="font-mono font-medium text-foreground">{price(service.price)}</span>
+                {" · "}
+                {t("minutes", { count: service.durationMinutes })}
+              </p>
+              <Switch
+                className="ml-auto sm:ml-0"
+                checked={service.active}
+                onCheckedChange={() => onToggle(service)}
+                disabled={toggle.isPending}
+                aria-label={t("toggleAria", { name: service.name })}
+              />
+              <div className="flex shrink-0 gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => openEdit(service)}
+                  aria-label={t("editAria", { name: service.name })}
+                >
+                  <Pencil />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setDeleting(service)}
+                  aria-label={t("deleteAria", { name: service.name })}
+                >
+                  <Trash2 />
+                </Button>
+              </div>
             </li>
           ))}
-        </ul>
+        </ListContainer>
       )}
 
       <ServiceFormDialog open={formOpen} onOpenChange={setFormOpen} service={editing} />

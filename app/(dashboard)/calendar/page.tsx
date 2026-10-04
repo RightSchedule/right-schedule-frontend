@@ -102,9 +102,9 @@ export default function CalendarPage() {
         }
       />
 
-      <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-4 rounded-3xl border border-border bg-card p-4 shadow-card">
+      <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-3">
         <div className="flex items-center gap-3">
-          <div className="flex items-center rounded-full border border-border bg-muted/40 p-0.5">
+          <div className="flex items-center rounded-md border border-border">
             <Button variant="ghost" size="icon" onClick={() => step(-1)} aria-label={t("previous")}>
               <ChevronLeft />
             </Button>
@@ -119,7 +119,7 @@ export default function CalendarPage() {
             {t("today")}
           </Button>
         </div>
-        <h2 className="min-w-40 flex-1 text-[0.95rem] font-bold leading-snug sm:text-base" aria-live="polite">
+        <h2 className="min-w-40 flex-1 font-heading text-xl font-semibold leading-snug" aria-live="polite">
           {label}
         </h2>
         <Tabs
@@ -151,7 +151,7 @@ export default function CalendarPage() {
       >
         <div>
           {loading ? (
-            <Skeleton className="h-96 rounded-3xl" />
+            <Skeleton className="h-96 rounded-lg" />
           ) : error ? (
             <ErrorState
               error={error}

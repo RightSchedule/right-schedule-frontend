@@ -72,7 +72,7 @@ export function StaffServicesPanel({ staffId }: { staffId: string }) {
         />
       );
     }
-    return <Skeleton className="h-48 rounded-3xl" />;
+    return <Skeleton className="h-48 rounded-lg" />;
   }
 
   const list = services.data ?? [];
@@ -108,7 +108,7 @@ export function StaffServicesPanel({ staffId }: { staffId: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <ul className="divide-y divide-border rounded-3xl border border-border bg-card shadow-card">
+      <ul className="divide-y divide-border rounded-lg border border-border bg-card">
         {list.map((service) => (
           <li key={service.id}>
             <label className="flex cursor-pointer items-center gap-3.5 p-4">
@@ -117,7 +117,7 @@ export function StaffServicesPanel({ staffId }: { staffId: string }) {
                 onCheckedChange={(c) => toggle(service.id, c === true)}
               />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[0.95rem] font-semibold">{service.name}</span>
+                <span className="block truncate text-base font-medium">{service.name}</span>
                 <span className="block text-xs text-muted-foreground">
                   {t("summary", {
                     minutes: service.durationMinutes,
@@ -152,7 +152,7 @@ export function WorkingHoursPanel({ staffId }: { staffId: string }) {
   const schedule = edited ?? (hours.data ? scheduleFromHours(hours.data) : null);
 
   if (hours.error) return <ErrorState error={hours.error} onRetry={() => hours.refetch()} />;
-  if (!schedule) return <Skeleton className="h-96 rounded-3xl" />;
+  if (!schedule) return <Skeleton className="h-96 rounded-lg" />;
 
   async function onSave() {
     const problem = validateSchedule(schedule!);
@@ -356,7 +356,7 @@ export function TimeOffPanel({ staffId }: { staffId: string }) {
       </div>
 
       {exceptions.isLoading ? (
-        <Skeleton className="h-32 rounded-3xl" />
+        <Skeleton className="h-32 rounded-lg" />
       ) : exceptions.error ? (
         <ErrorState error={exceptions.error} onRetry={() => exceptions.refetch()} />
       ) : sorted.length === 0 ? (
@@ -366,7 +366,7 @@ export function TimeOffPanel({ staffId }: { staffId: string }) {
           description={t("emptyDescription")}
         />
       ) : (
-        <ul className="divide-y divide-border rounded-3xl border border-border bg-card shadow-card">
+        <ul className="divide-y divide-border rounded-lg border border-border bg-card">
           {sorted.map((ex) => (
             <li key={ex.id} className="flex items-center gap-3 p-4">
               <div className="min-w-0 flex-1">

@@ -48,7 +48,7 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
   const tErrors = useTranslations("quotes.public.errors");
   const tLegal = useTranslations("legal");
   const errorMessage = useErrorMessage();
-  const { data: business, isLoading, error: loadError } = usePublicBusiness(slug);
+  const { data: business, isLoading, error: loadError, refetch } = usePublicBusiness(slug);
   const create = useCreatePublicQuote();
   const [error, setError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
@@ -74,7 +74,7 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
   const description = useWatch({ control, name: "description" }) ?? "";
 
   if (isLoading) return <PublicLoading />;
-  if (loadError || !business) return <PublicNotFound />;
+  if (loadError || !business) return <PublicNotFound error={loadError} onRetry={() => refetch()} />;
 
   async function onSubmit(values: Values) {
     setError(null);
@@ -96,10 +96,8 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
   if (sentTo) {
     return (
       <main className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-12 text-center">
-        <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-success-muted text-success-foreground">
-          <Check className="size-8" strokeWidth={2.5} />
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight">{t("success.title")}</h1>
+        <Check className="mb-4 size-8 text-success-foreground" strokeWidth={2.5} />
+        <h1 className="text-2xl font-semibold">{t("success.title")}</h1>
         <p className="mt-2 text-sm">
           {t("success.description", { business: business.name, email: sentTo })}
         </p>
@@ -135,8 +133,8 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
         </Link>
       </div>
 
-      <div className="rounded-3xl border border-border bg-card p-5 shadow-pop sm:p-6">
-        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+      <div className="rounded-lg border border-border bg-card p-5 sm:p-6">
+        <h1 className="text-2xl font-semibold">{t("title")}</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
           {t("description", { business: business.name })}
         </p>

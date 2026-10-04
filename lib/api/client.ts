@@ -113,8 +113,11 @@ export const apiClient = {
   delete: <T = void>(path: string) => request<T>(path, { method: "DELETE" }),
 };
 
+/** A missing route. A 404 carrying an error `code` is a real "entity not found", not an unbuilt endpoint. */
 export function isUnavailable(error: unknown): boolean {
-  return error instanceof ApiError && [404, 405, 501].includes(error.status);
+  if (!(error instanceof ApiError)) return false;
+  if (error.status === 404) return !error.code;
+  return [405, 501].includes(error.status);
 }
 
 export function isStatus(error: unknown, ...codes: number[]): boolean {

@@ -26,9 +26,10 @@ afterEach(() => {
 });
 
 describe("error helpers", () => {
-  it("isUnavailable covers 404, 405 and 501 only", async () => {
+  it("isUnavailable covers code-less 404, 405 and 501 only", async () => {
     const { ApiError, isUnavailable } = await load();
     for (const s of [404, 405, 501]) expect(isUnavailable(new ApiError(s, "x"))).toBe(true);
+    expect(isUnavailable(new ApiError(404, "x", undefined, "STAFF_NOT_FOUND"))).toBe(false);
     for (const s of [400, 401, 500, 503]) expect(isUnavailable(new ApiError(s, "x"))).toBe(false);
     expect(isUnavailable(new TypeError("Failed to fetch"))).toBe(false);
   });

@@ -111,7 +111,7 @@ export function WorkingHoursEditor({
   }
 
   return (
-    <ul className="divide-y divide-border rounded-3xl border border-border bg-card shadow-card">
+    <ul className="divide-y divide-border rounded-lg border border-border bg-card">
       {DAYS.map((day) => {
         const label = tDays(day);
         const ranges = value[day];
@@ -119,7 +119,7 @@ export function WorkingHoursEditor({
         return (
           <li key={day} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:gap-4">
             <div className="flex w-full items-center justify-between gap-3 sm:w-44 sm:pt-1.5">
-              <label className="flex items-center gap-3 text-[0.95rem] font-semibold">
+              <label className="flex items-center gap-3 text-base font-medium">
                 <Switch
                   checked={open}
                   onCheckedChange={(checked) =>

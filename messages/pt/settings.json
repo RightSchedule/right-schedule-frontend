@@ -11,7 +11,10 @@
     "copiedToast": "Ligação de marcação copiada",
     "copyFailed": "Não foi possível copiar. Selecione a ligação e copie-a manualmente.",
     "label": "Ligação de marcação",
-    "copyLink": "Copiar ligação"
+    "copyLink": "Copiar ligação",
+    "quoteTitle": "A sua ligação de pedido de orçamento",
+    "quoteLabel": "Ligação de pedido de orçamento",
+    "quoteCopiedToast": "Ligação de pedido de orçamento copiada"
   },
   "profile": {
     "title": "Perfil do negócio",

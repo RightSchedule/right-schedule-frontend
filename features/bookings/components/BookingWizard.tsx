@@ -54,7 +54,7 @@ function OptionCard({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "flex w-full items-center gap-3 rounded-3xl border-2 bg-card p-4 text-left shadow-card transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex w-full items-center gap-3 rounded-lg border-2 bg-card p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         selected ? "border-primary bg-accent/60" : "border-transparent hover:border-primary/40"
       )}
     >
@@ -79,7 +79,7 @@ function ServiceStep({
           <ViewTransition name={ticketName(s.id)} share="vt-morph" default="none">
             <OptionCard onClick={() => onSelect(s)}>
               <div className="min-w-0 flex-1">
-                <p className="font-bold">{s.name}</p>
+                <p className="font-semibold">{s.name}</p>
                 {s.description && (
                   <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">{s.description}</p>
                 )}
@@ -87,7 +87,7 @@ function ServiceStep({
                   <Clock className="size-3" /> {t("service.duration", { count: s.durationMinutes })}
                 </p>
               </div>
-              <span className="shrink-0 font-bold tabular-nums text-primary">{price(s.price)}</span>
+              <span className="shrink-0 font-semibold tabular-nums text-primary">{price(s.price)}</span>
             </OptionCard>
           </ViewTransition>
         </li>
@@ -110,9 +110,7 @@ function StaffStep({
     <ul className="flex flex-col gap-3">
       <li>
         <OptionCard selected={selectedId === null} onClick={() => onSelect(null)}>
-          <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Sparkles className="size-5" />
-          </span>
+          <Sparkles className="size-5 shrink-0 text-primary" />
           <div>
             <p className="font-medium">{t("any")}</p>
             <p className="text-sm text-muted-foreground">{t("anyHint")}</p>
@@ -203,7 +201,7 @@ function WhenStep({
               aria-label={f.date(d, "EEEE d MMMM")}
               onClick={() => transition("date-pill", () => onDate(value))}
               className={cn(
-                "relative isolate flex w-16 shrink-0 flex-col items-center gap-0.5 rounded-2xl border py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "relative isolate flex w-16 shrink-0 flex-col items-center gap-0.5 rounded-md border py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 selected
                   ? "border-primary text-primary-foreground"
                   : "border-border bg-card hover:border-primary/50"
@@ -211,13 +209,13 @@ function WhenStep({
             >
               {selected && (
                 <ViewTransition name="date-pill" share="vt-pill" default="none">
-                  <span aria-hidden className="absolute -inset-px -z-10 rounded-2xl bg-primary shadow-cta" />
+                  <span aria-hidden className="absolute -inset-px -z-10 rounded-md bg-primary" />
                 </ViewTransition>
               )}
-              <span className={cn("text-xs font-medium uppercase", !selected && "text-muted-foreground")}>
+              <span className={cn("text-xs font-medium", !selected && "text-muted-foreground")}>
                 {f.date(d, "EEE")}
               </span>
-              <span className="text-xl font-bold leading-none">{f.date(d, "d")}</span>
+              <span className="text-xl font-semibold leading-none">{f.date(d, "d")}</span>
               <span className={cn("text-xs", !selected && "text-muted-foreground")}>{f.date(d, "MMM")}</span>
             </button>
           );
@@ -228,13 +226,13 @@ function WhenStep({
         {!date ? null : availability.isLoading ? (
           <div className="grid grid-cols-3 gap-2">
             {Array.from({ length: 9 }, (_, i) => (
-              <Skeleton key={i} className="h-11 rounded-2xl" />
+              <Skeleton key={i} className="h-11 rounded-md" />
             ))}
           </div>
         ) : availability.error ? (
           <ErrorState error={availability.error} onRetry={() => availability.refetch()} />
         ) : groups.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border p-8 text-center">
+          <div className="rounded-lg border border-dashed border-border p-8 text-center">
             <CalendarDays className="mx-auto mb-2 size-5 text-muted-foreground" />
             <p className="text-sm font-medium">{t("noTimes")}</p>
             <p className="mt-1 text-sm text-muted-foreground">{t("tryAnotherDay")}</p>
@@ -243,7 +241,7 @@ function WhenStep({
           <div className="flex flex-col gap-5">
             {groups.map(({ label, times, offset }) => (
               <section key={label}>
-                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <h3 className="mb-2 text-xs font-semibold text-muted-foreground">
                   {t(`partOfDay.${label}`)}
                 </h3>
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
@@ -255,9 +253,9 @@ function WhenStep({
                       onClick={() => onTime(time)}
                       style={{ "--i": offset + i } as React.CSSProperties}
                       className={cn(
-                        "slot-in h-11 rounded-2xl border font-mono text-sm font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        "slot-in h-11 rounded-md border font-mono text-sm font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                         time === startTime
-                          ? "border-primary bg-primary text-primary-foreground shadow-cta"
+                          ? "border-primary bg-primary text-primary-foreground"
                           : "border-border bg-card hover:border-primary/50"
                       )}
                     >
@@ -318,7 +316,7 @@ export function BookingWizard({
   const locale = useLocale();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: business, isLoading, error } = usePublicBusiness(slug);
+  const { data: business, isLoading, error, refetch } = usePublicBusiness(slug);
   const createBooking = useCreatePublicBooking();
   const [state, dispatch] = useReducer(wizardReducer, initialWizardState);
   const [step, setStep] = useState<WizardStep>("service");
@@ -389,7 +387,7 @@ export function BookingWizard({
   }, [step]);
 
   if (isLoading) return <PublicLoading />;
-  if (error || !business) return <PublicNotFound />;
+  if (error || !business) return <PublicNotFound error={error} onRetry={() => refetch()} />;
 
   const stepIndex = steps.indexOf(step);
 
@@ -509,7 +507,7 @@ export function BookingWizard({
           <h1
             ref={headingRef}
             tabIndex={-1}
-            className="mb-5 text-2xl font-bold tracking-tight outline-none"
+            className="mb-5 text-2xl font-semibold outline-none"
           >
             {t(`steps.${step}`)}
           </h1>
