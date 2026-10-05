@@ -129,6 +129,10 @@ function LoginForm() {
         />
       </Field>
 
+      <Link href="/forgot-password" className="-mt-2 self-start text-sm text-primary underline-offset-4 hover:underline">
+        {t("login.forgot")}
+      </Link>
+
       <FormError message={rateLimit.message ?? error} />
 
       <Button
