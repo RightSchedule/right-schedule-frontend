@@ -64,3 +64,19 @@ export function useExportCustomer() {
     },
   });
 }
+
+export function useCustomerTags(id: string) {
+  return useQuery({
+    queryKey: qk.customers.tags(id),
+    queryFn: () => customersApi.tags(id),
+    enabled: !!id,
+  });
+}
+
+export function useReplaceCustomerTags(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (tags: string[]) => customersApi.replaceTags(id, tags),
+    onSuccess: (tags) => qc.setQueryData(qk.customers.tags(id), tags),
+  });
+}

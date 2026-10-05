@@ -32,6 +32,7 @@ import {
 import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
 import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { useCustomerBookingsPage } from "@/features/bookings/hooks/useBookings";
+import { CustomerTags } from "@/features/customers/components/CustomerTags";
 import { CustomerFormDialog } from "@/features/customers/components/CustomerFormDialog";
 import { useCustomer, useDeleteCustomer, useExportCustomer } from "@/features/customers/hooks/useCustomers";
 import type { SortDirection } from "@/lib/api/bookings";
@@ -147,6 +148,8 @@ export default function CustomerDetailPage({
               </Button>
             </div>
           </div>
+
+          <CustomerTags customerId={customerId} />
 
           <CustomerFormDialog open={editing} customer={customer.data} onOpenChange={setEditing} />
           <ConfirmDialog

@@ -27,6 +27,7 @@ export const qk = {
     lists: ["customers", "list"] as const,
     list: (search: string, page: number) => ["customers", "list", search, page] as const,
     one: (id: string) => ["customers", "one", id] as const,
+    tags: (id: string) => ["customers", "tags", id] as const,
   },
   quotes: {
     all: ["quotes"] as const,
