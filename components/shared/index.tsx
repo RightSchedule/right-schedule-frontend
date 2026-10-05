@@ -220,6 +220,7 @@ export function ConfirmDialog({
           </Button>
           <LoadingButton
             variant={destructive ? "destructive" : "default"}
+            className={destructive ? "border-transparent bg-destructive text-white hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90" : undefined}
             loading={loading}
             onClick={onConfirm}
           >

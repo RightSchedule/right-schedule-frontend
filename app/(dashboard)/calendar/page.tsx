@@ -91,7 +91,7 @@ export default function CalendarPage() {
         });
 
   return (
-    <PageContainer className="max-w-6xl">
+    <PageContainer className="max-w-6xl md:flex md:h-full md:flex-col">
       <PageHeader
         title={t("title")}
         description={t("description")}
@@ -149,7 +149,7 @@ export default function CalendarPage() {
         }}
         default="none"
       >
-        <div>
+        <div className="md:min-h-0 md:flex-1 md:overflow-auto">
           {loading ? (
             <Skeleton className="h-96 rounded-lg" />
           ) : error ? (

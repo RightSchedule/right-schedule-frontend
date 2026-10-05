@@ -8,7 +8,7 @@ export default async function DashboardLayout({
 }) {
   const t = await getTranslations("common.nav");
   return (
-    <div className="flex h-dvh overflow-hidden bg-background">
+    <div className="relative flex h-dvh overflow-hidden bg-background">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[70] focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"

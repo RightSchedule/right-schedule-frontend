@@ -230,7 +230,7 @@ function DayGrid({
         )}
       </div>
 
-      <div className="hidden overflow-x-auto rounded-lg border border-border bg-card md:block">
+      <div className="hidden rounded-lg border border-border bg-card md:block">
         <div
           className="grid min-w-[36rem]"
           style={{ gridTemplateColumns: `3.5rem repeat(${columns.length}, minmax(9rem, 1fr))` }}

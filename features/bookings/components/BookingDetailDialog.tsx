@@ -201,7 +201,8 @@ export function BookingDetailDialog({
                   {t("edit.reschedule")}
                 </Button>
                 <Button
-                  variant="destructive"
+                  variant="outline"
+                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                   disabled={mutation.isPending}
                   onClick={() => setConfirming("cancel")}
                 >
