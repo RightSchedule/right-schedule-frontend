@@ -67,11 +67,10 @@ export function useChangeLogo() {
       let logoUrl: string | undefined;
       if (file) {
         const target = await businessApi.requestLogoUpload(file.type);
-        const res = await fetch(target.uploadUrl, {
-          method: "PUT",
-          headers: { "Content-Type": file.type, ...target.headers },
-          body: file,
-        }).catch(() => null);
+        // Signed headers must match exactly; a duplicate differently-cased key would be merged by fetch.
+        const headers = new Headers(target.headers);
+        if (!headers.has("Content-Type")) headers.set("Content-Type", file.type);
+        const res = await fetch(target.uploadUrl, { method: "PUT", headers, body: file }).catch(() => null);
         if (!res?.ok) throw new LogoUploadError();
         logoUrl = target.publicUrl;
       }
