@@ -16,6 +16,21 @@ export function useBusiness() {
   });
 }
 
+export function useBookingSettings() {
+  return useQuery({ queryKey: qk.bookingSettings, queryFn: businessApi.getBookingSettings });
+}
+
+export function useUpdateBookingSettings() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: businessApi.updateBookingSettings,
+    onSuccess: (settings) => {
+      qc.setQueryData(qk.bookingSettings, settings);
+      qc.invalidateQueries({ queryKey: qk.public.availabilityAll });
+    },
+  });
+}
+
 export function useCreateBusiness() {
   const qc = useQueryClient();
   return useMutation({

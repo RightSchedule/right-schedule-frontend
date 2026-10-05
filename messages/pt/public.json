@@ -83,5 +83,21 @@
     "phoneInvalid": "Introduza um número de telefone válido",
     "emailInvalid": "Introduza um e-mail válido",
     "contactRequired": "Adicione um número de telefone ou um e-mail"
+  },
+  "manage": {
+    "title": "A sua marcação",
+    "when": "Data",
+    "time": "Hora",
+    "with": "Com",
+    "locked": "Esta marcação já não pode ser alterada online. Contacte o negócio.",
+    "reschedule": "Alterar hora",
+    "cancel": "Cancelar marcação",
+    "keep": "Manter marcação",
+    "pickNewTime": "Escolha uma nova hora",
+    "confirmReschedule": "Confirmar nova hora",
+    "cancelTitle": "Cancelar esta marcação?",
+    "cancelDescription": "O negócio será notificado e o horário ficará livre.",
+    "cancelled": "Marcação cancelada",
+    "rescheduled": "Marcação alterada"
   }
 }

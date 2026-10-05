@@ -125,5 +125,22 @@
       "another": "Enviar outro pedido",
       "back": "Voltar a {business}"
     }
+  },
+  "manage": {
+    "title": "O seu orçamento",
+    "requestedOn": "Pedido a {date}",
+    "yourRequest": "O seu pedido",
+    "quote": "Orçamento",
+    "accept": "Aceitar orçamento",
+    "decline": "Recusar",
+    "accepted": "Orçamento aceite",
+    "declined": "Orçamento recusado",
+    "state": {
+      "PENDING": "O negócio ainda não respondeu. Receberá um email quando o orçamento estiver pronto.",
+      "ACCEPTED": "Aceitou este orçamento. O negócio entrará em contacto para agendar.",
+      "CONVERTED": "Este orçamento foi convertido numa marcação. Consulte o seu email para os detalhes.",
+      "DECLINED": "O negócio não conseguiu apresentar um orçamento para este pedido.",
+      "CUSTOMER_DECLINED": "Recusou este orçamento."
+    }
   }
 }

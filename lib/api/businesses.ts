@@ -1,6 +1,6 @@
 import { apiClient } from "./client";
 import type { AppLocale } from "@/i18n/config";
-import type { Business, PublicBusiness, PublicStaff } from "@/types/domain";
+import type { BookingSettings, Business, PublicBusiness, PublicStaff } from "@/types/domain";
 import type { AvailabilityResponse } from "@/types/api";
 
 export interface BusinessPayload {
@@ -28,6 +28,11 @@ export const businessApi = {
 
   updateMe: (payload: BusinessPayload) =>
     apiClient.put<Business>("/api/v1/business/me", payload),
+
+  getBookingSettings: () => apiClient.get<BookingSettings>("/api/v1/business/me/booking-settings"),
+
+  updateBookingSettings: (payload: BookingSettings) =>
+    apiClient.put<BookingSettings>("/api/v1/business/me/booking-settings", payload),
 };
 
 export const publicApi = {

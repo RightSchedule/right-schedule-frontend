@@ -135,6 +135,41 @@ export interface QuoteRequest {
   bookingId?: string | null;
 }
 
+/** What a customer sees behind the emailed booking link. */
+export interface ManagedBooking {
+  id: string;
+  status: BookingStatus;
+  startDateTime: string;
+  endDateTime: string;
+  businessName: string;
+  businessSlug: string;
+  serviceId: string;
+  serviceName: string;
+  staffId?: string | null;
+  staffName?: string | null;
+  canCancel: boolean;
+  canReschedule: boolean;
+}
+
+/** What a customer sees behind the emailed quote link. */
+export interface ManagedQuote {
+  status: QuoteStatus;
+  businessName: string;
+  serviceName?: string | null;
+  description: string;
+  quotedAmount: number | null;
+  responseMessage?: string | null;
+  respondedAt?: string | null;
+  createdAt: string;
+}
+
+export interface BookingSettings {
+  minNoticeMinutes: number;
+  maxAdvanceDays: number;
+  cancellationWindowMinutes: number | null;
+  slotIntervalMinutes: number;
+}
+
 export type PublicService = Pick<
   Service,
   "id" | "name" | "description" | "durationMinutes" | "price"

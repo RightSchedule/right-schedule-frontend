@@ -47,13 +47,13 @@ describe("booking link", () => {
 
 describe("isPublicPath", () => {
   it("flags public routes", () => {
-    for (const p of ["/login", "/b/demo", "/privacy", "/terms", "/dpa", "/sub-processors"]) {
+    for (const p of ["/login", "/b/demo", "/privacy", "/terms", "/dpa", "/sub-processors", "/manage-booking", "/quote"]) {
       expect(isPublicPath(p)).toBe(true);
     }
   });
 
   it("keeps dashboard routes private", () => {
-    for (const p of ["/dashboard", "/calendar", "/settings", "/"]) {
+    for (const p of ["/dashboard", "/calendar", "/settings", "/", "/quotes"]) {
       expect(isPublicPath(p)).toBe(false);
     }
   });

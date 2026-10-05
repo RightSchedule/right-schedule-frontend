@@ -190,7 +190,7 @@ function partOfDay(time: string): PartOfDay {
   return "evening";
 }
 
-function WhenStep({
+export function WhenStep({
   slug,
   timezone,
   serviceId,

@@ -1,6 +1,6 @@
 import { apiClient } from "./client";
 import { fetchPage, listAll, type PageResponse } from "./page";
-import type { Booking, BookingStatus } from "@/types/domain";
+import type { Booking, BookingStatus, ManagedBooking } from "@/types/domain";
 
 export interface PublicBookingRequest {
   businessId: string;
@@ -108,6 +108,23 @@ export const bookingsApi = {
     const rows = await listAll<BookingResponse>("/api/v1/bookings", { ...params });
     return rows.map(normalizeBooking);
   },
+
+  reschedule: (id: string, payload: { startDateTime: string; staffId?: string }) =>
+    apiClient.patch<BookingResponse>(`/api/v1/bookings/${id}/reschedule`, payload).then(normalizeBooking),
+
+  updateNotes: (id: string, notes: string | null) =>
+    apiClient.patch<BookingResponse>(`/api/v1/bookings/${id}/notes`, { notes }).then(normalizeBooking),
+
+  getManaged: (token: string) =>
+    apiClient.get<ManagedBooking>(`/api/v1/public/bookings/${encodeURIComponent(token)}`),
+
+  cancelManaged: (token: string) =>
+    apiClient.patch<ManagedBooking>(`/api/v1/public/bookings/${encodeURIComponent(token)}/cancel`, {}),
+
+  rescheduleManaged: (token: string, startDateTime: string) =>
+    apiClient.patch<ManagedBooking>(`/api/v1/public/bookings/${encodeURIComponent(token)}/reschedule`, {
+      startDateTime,
+    }),
 
   cancel: (id: string) =>
     apiClient.patch<BookingResponse>(`/api/v1/bookings/${id}/cancel`, {}).then(normalizeBooking),

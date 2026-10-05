@@ -1,5 +1,6 @@
 export const qk = {
   business: ["business"] as const,
+  bookingSettings: ["business", "booking-settings"] as const,
   services: ["services"] as const,
   staff: {
     all: ["staff"] as const,
@@ -34,6 +35,8 @@ export const qk = {
   },
   public: {
     business: (slug: string) => ["public", "business", slug] as const,
+    managedBooking: (token: string) => ["public", "managed-booking", token] as const,
+    managedQuote: (token: string) => ["public", "managed-quote", token] as const,
     staff: (slug: string, serviceId: string | null) =>
       ["public", "staff", slug, serviceId] as const,
     availabilityAll: ["public", "availability"] as const,

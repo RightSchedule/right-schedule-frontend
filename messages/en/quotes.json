@@ -125,5 +125,22 @@
       "another": "Send another request",
       "back": "Back to {business}"
     }
+  },
+  "manage": {
+    "title": "Your quote",
+    "requestedOn": "Requested on {date}",
+    "yourRequest": "Your request",
+    "quote": "Quote",
+    "accept": "Accept quote",
+    "decline": "Decline",
+    "accepted": "Quote accepted",
+    "declined": "Quote declined",
+    "state": {
+      "PENDING": "The business has not replied yet. You will receive an email when your quote is ready.",
+      "ACCEPTED": "You accepted this quote. The business will be in touch to schedule it.",
+      "CONVERTED": "This quote has been turned into a booking. Check your email for the details.",
+      "DECLINED": "The business was unable to provide a quote for this request.",
+      "CUSTOMER_DECLINED": "You declined this quote."
+    }
   }
 }

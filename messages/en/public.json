@@ -83,5 +83,21 @@
     "phoneInvalid": "Enter a valid phone number",
     "emailInvalid": "Enter a valid email",
     "contactRequired": "Add a phone number or an email"
+  },
+  "manage": {
+    "title": "Your booking",
+    "when": "Date",
+    "time": "Time",
+    "with": "With",
+    "locked": "This booking can no longer be changed online. Please contact the business.",
+    "reschedule": "Change time",
+    "cancel": "Cancel booking",
+    "keep": "Keep booking",
+    "pickNewTime": "Pick a new time",
+    "confirmReschedule": "Confirm new time",
+    "cancelTitle": "Cancel this booking?",
+    "cancelDescription": "The business will be notified and the time slot will be released.",
+    "cancelled": "Booking cancelled",
+    "rescheduled": "Booking moved"
   }
 }

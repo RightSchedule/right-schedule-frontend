@@ -66,6 +66,23 @@ export function useDeleteQuote() {
   });
 }
 
+export function useManagedQuote(token: string) {
+  return useQuery({
+    queryKey: qk.public.managedQuote(token),
+    queryFn: () => quotesApi.getManaged(token),
+    retry: false,
+  });
+}
+
+export function useRespondToManagedQuote(token: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (response: "accept" | "decline") =>
+      response === "accept" ? quotesApi.acceptManaged(token) : quotesApi.declineManaged(token),
+    onSuccess: (quote) => qc.setQueryData(qk.public.managedQuote(token), quote),
+  });
+}
+
 export function useCreatePublicQuote() {
   return useMutation({
     mutationFn: (payload: PublicQuoteRequest) => quotesApi.createPublic(payload),
