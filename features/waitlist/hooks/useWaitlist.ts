@@ -1,7 +1,7 @@
 "use client";
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { waitlistApi } from "@/lib/api/waitlist";
+import { waitlistApi, type JoinWaitlistRequest } from "@/lib/api/waitlist";
 import { qk } from "@/lib/query/keys";
 import type { WaitlistStatus } from "@/types/domain";
 
@@ -19,4 +19,8 @@ export function useRemoveWaitlistEntry() {
     mutationFn: (id: string) => waitlistApi.remove(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.waitlist.all }),
   });
+}
+
+export function useJoinWaitlist() {
+  return useMutation({ mutationFn: (payload: JoinWaitlistRequest) => waitlistApi.join(payload) });
 }

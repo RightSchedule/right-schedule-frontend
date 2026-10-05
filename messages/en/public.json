@@ -99,5 +99,19 @@
     "cancelDescription": "The business will be notified and the time slot will be released.",
     "cancelled": "Booking cancelled",
     "rescheduled": "Booking moved"
+  },
+  "waitlist": {
+    "cta": "Join the waitlist",
+    "hint": "Not seeing a time that suits you? We'll email you if one opens up.",
+    "title": "Join the waitlist",
+    "description": "We'll email you if a time opens up on {date}.",
+    "from": "Earliest time (optional)",
+    "to": "Latest time (optional)",
+    "phone": "Phone (optional)",
+    "timeOrder": "Latest time must be after the earliest",
+    "submit": "Join waitlist",
+    "success": "You're on the waitlist",
+    "successDescription": "We'll email you if a time opens up. Every email has a link to leave the waitlist.",
+    "close": "Close"
   }
 }

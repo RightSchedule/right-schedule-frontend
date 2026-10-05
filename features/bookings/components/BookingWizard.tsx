@@ -276,6 +276,7 @@ export function BookingWizard({
           {step === "when" && service && (
             <WhenStep
               slug={slug}
+              businessId={business.id}
               timezone={timezone}
               serviceId={service.id}
               partySize={partySize}

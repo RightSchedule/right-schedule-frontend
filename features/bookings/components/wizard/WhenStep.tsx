@@ -1,12 +1,14 @@
 "use client";
 
-import { ViewTransition, useMemo } from "react";
+import { ViewTransition, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { addDays, format } from "date-fns";
 import { CalendarDays } from "lucide-react";
 import { cn } from "cn";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared";
+import { WaitlistDialog } from "@/features/bookings/components/wizard/WaitlistDialog";
 import { useAvailability } from "@/features/bookings/hooks/useAvailability";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { businessToday } from "@/lib/utils/clock";
@@ -24,6 +26,7 @@ function partOfDay(time: string): PartOfDay {
 
 export function WhenStep({
   slug,
+  businessId,
   timezone,
   serviceId,
   partySize,
@@ -34,6 +37,8 @@ export function WhenStep({
   onTime,
 }: {
   slug: string;
+  /** When set, an empty day offers joining the waitlist. */
+  businessId?: string;
   timezone?: string;
   serviceId: string;
   partySize: number;
@@ -44,6 +49,8 @@ export function WhenStep({
   onTime: (t: string) => void;
 }) {
   const t = useTranslations("public.wizard.when");
+  const tWaitlist = useTranslations("public.waitlist");
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
   const f = useLocaleFormat();
   const days = useMemo(() => {
     const today = dateFromISO(businessToday(timezone));
@@ -119,6 +126,22 @@ export function WhenStep({
             <CalendarDays className="mx-auto mb-2 size-5 text-muted-foreground" />
             <p className="text-sm font-medium">{t("noTimes")}</p>
             <p className="mt-1 text-sm text-muted-foreground">{t("tryAnotherDay")}</p>
+            {businessId && date && (
+              <>
+                <p className="mt-4 text-sm text-muted-foreground">{tWaitlist("hint")}</p>
+                <Button variant="outline" className="mt-3" onClick={() => setWaitlistOpen(true)}>
+                  {tWaitlist("cta")}
+                </Button>
+                <WaitlistDialog
+                  open={waitlistOpen}
+                  onOpenChange={setWaitlistOpen}
+                  businessId={businessId}
+                  serviceId={serviceId}
+                  staffId={staffId}
+                  date={date}
+                />
+              </>
+            )}
           </div>
         ) : (
           <div className="flex flex-col gap-5">

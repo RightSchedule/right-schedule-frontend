@@ -2,7 +2,22 @@ import { apiClient } from "./client";
 import { fetchPage } from "./page";
 import type { WaitlistEntry, WaitlistStatus } from "@/types/domain";
 
+export interface JoinWaitlistRequest {
+  businessId: string;
+  serviceId: string;
+  staffId?: string | null;
+  desiredDate: string;
+  fromTime?: string;
+  toTime?: string;
+  name: string;
+  email: string;
+  phone?: string;
+}
+
 export const waitlistApi = {
+  join: (payload: JoinWaitlistRequest) =>
+    apiClient.post<{ id: string; status: string }>("/api/v1/public/waitlist", payload),
+
   page: (params: { status?: WaitlistStatus; page?: number; size?: number }) =>
     fetchPage<WaitlistEntry>("/api/v1/waitlist", { size: 20, ...params }),
 

@@ -99,5 +99,19 @@
     "cancelDescription": "O negócio será notificado e o horário ficará livre.",
     "cancelled": "Marcação cancelada",
     "rescheduled": "Marcação alterada"
+  },
+  "waitlist": {
+    "cta": "Entrar na lista de espera",
+    "hint": "Não encontra um horário? Avisamos por email se surgir uma vaga.",
+    "title": "Entrar na lista de espera",
+    "description": "Avisamos por email se surgir uma vaga a {date}.",
+    "from": "Hora mais cedo (opcional)",
+    "to": "Hora mais tarde (opcional)",
+    "phone": "Telefone (opcional)",
+    "timeOrder": "A hora final tem de ser depois da inicial",
+    "submit": "Entrar na lista",
+    "success": "Está na lista de espera",
+    "successDescription": "Avisamos por email se surgir uma vaga. Cada email tem um link para sair da lista.",
+    "close": "Fechar"
   }
 }
