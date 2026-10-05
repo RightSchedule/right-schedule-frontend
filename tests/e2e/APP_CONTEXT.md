@@ -7,7 +7,7 @@ Scheduling SaaS for local businesses (barbers, salons, clinics). Owners manage s
 - **Frontend** (`right-schedule-frontend`, this repo): Next.js 16 App Router, React 19, Tailwind v4, shadcn on `@base-ui/react`, TanStack Query, React Hook Form + Zod. Runs on `http://localhost:3000`. All server state is client-side via TanStack Query (`features/*/hooks`); no BFF, the browser calls the backend directly with `credentials: "include"`.
 - **Backend** (`right-schedule-backend`): Spring Boot 3 + Postgres 16 (Flyway). Runs on `http://localhost:8080`. API prefix `/api/v1`. Health: `GET /actuator/health`.
 - **Auth**: `POST /auth/login` sets an HttpOnly `access_token` cookie (no token in body, nothing in localStorage). `Authorization: Bearer <jwt>` is also accepted and takes precedence. `401` in the browser triggers logout + redirect to `/login` except on public pages. Frontend `proxy.ts` redirects any non-public route to `/login?redirect=...` when both the `access_token` and `session_active` cookies are missing (presence check only). The access token lasts 15 min; `lib/api/client.ts` refreshes it via `POST /auth/refresh` on a 401.
-- **Public (no auth) routes**: `/login`, `/b/*`, `/privacy`, `/terms`, `/dpa`, `/sub-processors`.
+- **Public (no auth) routes**: `/login`, `/b/*`, `/book/*` (redirects to `/b/*`), `/privacy`, `/terms`, `/dpa`, `/sub-processors`, plus exact-match emailed-token pages `/manage-booking`, `/quote`, `/verify-email`, `/reset-password`, `/forgot-password`, `/resend-verification`, `/leave-waitlist`. Exact match matters: `/quote` is public, `/quotes` (dashboard) is not. There is no email-change flow: `POST /account/change-email`, `POST /auth/confirm-email-change` and `/confirm-email-change` were removed.
 - **Timezone**: every business has an IANA timezone (all demo businesses: `Europe/Lisbon`). `startDateTime`/`endDateTime` are local to the business timezone, no offset. The frontend derives "today" and the now-line from the business timezone, not the browser.
 - **i18n**: next-intl, locales `en` (default) and `pt`, stored in the `NEXT_LOCALE` cookie. Copy lives in `messages/{en,pt}/*.json`. Currency is always EUR.
 
@@ -29,20 +29,23 @@ Bookings are anchored to the current week (last/this/next) and include every sta
 
 `User` 1—1 `Business` 1—* `Service`, `Staff`, `Customer`, `Booking`, `QuoteRequest`. `Staff` *—* `Service` (a service with no assignments is offered by every active staff member). `Staff` 1—* `WorkingHours` (`dayOfWeek` UPPERCASE e.g. `MONDAY`, `startTime`/`endTime`, split shifts allowed) and `AvailabilityException` (single `date`, optional time range, type `VACATION|PERSONAL|OTHER`).
 
-Booking statuses: `CONFIRMED`, `CANCELLED`, `COMPLETED`, `NO_SHOW`. Only `CONFIRMED` blocks a slot. `needsReviewAt` is non-null only while an overdue CONFIRMED booking awaits resolution; `complete`, `no-show` and `cancel` clear it.
+Also: `WaitlistEntry` (status filter, default WAITING), `Review` (one per COMPLETED booking), customer `tags` (max 20, 30 chars each), business `logoUrl`, business `defaultMaxPartySize` and per-service `maxPartySize` (`null` inherits; 1-10), optional `partySize` on bookings (omitted = 1; backend recomputes duration and `totalPrice`).
+
+Quote statuses: `PENDING`, `QUOTED`, `ACCEPTED`, `CUSTOMER_DECLINED`, `DECLINED`, `CONVERTED` (confirm exact set in `types/domain.ts`). Booking statuses: `CONFIRMED`, `CANCELLED`, `COMPLETED`, `NO_SHOW`. Only `CONFIRMED` blocks a slot. `needsReviewAt` is non-null only while an overdue CONFIRMED booking awaits resolution; `complete`, `no-show` and `cancel` clear it.
 
 ## API surface (`/api/v1`)
 
 | Area | Endpoints |
 |---|---|
-| Auth | `POST /auth/register` (email, password min 8, termsAccepted=true, termsVersion) · `POST /auth/login` · `POST /auth/logout` (always 204) · `GET /account/export` · `POST /account/delete` (400 `INVALID_PASSWORD` on wrong password) |
-| Business | `POST /business` · `GET /business/me` · `PUT /business/me` |
+| Auth | `POST /auth/register` (email, password min 8, termsAccepted=true, termsVersion) · `POST /auth/login` · `POST /auth/logout` (always 204) · `POST /auth/verify-email` · `/resend-verification` · `/forgot-password` · `/reset-password` (token bodies) · `GET /account/export` · `POST /account/delete` (400 `INVALID_PASSWORD` on wrong password) |
+| Business | `POST /business` · `GET/PUT /business/me` · `GET/PUT /business/me/booking-settings` · `POST /business/me/logo-upload` (presigned URL; browser PUTs to storage, then `PUT /business/me` with the public URL) |
 | Staff | `POST /staff` · `GET /staff` · `GET/PUT/DELETE /staff/{id}` (DELETE deactivates) · `GET/PUT /staff/{id}/services` · `POST/DELETE /staff/{id}/services/{serviceId}` · `GET/PUT /staff/{id}/working-hours` · `DELETE /staff/{id}/working-hours/{whId}` · `GET/POST /staff/{id}/availability-exceptions` · `DELETE /staff/{id}/availability-exceptions/{exId}` |
 | Services | `POST/GET /services` · `GET/PUT/DELETE /services/{id}` · `PATCH /services/{id}/toggle` |
-| Customers | `POST/GET /customers` (`search`, `page`, `size`) · `GET/PUT/DELETE /customers/{id}` |
-| Bookings (auth) | `GET /bookings` (`from`, `to`, `staffId`, `customerId`, `status`, `needsReview`, `page`, `size`) · `GET /bookings/{id}` · `PATCH /bookings/{id}/cancel` · `/complete` · `/no-show` |
-| Public | `GET /public/businesses/{slug}` · `GET /public/businesses/{slug}/staff` · `GET /public/businesses/{slug}/availability?date&serviceId[&staffId]` · `POST /public/bookings` (optional `Idempotency-Key`) · `GET /public/bookings/{id}` · `POST /public/quote-requests` |
-| Quotes (auth) | `GET /quote-requests` · `GET /quote-requests/{id}` · `PATCH /quote-requests/{id}/quote` · `PATCH /quote-requests/{id}/decline` |
+| Customers | `POST/GET /customers` (`search`, `page`, `size`) · `GET/PUT/DELETE /customers/{id}` · `GET/PUT /customers/{id}/tags` (PUT replaces the whole list) · `GET /customers/{id}/export` |
+| Bookings (auth) | `GET /bookings` (`from`, `to`, `staffId`, `customerId`, `status`, `needsReview`, `page`, `size`) · `GET /bookings/{id}` · `PATCH /bookings/{id}/cancel` · `/complete` · `/no-show` · `/reschedule` · `/notes` |
+| Public | `GET /public/businesses/{slug}` · `/staff` · `/availability?date&serviceId[&staffId][&partySize]` · `/reviews?page&size` · `POST /public/bookings` (optional `Idempotency-Key`, optional `partySize`) · `GET /public/bookings/{token}` · `PATCH /public/bookings/{token}/cancel` · `/reschedule` (token from the confirmation email, not the booking id) · `POST /public/quote-requests` · `GET /public/quote-requests/{token}` · `PATCH .../accept` · `/decline` · `POST /public/waitlist` · `DELETE /public/waitlist/{token}` · `POST /public/reviews` |
+| Quotes (auth) | `GET /quote-requests` · `GET/DELETE /quote-requests/{id}` · `PATCH /quote-requests/{id}/quote` · `/decline` · `/convert` (to a booking: date, time, optional staff, service if the quote has none) |
+| Waitlist (auth) | `GET /waitlist` (status filter) · `DELETE /waitlist/{id}` |
 | Analytics | `GET /analytics/dashboard?from&to` |
 | Health | `GET /actuator/health` (public) |
 
@@ -68,16 +71,21 @@ Lists are paginated: `{content, page, size, totalElements, totalPages}`; the fro
 | `/dashboard` | Today's overview, stats, upcoming bookings, review badge |
 | `/calendar` | Day view (one column per staff, timeline) and week view, create booking by clicking a slot, booking detail dialog (cancel/complete/no-show) |
 | `/review` | Overdue bookings awaiting resolution, bulk complete, paginated |
-| `/customers`, `/customers/[id]` | Search + paging, detail with booking history |
-| `/services` | Service cards: create, edit, toggle active, delete |
+| `/customers`, `/customers/[id]` | Search + paging (URL `q`, `page`), detail with booking history and tags editor |
+| `/services` | Service cards: create, edit (incl. max party size), toggle active, delete |
 | `/staff`, `/staff/[id]` | Staff list; detail with services, working hours, exceptions |
-| `/quotes` | Quote requests: quote / decline |
+| `/quotes` | Quote requests: status filter (URL `status`, default PENDING, `page`), quote / decline / convert to booking |
+| `/waitlist` | Waitlist entries, status tabs (default WAITING), remove with confirm |
 | `/analytics` | KPIs, revenue chart, funnel, top lists, date range presets |
-| `/settings` | Business profile, booking link, privacy (account export/delete), language |
-| `/b/[slug]` | Public landing |
-| `/b/[slug]/booking` | Public booking wizard (service → staff → date → time → details), `?service=` preselects |
+| `/settings` | Business profile, logo upload, booking rules, default max party size, booking link, privacy (account export/delete), language |
+| `/b/[slug]` | Public landing, with reviews list when any exist |
+| `/b/[slug]/booking` | Public booking wizard (service → staff → date → time → details, party size), `?service=` preselects; empty day offers a join-waitlist dialog |
 | `/b/[slug]/confirmation` | Post-booking summary |
 | `/b/[slug]/quote`, `/b/[slug]/privacy` | Public quote form, privacy notice |
+| `/manage-booking?token=` | Customer cancel / reschedule (reuses wizard time step), review form when COMPLETED |
+| `/quote?token=` | Customer accept / decline of a quote |
+| `/verify-email`, `/reset-password`, `/leave-waitlist` | Emailed-token pages. verify auto-redeems and links to `/resend-verification` on failure; leave-waitlist needs a button click |
+| `/forgot-password`, `/resend-verification` | Email forms (linked from login) |
 | `/privacy`, `/terms`, `/dpa`, `/sub-processors` | Legal pages (draft placeholders) |
 
 Calendar booking colours: CONFIRMED indigo, COMPLETED green, CANCELLED red (struck through), NO_SHOW amber, needs-review amber with a warning icon.
