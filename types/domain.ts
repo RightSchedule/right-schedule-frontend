@@ -110,7 +110,13 @@ export interface Booking {
   customer?: Customer;
 }
 
-export type QuoteStatus = "PENDING" | "QUOTED" | "DECLINED";
+export type QuoteStatus =
+  | "PENDING"
+  | "QUOTED"
+  | "ACCEPTED"
+  | "DECLINED"
+  | "CUSTOMER_DECLINED"
+  | "CONVERTED";
 
 export interface QuoteRequest {
   id: string;
@@ -126,6 +132,7 @@ export interface QuoteRequest {
   respondedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  bookingId?: string | null;
 }
 
 export type PublicService = Pick<

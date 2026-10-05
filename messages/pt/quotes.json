@@ -13,7 +13,10 @@
       "all": "Todos",
       "PENDING": "Pendentes",
       "QUOTED": "Orçamentados",
-      "DECLINED": "Recusados"
+      "ACCEPTED": "Aceites",
+      "CONVERTED": "Marcados",
+      "DECLINED": "Recusados",
+      "CUSTOMER_DECLINED": "Recusados pelo cliente"
     },
     "pagination": {
       "label": "Paginação",
@@ -24,8 +27,11 @@
   },
   "status": {
     "PENDING": "Pendente",
-    "QUOTED": "Orçamentado",
-    "DECLINED": "Recusado"
+    "QUOTED": "A aguardar cliente",
+    "ACCEPTED": "Aceite",
+    "CONVERTED": "Marcado",
+    "DECLINED": "Recusado",
+    "CUSTOMER_DECLINED": "Recusado pelo cliente"
   },
   "detail": {
     "received": "Recebido a {date}",
@@ -37,6 +43,7 @@
     "answeredOn": "Respondido a {date}",
     "noMessage": "Sem mensagem.",
     "sendQuote": "Enviar orçamento",
+    "convert": "Criar marcação",
     "decline": "Recusar",
     "close": "Fechar",
     "delete": "Eliminar",
@@ -63,6 +70,19 @@
       "amountTooLarge": "O preço é demasiado grande",
       "messageTooLong": "A mensagem deve ter menos de 2000 caracteres"
     }
+  },
+  "convertForm": {
+    "title": "Criar uma marcação",
+    "description": "{name} aceitou o seu orçamento. Escolha quando é a marcação.",
+    "date": "Data",
+    "time": "Hora",
+    "service": "Serviço",
+    "servicePlaceholder": "Escolha um serviço",
+    "staff": "Profissional",
+    "staffHint": "Deixe em automático para o sistema escolher alguém disponível.",
+    "anyStaff": "Automático",
+    "submit": "Criar marcação",
+    "converted": "Marcação criada"
   },
   "declineForm": {
     "title": "Recusar este pedido?",

@@ -13,7 +13,10 @@
       "all": "All",
       "PENDING": "Pending",
       "QUOTED": "Quoted",
-      "DECLINED": "Declined"
+      "ACCEPTED": "Accepted",
+      "CONVERTED": "Booked",
+      "DECLINED": "Declined",
+      "CUSTOMER_DECLINED": "Customer declined"
     },
     "pagination": {
       "label": "Pagination",
@@ -24,8 +27,11 @@
   },
   "status": {
     "PENDING": "Pending",
-    "QUOTED": "Quoted",
-    "DECLINED": "Declined"
+    "QUOTED": "Awaiting customer",
+    "ACCEPTED": "Accepted",
+    "CONVERTED": "Booked",
+    "DECLINED": "Declined",
+    "CUSTOMER_DECLINED": "Customer declined"
   },
   "detail": {
     "received": "Received {date}",
@@ -37,6 +43,7 @@
     "answeredOn": "Answered {date}",
     "noMessage": "No message included.",
     "sendQuote": "Send quote",
+    "convert": "Create booking",
     "decline": "Decline",
     "close": "Close",
     "delete": "Delete",
@@ -63,6 +70,19 @@
       "amountTooLarge": "Price is too large",
       "messageTooLong": "Keep the message under 2000 characters"
     }
+  },
+  "convertForm": {
+    "title": "Create a booking",
+    "description": "{name} accepted your quote. Pick when the appointment happens.",
+    "date": "Date",
+    "time": "Time",
+    "service": "Service",
+    "servicePlaceholder": "Choose a service",
+    "staff": "Professional",
+    "staffHint": "Leave on automatic to let the system pick someone available.",
+    "anyStaff": "Automatic",
+    "submit": "Create booking",
+    "converted": "Booking created"
   },
   "declineForm": {
     "title": "Decline this request?",

@@ -9,6 +9,7 @@ import { Mail, NotebookText, Phone, Scissors, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -19,9 +20,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { DetailsRow, Field, FormError, LoadingButton } from "@/components/shared";
-import { useDeclineQuote, useDeleteQuote, useSendQuote } from "@/features/quotes/hooks/useQuotes";
+import { useBusiness } from "@/features/business/hooks/useBusiness";
+import { useConvertQuote, useDeclineQuote, useDeleteQuote, useSendQuote } from "@/features/quotes/hooks/useQuotes";
+import { useServices } from "@/features/services/hooks/useServices";
+import { useStaff } from "@/features/staff/hooks/useStaff";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
+import { businessToday } from "@/lib/utils/clock";
 import { LIMITS } from "@/lib/validation";
 import type { QuoteRequest, QuoteStatus } from "@/types/domain";
 
@@ -30,8 +35,13 @@ export function quoteStatusVariant(status: QuoteStatus) {
     case "PENDING":
       return "pending" as const;
     case "QUOTED":
+      return "warning" as const;
+    case "ACCEPTED":
       return "success" as const;
+    case "CONVERTED":
+      return "default" as const;
     case "DECLINED":
+    case "CUSTOMER_DECLINED":
       return "secondary" as const;
   }
 }
@@ -132,6 +142,93 @@ function QuoteForm({ request, onBack, onDone }: { request: QuoteRequest; onBack:
   );
 }
 
+function ConvertForm({ request, onBack, onDone }: { request: QuoteRequest; onBack: () => void; onDone: () => void }) {
+  const t = useTranslations("quotes.convertForm");
+  const tDetail = useTranslations("quotes.detail");
+  const errorMessage = useErrorMessage();
+  const toast = useToast();
+  const convert = useConvertQuote();
+  const business = useBusiness().data;
+  const staff = useStaff().data;
+  const services = useServices().data;
+  const [date, setDate] = useState(() => businessToday(business?.timezone));
+  const [time, setTime] = useState("09:00");
+  const [staffId, setStaffId] = useState("");
+  const [serviceChoice, setServiceChoice] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const needsService = !request.serviceId;
+  const activeServices = (services ?? []).filter((s) => s.active);
+  const activeStaff = (staff ?? []).filter((s) => s.active);
+  const ready = !!date && !!time && (!needsService || !!serviceChoice);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!ready) return;
+    setError(null);
+    try {
+      await convert.mutateAsync({
+        id: request.id,
+        startDateTime: `${date}T${time}:00`,
+        serviceId: needsService ? serviceChoice : undefined,
+        staffId: staffId || undefined,
+      });
+      toast.success(t("converted"));
+      onDone();
+    } catch (err) {
+      setError(errorMessage(err));
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <DialogHeader>
+        <DialogTitle>{t("title")}</DialogTitle>
+        <DialogDescription>{t("description", { name: request.customerName })}</DialogDescription>
+      </DialogHeader>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label={t("date")} htmlFor="convert-date">
+          <Input id="convert-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        </Field>
+        <Field label={t("time")} htmlFor="convert-time">
+          <Input id="convert-time" type="time" step={300} value={time} onChange={(e) => setTime(e.target.value)} />
+        </Field>
+      </div>
+      {needsService && (
+        <Field label={t("service")} htmlFor="convert-service">
+          <Select id="convert-service" value={serviceChoice} onChange={(e) => setServiceChoice(e.target.value)}>
+            <option value="">{t("servicePlaceholder")}</option>
+            {activeServices.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      )}
+      <Field label={t("staff")} htmlFor="convert-staff" hint={t("staffHint")}>
+        <Select id="convert-staff" value={staffId} onChange={(e) => setStaffId(e.target.value)}>
+          <option value="">{t("anyStaff")}</option>
+          {activeStaff.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </Select>
+      </Field>
+      <FormError message={error} />
+      <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button type="button" variant="outline" onClick={onBack}>
+          {tDetail("back")}
+        </Button>
+        <LoadingButton type="submit" loading={convert.isPending} disabled={!ready}>
+          {t("submit")}
+        </LoadingButton>
+      </div>
+    </form>
+  );
+}
+
 function DeclineForm({ request, onBack, onDone }: { request: QuoteRequest; onBack: () => void; onDone: () => void }) {
   const t = useTranslations("quotes.declineForm");
   const tDetail = useTranslations("quotes.detail");
@@ -225,6 +322,7 @@ function QuoteDetail({
   request,
   serviceName,
   onQuote,
+  onConvert,
   onDecline,
   onDelete,
   onClose,
@@ -232,6 +330,7 @@ function QuoteDetail({
   request: QuoteRequest;
   serviceName?: string;
   onQuote: () => void;
+  onConvert: () => void;
   onDecline: () => void;
   onDelete: () => void;
   onClose: () => void;
@@ -302,16 +401,21 @@ function QuoteDetail({
         <Button variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive sm:mr-auto" onClick={onDelete}>
           {t("detail.delete")}
         </Button>
-        {answered ? (
-          <Button variant="outline" onClick={onClose}>
-            {t("detail.close")}
-          </Button>
-        ) : (
+        {request.status === "PENDING" ? (
           <>
             <Button variant="outline" onClick={onDecline}>
               {t("detail.decline")}
             </Button>
             <Button onClick={onQuote}>{t("detail.sendQuote")}</Button>
+          </>
+        ) : (
+          <>
+            <Button variant="outline" onClick={onClose}>
+              {t("detail.close")}
+            </Button>
+            {request.status === "ACCEPTED" && (
+              <Button onClick={onConvert}>{t("detail.convert")}</Button>
+            )}
           </>
         )}
       </div>
@@ -328,7 +432,7 @@ export function QuoteDialog({
   serviceName?: string;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [mode, setMode] = useState<"view" | "quote" | "decline" | "delete">("view");
+  const [mode, setMode] = useState<"view" | "quote" | "convert" | "decline" | "delete">("view");
 
   function handleOpenChange(open: boolean) {
     if (!open) setMode("view");
@@ -343,6 +447,7 @@ export function QuoteDialog({
             request={request}
             serviceName={serviceName}
             onQuote={() => setMode("quote")}
+            onConvert={() => setMode("convert")}
             onDecline={() => setMode("decline")}
             onDelete={() => setMode("delete")}
             onClose={() => handleOpenChange(false)}
@@ -350,6 +455,9 @@ export function QuoteDialog({
         )}
         {request && mode === "quote" && (
           <QuoteForm request={request} onBack={() => setMode("view")} onDone={() => handleOpenChange(false)} />
+        )}
+        {request && mode === "convert" && (
+          <ConvertForm request={request} onBack={() => setMode("view")} onDone={() => handleOpenChange(false)} />
         )}
         {request && mode === "decline" && (
           <DeclineForm request={request} onBack={() => setMode("view")} onDone={() => handleOpenChange(false)} />

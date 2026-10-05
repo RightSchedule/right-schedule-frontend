@@ -45,6 +45,19 @@ export function useDeclineQuote() {
   });
 }
 
+export function useConvertQuote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...payload }: { id: string; startDateTime: string; serviceId?: string; staffId?: string }) =>
+      quotesApi.convert(id, payload),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: qk.quotes.all }),
+        qc.invalidateQueries({ queryKey: qk.bookings.all }),
+      ]),
+  });
+}
+
 export function useDeleteQuote() {
   const qc = useQueryClient();
   return useMutation({

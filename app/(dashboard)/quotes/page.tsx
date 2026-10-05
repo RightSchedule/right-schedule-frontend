@@ -20,7 +20,7 @@ import { useServices } from "@/features/services/hooks/useServices";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import type { QuoteRequest, QuoteStatus } from "@/types/domain";
 
-const FILTERS = ["ALL", "PENDING", "QUOTED", "DECLINED"] as const;
+const FILTERS = ["ALL", "PENDING", "QUOTED", "ACCEPTED", "CONVERTED", "DECLINED", "CUSTOMER_DECLINED"] as const;
 type Filter = (typeof FILTERS)[number];
 
 export default function QuotesPage() {

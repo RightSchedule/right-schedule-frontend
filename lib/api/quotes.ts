@@ -29,6 +29,9 @@ export const quotesApi = {
   quote: (id: string, payload: { amount: number; message?: string }) =>
     apiClient.patch<QuoteRequest>(`/api/v1/quote-requests/${id}/quote`, payload),
 
+  convert: (id: string, payload: { startDateTime: string; serviceId?: string; staffId?: string }) =>
+    apiClient.patch<QuoteRequest>(`/api/v1/quote-requests/${id}/convert`, payload),
+
   remove: (id: string) => apiClient.delete<void>(`/api/v1/quote-requests/${id}`),
 
   decline: (id: string, payload: { message?: string } = {}) =>
