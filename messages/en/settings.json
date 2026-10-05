@@ -25,11 +25,14 @@
     "timezone": "Timezone",
     "timezoneHint": "Booking times are shown in this timezone.",
     "emailLanguage": "Email language",
-    "emailLanguageHint": "The language of the notification emails your business receives."
+    "emailLanguageHint": "The language of the notification emails your business receives.",
+    "defaultMaxPartySize": "Default max people per booking",
+    "defaultMaxPartySizeHint": "1 means one person per booking. Services can override this."
   },
   "validation": {
     "nameRequired": "Business name is required",
-    "emailInvalid": "Enter a valid email"
+    "emailInvalid": "Enter a valid email",
+    "partySizeInvalid": "Enter a whole number from 1 to 10"
   },
   "privacy": {
     "title": "Privacy and data",

@@ -1,5 +1,6 @@
 export interface BookingWizardState {
   serviceId: string | null;
+  partySize: number;
   staffId: string | null;
   date: string | null;
   startTime: string | null;

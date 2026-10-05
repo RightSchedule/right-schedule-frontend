@@ -3,7 +3,8 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CalendarCheck, CircleCheck, CircleX, Clock, Mail, NotebookText, Phone, TriangleAlert, User, UserRound, UserX } from "lucide-react";
+import { CalendarCheck, CircleCheck, CircleX, Clock, Mail, NotebookText, Phone, TriangleAlert, User, UserRound, Users, UserX } from "lucide-react";
+import { bookingMinutes, bookingTotal } from "@/features/bookings/calendarGeometry";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -85,6 +86,7 @@ export function BookingDetailDialog({
   );
   const t = useTranslations("calendar.detail");
   const tStatus = useTranslations("common.status");
+  const tPeople = useTranslations("public.service");
   const f = useLocaleFormat();
   const errorMessage = useErrorMessage();
   const toast = useToast();
@@ -148,11 +150,16 @@ export function BookingDetailDialog({
                 {booking.service && (
                   <span className="text-muted-foreground">
                     {" "}
-                    · {t("duration", { minutes: booking.service.durationMinutes })} ·{" "}
-                    {f.price(booking.service.price)}
+                    · {t("duration", { minutes: bookingMinutes(booking) })} ·{" "}
+                    {f.price(bookingTotal(booking) ?? booking.service.price)}
                   </span>
                 )}
               </DetailsRow>
+              {(booking.partySize ?? 1) > 1 && (
+                <DetailsRow icon={Users}>
+                  {tPeople("people", { count: booking.partySize! })}
+                </DetailsRow>
+              )}
               <DetailsRow icon={UserRound}>{booking.staff?.name ?? t("unassigned")}</DetailsRow>
               <DetailsRow icon={User}>
                 {booking.customerId ? (

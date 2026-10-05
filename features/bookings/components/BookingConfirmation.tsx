@@ -48,6 +48,7 @@ export function BookingConfirmation({
             serviceId={summary.serviceId}
             serviceName={summary.serviceName}
             price={summary.price}
+            partySize={summary.partySize}
             staffName={summary.staffName ?? t("wizard.staff.any")}
             date={summary.date}
             startTime={summary.startTime}

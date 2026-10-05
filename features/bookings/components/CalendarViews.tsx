@@ -8,7 +8,13 @@ import { cn } from "cn";
 import { EmptyState } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
 import { BookingStatusBadge, useStatusLabel } from "@/features/bookings/components/BookingDetailDialog";
-import { HOUR_PX, snapOffsetToTime, toMinutes } from "@/features/bookings/calendarGeometry";
+import {
+  HOUR_PX,
+  bookingMinutes,
+  bookingTotal,
+  snapOffsetToTime,
+  toMinutes,
+} from "@/features/bookings/calendarGeometry";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { businessToday, useBusinessMinute } from "@/lib/utils/clock";
 import type { Booking, BookingStatus, Staff } from "@/types/domain";
@@ -193,6 +199,7 @@ function StaffTimeline({
   onCreate?: CreateHandler;
 }) {
   const t = useTranslations("calendar.views");
+  const tPeople = useTranslations("public.service");
   const f = useLocaleFormat();
   const creatable = !!onCreate && column.id !== "__other";
   const height = hours.length * HOUR_PX;
@@ -267,9 +274,10 @@ function StaffTimeline({
                   {b.service?.name ?? t("serviceFallback")}
                   {b.service &&
                     ` · ${t("summary", {
-                      minutes: b.service.durationMinutes,
-                      price: f.price(b.service.price),
+                      minutes: bookingMinutes(b),
+                      price: f.price(bookingTotal(b) ?? b.service.price),
                     })}`}
+                  {(b.partySize ?? 1) > 1 && ` · ${tPeople("people", { count: b.partySize! })}`}
                 </span>
               </button>
             );

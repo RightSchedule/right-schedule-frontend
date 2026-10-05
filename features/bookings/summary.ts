@@ -8,7 +8,9 @@ export interface BookingSummary {
   date: string;
   startTime: string;
   endTime: string;
+  /** Total for the whole party. */
   price: number;
+  partySize?: number;
   customerName: string;
   customerEmail: string;
 }

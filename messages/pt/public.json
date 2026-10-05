@@ -16,17 +16,24 @@
     "closed": "As marcações online ainda não estão abertas. Volte a consultar em breve."
   },
   "service": {
-    "duration": "{count, plural, one {# min} other {# min}}"
+    "duration": "{count, plural, one {# min} other {# min}}",
+    "people": "{count, plural, one {# pessoa} other {# pessoas}}"
   },
   "wizard": {
     "steps": {
       "service": "Escolha um serviço",
+      "party": "Para quantas pessoas?",
       "staff": "Escolha um profissional",
       "when": "Escolha a data e a hora",
       "details": "Os seus dados"
     },
     "exit": "Sair da marcação",
     "progress": "Passo {current} de {total}",
+    "party": {
+      "label": "Número de pessoas",
+      "summary": "{people, plural, one {# pessoa} other {# pessoas}} · {minutes} min seguidos · {total}",
+      "continue": "Continuar"
+    },
     "staff": {
       "any": "Qualquer profissional",
       "anyHint": "Maior disponibilidade"

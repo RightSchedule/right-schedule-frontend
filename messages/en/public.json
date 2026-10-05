@@ -16,17 +16,24 @@
     "closed": "Online booking isn't open yet. Please check back soon."
   },
   "service": {
-    "duration": "{count, plural, one {# min} other {# min}}"
+    "duration": "{count, plural, one {# min} other {# min}}",
+    "people": "{count, plural, one {# person} other {# people}}"
   },
   "wizard": {
     "steps": {
       "service": "Choose a service",
+      "party": "How many people?",
       "staff": "Choose a professional",
       "when": "Pick a date and time",
       "details": "Your details"
     },
     "exit": "Exit booking",
     "progress": "Step {current} of {total}",
+    "party": {
+      "label": "Number of people",
+      "summary": "{people, plural, one {# person} other {# people}} · {minutes} min in a row · {total}",
+      "continue": "Continue"
+    },
     "staff": {
       "any": "Any professional",
       "anyHint": "Most availability"

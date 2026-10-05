@@ -27,7 +27,10 @@
     "descriptionPlaceholder": "What's included?",
     "duration": "Duration (min)",
     "price": "Price (€)",
+    "maxPartySize": "Max people per booking",
+    "maxPartySizeHint": "Leave empty to use the business default. Time and price multiply per person.",
     "errors": {
+      "partySizeInvalid": "Enter a whole number from 1 to 10",
       "nameRequired": "Name is required",
       "durationRequired": "Enter a duration",
       "durationInteger": "Whole minutes only",

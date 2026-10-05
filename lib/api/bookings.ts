@@ -9,6 +9,8 @@ export interface PublicBookingRequest {
   startDateTime: string;
   customer: { name: string; phone?: string; email?: string };
   notes?: string;
+  /** Omitted means 1; the backend validates against the service limit and recomputes duration and price. */
+  partySize?: number;
   /** Customer's UI language ("en" | "pt"); the backend uses it for confirmation/reminder emails. */
   locale?: string;
 }
@@ -26,6 +28,8 @@ export interface BookingResponse {
   customerPhone?: string | null;
   customerEmail?: string | null;
   notes?: string | null;
+  partySize?: number;
+  totalPrice?: number;
   needsReviewAt?: string | null;
 }
 
@@ -41,6 +45,8 @@ function normalizeBooking(r: BookingResponse): Booking {
     endTime: r.endDateTime.slice(11, 16),
     status: r.status,
     notes: r.notes,
+    partySize: r.partySize,
+    totalPrice: r.totalPrice,
     needsReviewAt: r.needsReviewAt,
     customer: {
       id: r.customerId ?? "",

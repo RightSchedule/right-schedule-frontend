@@ -27,6 +27,8 @@ export interface Business {
   /** Language of emails sent to the business ("en" | "pt"). */
   locale?: string;
   logoUrl?: string;
+  /** Party size limit for services that don't set their own. */
+  defaultMaxPartySize?: number;
   active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -39,6 +41,8 @@ export interface Service {
   description?: string;
   durationMinutes: number;
   price: number;
+  /** Per-service party size limit; null inherits the business default. */
+  maxPartySize?: number | null;
   active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -93,6 +97,10 @@ export interface Booking {
   endTime: string;
   status: BookingStatus;
   notes?: string | null;
+  /** People covered by this booking; absent on legacy rows means 1. */
+  partySize?: number;
+  /** Server-computed total (price × partySize). */
+  totalPrice?: number;
   /** Set while a CONFIRMED booking is overdue for resolution; cleared by complete, no-show or cancel. */
   needsReviewAt?: string | null;
   /** Language of emails sent to the customer ("en" | "pt"). */
@@ -123,7 +131,10 @@ export interface QuoteRequest {
 export type PublicService = Pick<
   Service,
   "id" | "name" | "description" | "durationMinutes" | "price"
->;
+> & {
+  /** Effective limit resolved by the backend (service override, else business default). */
+  maxPartySize?: number;
+};
 
 export interface PublicStaff {
   id: string;

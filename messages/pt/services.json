@@ -27,7 +27,10 @@
     "descriptionPlaceholder": "O que está incluído?",
     "duration": "Duração (min)",
     "price": "Preço (€)",
+    "maxPartySize": "Máx. de pessoas por marcação",
+    "maxPartySizeHint": "Deixe vazio para usar o valor predefinido do negócio. O tempo e o preço multiplicam por pessoa.",
     "errors": {
+      "partySizeInvalid": "Introduza um número inteiro de 1 a 10",
       "nameRequired": "O nome é obrigatório",
       "durationRequired": "Introduza a duração",
       "durationInteger": "Apenas minutos inteiros",

@@ -5,6 +5,20 @@ export function toMinutes(time: string): number {
   return (h ?? 0) * 60 + (m ?? 0);
 }
 
+/** Real booked length; a party booking spans more than the service's single-person duration. */
+export function bookingMinutes(b: { startTime: string; endTime: string }): number {
+  return toMinutes(b.endTime) - toMinutes(b.startTime);
+}
+
+export function bookingTotal(b: {
+  totalPrice?: number;
+  partySize?: number;
+  service?: { price: number };
+}): number | null {
+  if (b.totalPrice != null) return b.totalPrice;
+  return b.service ? b.service.price * (b.partySize ?? 1) : null;
+}
+
 /** Maps a vertical offset inside a day column to a slot start, snapped to `step` minutes. */
 export function snapOffsetToTime(offsetY: number, firstHour: number, step = 15): string {
   const raw = firstHour * 60 + Math.floor(((Math.max(offsetY, 0) / HOUR_PX) * 60) / step) * step;

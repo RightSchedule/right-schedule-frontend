@@ -60,6 +60,8 @@
     "service": "Service",
     "noServices": "This professional has no active services.",
     "serviceOption": "{name} · {minutes} min",
+    "people": "People",
+    "peopleOption": "{count, plural, one {# person} other {# people}} · {minutes} min",
     "customerName": "Customer name",
     "submit": "Create booking",
     "created": "Booking created"

@@ -60,6 +60,8 @@
     "service": "Serviço",
     "noServices": "Este profissional não tem serviços ativos.",
     "serviceOption": "{name} · {minutes} min",
+    "people": "Pessoas",
+    "peopleOption": "{count, plural, one {# pessoa} other {# pessoas}} · {minutes} min",
     "customerName": "Nome do cliente",
     "submit": "Criar marcação",
     "created": "Marcação criada"

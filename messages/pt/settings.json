@@ -25,11 +25,14 @@
     "timezone": "Fuso horário",
     "timezoneHint": "As horas das marcações são apresentadas neste fuso horário.",
     "emailLanguage": "Idioma dos emails",
-    "emailLanguageHint": "O idioma das notificações por email que o seu negócio recebe."
+    "emailLanguageHint": "O idioma das notificações por email que o seu negócio recebe.",
+    "defaultMaxPartySize": "Máx. de pessoas por marcação (predefinido)",
+    "defaultMaxPartySizeHint": "1 significa uma pessoa por marcação. Cada serviço pode alterar este valor."
   },
   "validation": {
     "nameRequired": "O nome do negócio é obrigatório",
-    "emailInvalid": "Introduza um email válido"
+    "emailInvalid": "Introduza um email válido",
+    "partySizeInvalid": "Introduza um número inteiro de 1 a 10"
   },
   "privacy": {
     "title": "Privacidade e dados",

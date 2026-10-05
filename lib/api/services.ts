@@ -7,6 +7,8 @@ export interface ServicePayload {
   description?: string;
   durationMinutes: number;
   price: number;
+  /** null clears the override so the business default applies. */
+  maxPartySize?: number | null;
 }
 
 export const servicesApi = {

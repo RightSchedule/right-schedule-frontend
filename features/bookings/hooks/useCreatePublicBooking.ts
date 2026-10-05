@@ -18,6 +18,7 @@ export interface NewBookingInput {
   time: string;
   customer: { name: string; phone?: string; email?: string };
   notes?: string;
+  partySize?: number;
   /** Customer's language for emails; defaults to the active UI locale. */
   locale?: string;
 }
@@ -47,6 +48,7 @@ export function useCreatePublicBooking() {
       startDateTime: toStartDateTime(input.date, input.time),
       customer: input.customer,
       notes: input.notes || undefined,
+      partySize: input.partySize && input.partySize > 1 ? input.partySize : undefined,
       locale: input.locale ?? activeLocale,
     };
     const fingerprint = JSON.stringify(payload);

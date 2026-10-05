@@ -27,12 +27,21 @@ export function createServiceSchema(t: ServiceErrorTranslator) {
       .min(5, t("durationMin"))
       .max(720, t("durationMax")),
     price: z.number({ error: t("priceRequired") }).min(0, t("priceMin")),
+    maxPartySize: z
+      .number({ error: t("partySizeInvalid") })
+      .int(t("partySizeInvalid"))
+      .min(1, t("partySizeInvalid"))
+      .max(LIMITS.partySize, t("partySizeInvalid"))
+      .nullable(),
   });
 }
 
 export type ServiceFormValues = z.infer<ReturnType<typeof createServiceSchema>>;
 
-const DEFAULTS: ServiceFormValues = { name: "", description: "", durationMinutes: 30, price: 0 };
+const DEFAULTS: ServiceFormValues = { name: "", description: "", durationMinutes: 30,
+  price: 0,
+  maxPartySize: null,
+};
 
 /** Inline service form, reused by the dialog and the onboarding wizard. */
 export function ServiceForm({
@@ -63,6 +72,7 @@ export function ServiceForm({
           description: service.description ?? "",
           durationMinutes: service.durationMinutes,
           price: service.price,
+          maxPartySize: service.maxPartySize ?? null,
         }
       : DEFAULTS,
   });
@@ -120,6 +130,24 @@ export function ServiceForm({
           />
         </Field>
       </div>
+      <Field
+        label={t("maxPartySize")}
+        htmlFor="service-party"
+        hint={t("maxPartySizeHint")}
+        error={errors.maxPartySize?.message}
+      >
+        <Input
+          id="service-party"
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={LIMITS.partySize}
+          aria-invalid={!!errors.maxPartySize}
+          {...register("maxPartySize", {
+            setValueAs: (v) => (v === "" || v == null ? null : Number(v)),
+          })}
+        />
+      </Field>
       <FormError message={error} />
       <FormActions submitLabel={submitLabel} loading={isSubmitting} onCancel={onCancel} />
     </form>

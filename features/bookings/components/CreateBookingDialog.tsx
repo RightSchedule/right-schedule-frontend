@@ -58,6 +58,11 @@ function CreateBookingForm({
   const offered = (allServices ?? []).filter((s) => s.active && offeredIds?.includes(s.id));
   const serviceId = offered.some((s) => s.id === serviceChoice) ? serviceChoice : (offered[0]?.id ?? "");
 
+  const selectedService = offered.find((s) => s.id === serviceId);
+  const maxParty = selectedService?.maxPartySize ?? business?.defaultMaxPartySize ?? 1;
+  const [partyChoice, setPartyChoice] = useState(1);
+  const partySize = Math.min(partyChoice, maxParty);
+
   const {
     register,
     handleSubmit,
@@ -77,6 +82,7 @@ function CreateBookingForm({
       staffId,
       date,
       time,
+      partySize,
       customer: {
         name: values.name,
         phone: values.phone.trim() || undefined,
@@ -122,6 +128,21 @@ function CreateBookingForm({
           ))}
         </Select>
       </Field>
+      {maxParty > 1 && selectedService && (
+        <Field label={t("people")} htmlFor="nb-party">
+          <Select
+            id="nb-party"
+            value={partySize}
+            onChange={(e) => setPartyChoice(Number(e.target.value))}
+          >
+            {Array.from({ length: maxParty }, (_, i) => i + 1).map((n) => (
+              <option key={n} value={n}>
+                {t("peopleOption", { count: n, minutes: selectedService.durationMinutes * n })}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      )}
 
       <CustomerFields
         register={register}

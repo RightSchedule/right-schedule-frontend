@@ -35,6 +35,11 @@ function makeSchema(t: Translator) {
     address: optionalText(LIMITS.address),
     timezone: z.string().min(1),
     locale: z.enum(locales),
+    defaultMaxPartySize: z
+      .number({ error: t("validation.partySizeInvalid") })
+      .int(t("validation.partySizeInvalid"))
+      .min(1, t("validation.partySizeInvalid"))
+      .max(LIMITS.partySize, t("validation.partySizeInvalid")),
   });
 }
 
@@ -68,6 +73,7 @@ export default function SettingsPage() {
         address: business.address ?? "",
         timezone: business.timezone,
         locale: isLocale(business.locale) ? business.locale : defaultLocale,
+        defaultMaxPartySize: business.defaultMaxPartySize ?? 1,
       });
     }
   }, [business, reset]);
@@ -83,6 +89,7 @@ export default function SettingsPage() {
         timezone: values.timezone,
         logoUrl: business?.logoUrl,
         locale: values.locale,
+        defaultMaxPartySize: values.defaultMaxPartySize,
       });
       toast.success(t("saved"));
     } catch (e) {
@@ -152,6 +159,22 @@ export default function SettingsPage() {
                   </option>
                 ))}
               </Select>
+            </Field>
+            <Field
+              label={t("profile.defaultMaxPartySize")}
+              htmlFor="biz-party"
+              hint={t("profile.defaultMaxPartySizeHint")}
+              error={errors.defaultMaxPartySize?.message}
+            >
+              <Input
+                id="biz-party"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={LIMITS.partySize}
+                aria-invalid={!!errors.defaultMaxPartySize}
+                {...register("defaultMaxPartySize", { valueAsNumber: true })}
+              />
             </Field>
             <FormError message={formError} />
             <div className="flex justify-end">

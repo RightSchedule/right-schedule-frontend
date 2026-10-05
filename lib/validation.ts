@@ -10,6 +10,7 @@ export const LIMITS = {
   address: 255,
   passwordMin: 8,
   passwordMax: 72,
+  partySize: 10,
 } as const;
 
 export const PHONE_PATTERN = /^[+\d][\d\s()-]{5,}$/;

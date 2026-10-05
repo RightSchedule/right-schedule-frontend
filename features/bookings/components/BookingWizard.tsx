@@ -11,6 +11,7 @@ import { addDays, format } from "date-fns";
 import { ArrowLeft, CalendarDays, Clock, Sparkles } from "lucide-react";
 import { cn } from "cn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState, FormError, LoadingButton, initials } from "@/components/shared";
 import {
@@ -132,6 +133,54 @@ function StaffStep({
   );
 }
 
+function PartyStep({
+  service,
+  value,
+  onChange,
+  onContinue,
+}: {
+  service: PublicService;
+  value: number;
+  onChange: (n: number) => void;
+  onContinue: () => void;
+}) {
+  const t = useTranslations("public");
+  const { price } = useLocaleFormat();
+  const max = service.maxPartySize ?? 1;
+  return (
+    <div className="flex flex-col gap-6">
+      <div role="group" aria-label={t("wizard.party.label")} className="grid grid-cols-5 gap-2">
+        {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
+          <button
+            key={n}
+            type="button"
+            aria-pressed={n === value}
+            onClick={() => onChange(n)}
+            className={cn(
+              "h-12 rounded-md border text-base font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              n === value
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card hover:border-primary/50"
+            )}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+      <p aria-live="polite" className="text-sm text-muted-foreground">
+        {t("wizard.party.summary", {
+          people: value,
+          minutes: service.durationMinutes * value,
+          total: price(service.price * value),
+        })}
+      </p>
+      <Button size="lg" className="h-11 w-full text-base" onClick={onContinue}>
+        {t("wizard.party.continue")}
+      </Button>
+    </div>
+  );
+}
+
 type PartOfDay = "morning" | "afternoon" | "evening";
 
 function partOfDay(time: string): PartOfDay {
@@ -145,6 +194,7 @@ function WhenStep({
   slug,
   timezone,
   serviceId,
+  partySize,
   staffId,
   date,
   startTime,
@@ -154,6 +204,7 @@ function WhenStep({
   slug: string;
   timezone?: string;
   serviceId: string;
+  partySize: number;
   staffId: string | null;
   date: string | null;
   startTime: string | null;
@@ -166,7 +217,7 @@ function WhenStep({
     const today = dateFromISO(businessToday(timezone));
     return Array.from({ length: 14 }, (_, i) => addDays(today, i));
   }, [timezone]);
-  const availability = useAvailability({ slug, serviceId, staffId, date });
+  const availability = useAvailability({ slug, serviceId, staffId, date, partySize });
 
   const groups = useMemo(() => {
     const starts = [...new Set((availability.data?.slots ?? []).map((s) => s.start))].sort();
@@ -327,7 +378,13 @@ export function BookingWizard({
   const staffQ = usePublicStaff(slug, state.serviceId);
   const staff = useMemo(() => staffQ.data ?? [], [staffQ.data]);
   const askStaff = staff.length > 1;
-  const steps = WIZARD_STEPS.filter((s) => s !== "staff" || askStaff);
+  const askParty = (service?.maxPartySize ?? 1) > 1;
+  const steps = WIZARD_STEPS.filter(
+    (s) => (s !== "staff" || askStaff) && (s !== "party" || askParty)
+  );
+  const partySize = state.partySize;
+  const totalMinutes = service ? service.durationMinutes * partySize : 0;
+  const totalPrice = service ? service.price * partySize : 0;
 
   const timezone = business?.timezone;
   const today = business ? businessToday(timezone) : null;
@@ -340,7 +397,8 @@ export function BookingWizard({
       dispatch({ type: "SET_SERVICE", serviceId: s.id });
       if (list.length === 1) dispatch({ type: "SET_STAFF", staffId: list[0]!.id });
     };
-    const next: WizardStep = list.length > 1 ? "staff" : "when";
+    const next: WizardStep =
+      (s.maxPartySize ?? 1) > 1 ? "party" : list.length > 1 ? "staff" : "when";
     if (animate) move(next, apply);
     else {
       apply();
@@ -420,6 +478,7 @@ export function BookingWizard({
       staffId: state.staffId,
       date,
       time: state.startTime,
+      partySize,
       customer: { name: values.name, phone: values.phone, email: values.email },
       locale,
     });
@@ -432,8 +491,9 @@ export function BookingWizard({
       staffName: staffMember?.name ?? null,
       date,
       startTime: state.startTime,
-      endTime: addMinutesToTime(state.startTime, service.durationMinutes),
-      price: service.price,
+      endTime: addMinutesToTime(state.startTime, totalMinutes),
+      price: booking.totalPrice ?? totalPrice,
+      partySize,
       customerName: values.name,
       customerEmail: values.email,
     });
@@ -484,14 +544,15 @@ export function BookingWizard({
           className="mb-5"
           serviceId={service.id}
           serviceName={service.name}
-          price={service.price}
-          durationMinutes={service.durationMinutes}
+          price={totalPrice}
+          durationMinutes={totalMinutes}
+          partySize={partySize}
           staffName={showStaffInTicket ? staffName : undefined}
           date={step === "details" ? state.date : null}
           startTime={step === "details" ? state.startTime : null}
           endTime={
             step === "details" && state.startTime
-              ? addMinutesToTime(state.startTime, service.durationMinutes)
+              ? addMinutesToTime(state.startTime, totalMinutes)
               : null
           }
         />
@@ -525,6 +586,15 @@ export function BookingWizard({
             />
           )}
 
+          {step === "party" && service && (
+            <PartyStep
+              service={service}
+              value={partySize}
+              onChange={(n) => dispatch({ type: "SET_PARTY_SIZE", partySize: n })}
+              onContinue={() => move(askStaff ? "staff" : "when")}
+            />
+          )}
+
           {step === "staff" && (
             <StaffStep
               staff={staff}
@@ -538,6 +608,7 @@ export function BookingWizard({
               slug={slug}
               timezone={timezone}
               serviceId={service.id}
+              partySize={partySize}
               staffId={state.staffId}
               date={state.date}
               startTime={state.startTime}

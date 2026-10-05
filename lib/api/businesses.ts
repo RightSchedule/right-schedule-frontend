@@ -13,6 +13,7 @@ export interface BusinessPayload {
   logoUrl?: string;
   /** Language of the notification emails the business receives. */
   locale?: AppLocale;
+  defaultMaxPartySize?: number;
 }
 
 export interface CreateBusinessPayload extends BusinessPayload {
@@ -35,11 +36,13 @@ export const publicApi = {
     serviceId: string;
     date: string;
     staffId?: string;
+    partySize?: number;
   }) => {
     const query = new URLSearchParams({
       serviceId: params.serviceId,
       date: params.date,
       ...(params.staffId ? { staffId: params.staffId } : {}),
+      ...(params.partySize && params.partySize > 1 ? { partySize: String(params.partySize) } : {}),
     });
     return apiClient.get<AvailabilityResponse>(
       `/api/v1/public/businesses/${params.slug}/availability?${query}`

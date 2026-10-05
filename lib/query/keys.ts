@@ -37,7 +37,12 @@ export const qk = {
     staff: (slug: string, serviceId: string | null) =>
       ["public", "staff", slug, serviceId] as const,
     availabilityAll: ["public", "availability"] as const,
-    availability: (slug: string, serviceId: string | null, staffId: string | null, date: string | null) =>
-      ["public", "availability", slug, serviceId, staffId, date] as const,
+    availability: (
+      slug: string,
+      serviceId: string | null,
+      staffId: string | null,
+      date: string | null,
+      partySize = 1
+    ) => ["public", "availability", slug, serviceId, staffId, date, partySize] as const,
   },
 };
