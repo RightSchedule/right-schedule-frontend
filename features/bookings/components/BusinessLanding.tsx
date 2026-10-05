@@ -12,6 +12,7 @@ import {
   PublicLoading,
   PublicNotFound,
 } from "@/features/bookings/components/PublicShell";
+import { BusinessReviews } from "@/features/reviews/components/BusinessReviews";
 import { usePublicBusiness } from "@/features/bookings/hooks/usePublicBusiness";
 import { useLocaleFormat } from "@/lib/i18n/format";
 
@@ -103,6 +104,8 @@ export function BusinessLanding({ slug }: { slug: string }) {
           </ul>
         )}
       </section>
+
+      <BusinessReviews slug={slug} />
     </main>
   );
 }

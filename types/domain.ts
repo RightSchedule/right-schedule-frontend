@@ -205,3 +205,23 @@ export interface WaitlistEntry {
   notifiedAt?: string | null;
   createdAt: string;
 }
+
+export interface Review {
+  id: string;
+  rating: number;
+  comment?: string | null;
+  customerName: string;
+  createdAt: string;
+}
+
+export interface BusinessReviews {
+  averageRating: number;
+  totalReviews: number;
+  reviews: {
+    content: Review[];
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}

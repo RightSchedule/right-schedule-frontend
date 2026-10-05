@@ -40,6 +40,7 @@ export const qk = {
   public: {
     business: (slug: string) => ["public", "business", slug] as const,
     managedBooking: (token: string) => ["public", "managed-booking", token] as const,
+    reviews: (slug: string, page: number) => ["public", "reviews", slug, page] as const,
     managedQuote: (token: string) => ["public", "managed-quote", token] as const,
     staff: (slug: string, serviceId: string | null) =>
       ["public", "staff", slug, serviceId] as const,

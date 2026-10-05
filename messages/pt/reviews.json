@@ -1,0 +1,17 @@
+{
+  "heading": "Avaliações",
+  "count": "{count, plural, one {# avaliação} other {# avaliações}}",
+  "outOfFive": "{rating} de 5 estrelas",
+  "stars": "{count, plural, one {# estrela} other {# estrelas}}",
+  "previous": "Anterior",
+  "next": "Seguinte",
+  "page": "Página {page} de {total}",
+  "form": {
+    "title": "Como foi a sua visita?",
+    "ratingLabel": "Classificação",
+    "ratingRequired": "Escolha uma classificação de 1 a 5 estrelas",
+    "comment": "Comentário (opcional)",
+    "submit": "Enviar avaliação",
+    "thanks": "Obrigado pela sua avaliação"
+  }
+}

@@ -9,6 +9,7 @@ import enLegal from "@/messages/en/legal.json";
 import enOnboarding from "@/messages/en/onboarding.json";
 import enPublic from "@/messages/en/public.json";
 import enQuotes from "@/messages/en/quotes.json";
+import enReviews from "@/messages/en/reviews.json";
 import enReview from "@/messages/en/review.json";
 import enServices from "@/messages/en/services.json";
 import enSettings from "@/messages/en/settings.json";
@@ -25,6 +26,7 @@ import ptLegal from "@/messages/pt/legal.json";
 import ptOnboarding from "@/messages/pt/onboarding.json";
 import ptPublic from "@/messages/pt/public.json";
 import ptQuotes from "@/messages/pt/quotes.json";
+import ptReviews from "@/messages/pt/reviews.json";
 import ptReview from "@/messages/pt/review.json";
 import ptServices from "@/messages/pt/services.json";
 import ptSettings from "@/messages/pt/settings.json";
@@ -46,6 +48,7 @@ const en = {
   public: enPublic,
   quotes: enQuotes,
   review: enReview,
+  reviews: enReviews,
   services: enServices,
   settings: enSettings,
   staff: enStaff,
@@ -65,6 +68,7 @@ const pt: Messages = {
   public: ptPublic,
   quotes: ptQuotes,
   review: ptReview,
+  reviews: ptReviews,
   services: ptServices,
   settings: ptSettings,
   staff: ptStaff,

@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog, LoadingButton } from "@/components/shared";
 import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { WhenStep } from "@/features/bookings/components/wizard/WhenStep";
+import { ReviewForm } from "@/features/reviews/components/ReviewForm";
 import { PublicLoading, PublicNotFound } from "@/features/bookings/components/PublicShell";
 import {
   useCancelManagedBooking,
@@ -135,6 +136,8 @@ export function ManageBooking({ token }: { token: string }) {
           </div>
         </section>
       )}
+
+      {booking.status === "COMPLETED" && <ReviewForm token={token} slug={booking.businessSlug} />}
 
       <ConfirmDialog
         open={confirmingCancel}
