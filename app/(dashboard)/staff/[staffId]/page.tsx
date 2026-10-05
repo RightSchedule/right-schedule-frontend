@@ -13,11 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog, ErrorState, PageContainer, initials } from "@/components/shared";
 import { StaffProfileForm } from "@/features/staff/components/StaffFormDialog";
-import {
-  StaffServicesPanel,
-  TimeOffPanel,
-  WorkingHoursPanel,
-} from "@/features/staff/components/StaffPanels";
+import { StaffServicesPanel } from "@/features/staff/components/StaffServicesPanel";
+import { TimeOffPanel } from "@/features/staff/components/TimeOffPanel";
+import { WorkingHoursPanel } from "@/features/staff/components/WorkingHoursPanel";
 import { useDeactivateStaff, useStaffMember } from "@/features/staff/hooks/useStaff";
 import { useErrorMessage } from "@/lib/i18n/errors";
 
