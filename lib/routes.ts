@@ -8,6 +8,7 @@ export const PUBLIC_EXACT_PATHS = [
   "/reset-password",
   "/confirm-email-change",
   "/forgot-password",
+  "/resend-verification",
   "/leave-waitlist",
 ];
 

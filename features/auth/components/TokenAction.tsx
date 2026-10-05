@@ -15,11 +15,13 @@ export function TokenAction({
   action,
   messages,
   auto = true,
+  retryHref,
 }: {
   token: string;
   action: (token: string) => Promise<unknown>;
   messages: { title: string; confirm?: string; success: string; failure: string };
   auto?: boolean;
+  retryHref?: { href: string; label: string };
 }) {
   const tCommon = useTranslations("auth.token");
   const errorMessage = useErrorMessage();
@@ -48,9 +50,16 @@ export function TokenAction({
           <CircleX className="mb-4 size-8 text-destructive" aria-hidden />
           <h1 className="text-xl font-semibold">{messages.failure}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{errorMessage(mutation.error)}</p>
-          <Link href="/login" className={buttonVariants({ variant: "outline", className: "mt-6" })}>
-            {tCommon("signIn")}
-          </Link>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {retryHref && (
+              <Link href={retryHref.href} className={buttonVariants()}>
+                {retryHref.label}
+              </Link>
+            )}
+            <Link href="/login" className={buttonVariants({ variant: "outline" })}>
+              {tCommon("signIn")}
+            </Link>
+          </div>
         </div>
       ) : auto ? (
         <div role="status" className="flex flex-col items-center gap-3">

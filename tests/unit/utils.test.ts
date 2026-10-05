@@ -47,7 +47,7 @@ describe("booking link", () => {
 
 describe("isPublicPath", () => {
   it("flags public routes", () => {
-    for (const p of ["/login", "/b/demo", "/privacy", "/terms", "/dpa", "/sub-processors", "/manage-booking", "/quote", "/book/demo", "/verify-email", "/reset-password", "/forgot-password", "/confirm-email-change", "/leave-waitlist"]) {
+    for (const p of ["/login", "/b/demo", "/privacy", "/terms", "/dpa", "/sub-processors", "/manage-booking", "/quote", "/book/demo", "/verify-email", "/reset-password", "/forgot-password", "/resend-verification", "/confirm-email-change", "/leave-waitlist"]) {
       expect(isPublicPath(p)).toBe(true);
     }
   });

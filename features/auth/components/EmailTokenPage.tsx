@@ -15,10 +15,12 @@ const actions: Record<Kind, (token: string) => Promise<unknown>> = {
 
 export function EmailTokenPage({ kind, token }: { kind: Kind; token: string }) {
   const t = useTranslations(`auth.token.${kind}`);
+  const tResend = useTranslations("auth.recovery.resend");
   return (
     <TokenAction
       token={token}
       action={actions[kind]}
+      retryHref={kind === "verifyEmail" ? { href: "/resend-verification", label: tResend("link") } : undefined}
       auto={kind !== "leaveWaitlist"}
       messages={{
         title: t("title"),

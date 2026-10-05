@@ -37,6 +37,61 @@ function Shell({
   );
 }
 
+export function ResendVerification() {
+  const t = useTranslations("auth");
+  const tr = useTranslations("auth.recovery.resend");
+  const errorMessage = useErrorMessage();
+  const rateLimit = useRateLimit();
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const schema = useMemo(
+    () => z.object({ email: requiredEmail(t("validation.invalidEmail")) }),
+    [t]
+  );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
+
+  async function onSubmit({ email }: z.infer<typeof schema>) {
+    setError(null);
+    try {
+      await authApi.resendVerification(email);
+      setSent(true);
+    } catch (e) {
+      if (rateLimit.handle(e)) return;
+      setError(errorMessage(e));
+    }
+  }
+
+  return (
+    <Shell title={tr("title")} description={sent ? undefined : tr("description")}>
+      {sent ? (
+        <p role="status" className="mt-4 text-sm">
+          {tr("sent")}
+        </p>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+          <Field label={t("fields.email")} htmlFor="resend-email" error={errors.email?.message}>
+            <Input
+              id="resend-email"
+              type="email"
+              autoComplete="email"
+              placeholder={t("fields.emailPlaceholder")}
+              {...register("email")}
+            />
+          </Field>
+          <FormError message={rateLimit.message ?? error} />
+          <LoadingButton type="submit" size="lg" loading={isSubmitting} disabled={rateLimit.limited}>
+            {tr("submit")}
+          </LoadingButton>
+        </form>
+      )}
+    </Shell>
+  );
+}
+
 export function ForgotPassword() {
   const t = useTranslations("auth");
   const tr = useTranslations("auth.recovery.forgot");

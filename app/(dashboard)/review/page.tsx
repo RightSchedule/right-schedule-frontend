@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { differenceInCalendarDays, parseISO } from "date-fns";
@@ -27,6 +27,7 @@ import {
 import { useReviewBookings } from "@/features/bookings/hooks/useBookings";
 import { useBusiness } from "@/features/business/hooks/useBusiness";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { pageFromParam, pageToParam, useUrlParams } from "@/lib/hooks/useUrlParams";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { businessToday } from "@/lib/utils/clock";
 import type { Booking } from "@/types/domain";
@@ -116,14 +117,16 @@ function ReviewRow({
   );
 }
 
-export default function ReviewPage() {
+function ReviewContent() {
   const t = useTranslations("review");
   const toast = useToast();
   const errorMessage = useErrorMessage();
   const business = useBusiness();
   const today = businessToday(business.data?.timezone);
 
-  const [page, setPage] = useState(0);
+  const { params, set } = useUrlParams();
+  const page = pageFromParam(params.get("page"));
+  const setPage = (p: number) => set({ page: pageToParam(p) });
   const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
   const [detail, setDetail] = useState<Booking | null>(null);
   const [confirmingBulk, setConfirmingBulk] = useState(false);
@@ -135,9 +138,10 @@ export default function ReviewPage() {
   const bulk = useBulkCompleteBookings();
 
   // Resolving the last row of a later page leaves it empty; step back instead of showing a blank page.
-  if (page > 0 && !isLoading && !isPlaceholderData && bookings.length === 0) {
-    setPage(page - 1);
-  }
+  const stepBack = page > 0 && !isLoading && !isPlaceholderData && bookings.length === 0;
+  useEffect(() => {
+    if (stepBack) set({ page: pageToParam(page - 1) });
+  }, [stepBack, page, set]);
 
   const selected = bookings.filter((b) => selectedIds.has(b.id));
   const allSelected = bookings.length > 0 && selected.length === bookings.length;
@@ -280,5 +284,19 @@ export default function ReviewPage() {
         }}
       />
     </PageContainer>
+  );
+}
+
+export default function ReviewPage() {
+  return (
+    <Suspense
+      fallback={
+        <PageContainer>
+          <SkeletonList className="h-20" />
+        </PageContainer>
+      }
+    >
+      <ReviewContent />
+    </Suspense>
   );
 }
