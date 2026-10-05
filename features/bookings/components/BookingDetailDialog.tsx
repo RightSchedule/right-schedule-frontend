@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CalendarCheck, CircleCheck, CircleX, Clock, Mail, NotebookText, Phone, TriangleAlert, User, UserRound, Users, UserX } from "lucide-react";
+import { CalendarCheck, CircleCheck, CircleX, Clock, Mail, NotebookText, Pencil, Phone, TriangleAlert, User, UserRound, Users, UserX } from "lucide-react";
 import { bookingMinutes, bookingTotal } from "@/features/bookings/calendarGeometry";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import { ConfirmDialog, DetailsRow, LoadingButton } from "@/components/shared";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { morphFromRect } from "@/lib/utils/motion";
+import { BookingEditPanel } from "@/features/bookings/components/BookingEditPanel";
 import { useUpdateBookingStatus } from "@/features/bookings/hooks/useBookingActions";
 import type { Booking, BookingStatus } from "@/types/domain";
 
@@ -93,6 +94,9 @@ export function BookingDetailDialog({
   const mutation = useUpdateBookingStatus();
   const actionable = booking?.status === "CONFIRMED";
   const [confirming, setConfirming] = useState<"cancel" | "no-show" | null>(null);
+  const [editing, setEditing] = useState<"reschedule" | "notes" | null>(null);
+  const [savedNotes, setSavedNotes] = useState<{ id: string; value: string | null } | null>(null);
+  const notes = booking && savedNotes?.id === booking.id ? savedNotes.value : booking?.notes;
 
   async function run(action: "cancel" | "complete" | "no-show", message: string) {
     if (!booking) return;
@@ -113,7 +117,13 @@ export function BookingDetailDialog({
 
   return (
     <>
-    <Dialog open={!!booking} onOpenChange={onOpenChange}>
+    <Dialog
+      open={!!booking}
+      onOpenChange={(open) => {
+        if (!open) setEditing(null);
+        onOpenChange(open);
+      }}
+    >
       <DialogContent ref={popupRef} className="max-w-md">
         {booking && (
           <>
@@ -190,15 +200,47 @@ export function BookingDetailDialog({
                   </a>
                 </DetailsRow>
               )}
-              {booking.notes && (
+              {(notes || actionable) && (
                 <DetailsRow icon={NotebookText}>
-                  <p className="whitespace-pre-wrap">{booking.notes}</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className={notes ? "whitespace-pre-wrap" : "text-muted-foreground"}>
+                      {notes || t("edit.noNotes")}
+                    </p>
+                    {actionable && (
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={t("edit.editNotes")}
+                        onClick={() => setEditing("notes")}
+                      >
+                        <Pencil />
+                      </Button>
+                    )}
+                  </div>
                 </DetailsRow>
               )}
             </div>
 
-            {actionable ? (
+            {editing ? (
+              <BookingEditPanel
+                key={editing}
+                booking={{ ...booking, notes }}
+                mode={editing}
+                onDone={(closeDialog, saved) => {
+                  if (saved !== undefined) setSavedNotes({ id: booking.id, value: saved });
+                  setEditing(null);
+                  if (closeDialog) onOpenChange(false);
+                }}
+              />
+            ) : actionable ? (
               <div className="mt-6 flex flex-wrap justify-end gap-2">
+                <Button
+                  variant="outline"
+                  disabled={mutation.isPending}
+                  onClick={() => setEditing("reschedule")}
+                >
+                  {t("edit.reschedule")}
+                </Button>
                 <Button
                   variant="destructive"
                   disabled={mutation.isPending}

@@ -48,5 +48,26 @@
     "legal": "Legal"
   },
   "saved": "Definições guardadas",
-  "notFound": "Negócio não encontrado"
+  "notFound": "Negócio não encontrado",
+  "bookingRules": {
+    "title": "Regras de marcação",
+    "description": "Limites aplicados às marcações feitas online pelos clientes.",
+    "minNotice": "Antecedência mínima (minutos)",
+    "minNoticeHint": "Com quanto tempo os clientes têm de marcar. 0 permite marcações de última hora.",
+    "maxAdvance": "Horizonte de marcação (dias)",
+    "maxAdvanceHint": "Até quando no futuro os clientes podem marcar.",
+    "cancellationWindow": "Prazo de cancelamento (minutos)",
+    "cancellationWindowHint": "Os clientes não podem cancelar nem alterar online dentro deste prazo antes do início.",
+    "noLimit": "Sem limite",
+    "slotInterval": "Intervalo entre horários",
+    "slotIntervalHint": "Intervalo entre as horas de início oferecidas aos clientes.",
+    "minutes": "{count} min",
+    "saved": "Regras de marcação guardadas",
+    "errors": {
+      "minNotice": "Introduza um número inteiro de 0 a 43200",
+      "maxAdvance": "Introduza um número inteiro de 1 a 730",
+      "cancellationWindow": "Deixe vazio ou introduza 0 a 43200",
+      "load": "Regras de marcação não encontradas"
+    }
+  }
 }

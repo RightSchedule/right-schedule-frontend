@@ -49,6 +49,19 @@
       "cancelled": "Booking cancelled",
       "noShow": "Marked as no-show",
       "completed": "Marked as completed"
+    },
+    "edit": {
+      "reschedule": "Reschedule",
+      "editNotes": "Edit notes",
+      "noNotes": "No notes",
+      "date": "Date",
+      "time": "Time",
+      "professional": "Professional",
+      "rescheduleHint": "The customer is emailed about the new time.",
+      "rescheduled": "Booking rescheduled",
+      "notes": "Notes",
+      "notesCount": "{count}/{max}",
+      "notesSaved": "Notes saved"
     }
   },
   "create": {

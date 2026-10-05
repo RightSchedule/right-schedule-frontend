@@ -48,5 +48,26 @@
     "legal": "Legal"
   },
   "saved": "Settings saved",
-  "notFound": "Business not found"
+  "notFound": "Business not found",
+  "bookingRules": {
+    "title": "Booking rules",
+    "description": "Limits applied to bookings customers make online.",
+    "minNotice": "Minimum notice (minutes)",
+    "minNoticeHint": "How far ahead customers must book. 0 allows last-minute bookings.",
+    "maxAdvance": "Booking horizon (days)",
+    "maxAdvanceHint": "How far into the future customers can book.",
+    "cancellationWindow": "Cancellation window (minutes)",
+    "cancellationWindowHint": "Customers can't cancel or reschedule online inside this window before the start.",
+    "noLimit": "No limit",
+    "slotInterval": "Time slot spacing",
+    "slotIntervalHint": "Gap between start times offered to customers.",
+    "minutes": "{count} min",
+    "saved": "Booking rules saved",
+    "errors": {
+      "minNotice": "Enter a whole number from 0 to 43200",
+      "maxAdvance": "Enter a whole number from 1 to 730",
+      "cancellationWindow": "Leave empty or enter 0 to 43200",
+      "load": "Booking rules not found"
+    }
+  }
 }

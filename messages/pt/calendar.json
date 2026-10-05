@@ -49,6 +49,19 @@
       "cancelled": "Marcação cancelada",
       "noShow": "Marcada como não compareceu",
       "completed": "Marcada como concluída"
+    },
+    "edit": {
+      "reschedule": "Reagendar",
+      "editNotes": "Editar notas",
+      "noNotes": "Sem notas",
+      "date": "Data",
+      "time": "Hora",
+      "professional": "Profissional",
+      "rescheduleHint": "O cliente recebe um email com a nova hora.",
+      "rescheduled": "Marcação reagendada",
+      "notes": "Notas",
+      "notesCount": "{count}/{max}",
+      "notesSaved": "Notas guardadas"
     }
   },
   "create": {
