@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog, LoadingButton } from "@/components/shared";
 import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
-import { WhenStep } from "@/features/bookings/components/BookingWizard";
+import { WhenStep } from "@/features/bookings/components/wizard/WhenStep";
 import { PublicLoading, PublicNotFound } from "@/features/bookings/components/PublicShell";
 import {
   useCancelManagedBooking,
