@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,11 +18,14 @@ import {
 import { CustomerFormDialog } from "@/features/customers/components/CustomerFormDialog";
 import { useCustomersPage } from "@/features/customers/hooks/useCustomers";
 import { useDebouncedValue } from "@/lib/hooks/useDebouncedValue";
+import { pageFromParam, pageToParam, useUrlParams } from "@/lib/hooks/useUrlParams";
 
-export default function CustomersPage() {
+function CustomersContent() {
   const t = useTranslations("customers.list");
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(0);
+  const { params, set } = useUrlParams();
+  const [query, setQuery] = useState(params.get("q") ?? "");
+  const page = pageFromParam(params.get("page"));
+  const setPage = (p: number) => set({ page: pageToParam(p) });
   const [creating, setCreating] = useState(false);
   const search = useDebouncedValue(query.trim());
   const { data, isLoading, error, refetch, isPlaceholderData } = useCustomersPage(search, page);
@@ -64,7 +67,7 @@ export default function CustomersPage() {
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
-                setPage(0);
+                set({ q: e.target.value.trim() || null, page: null });
               }}
             />
           </div>
@@ -99,5 +102,19 @@ export default function CustomersPage() {
         </div>
       )}
     </PageContainer>
+  );
+}
+
+export default function CustomersPage() {
+  return (
+    <Suspense
+      fallback={
+        <PageContainer>
+          <SkeletonList />
+        </PageContainer>
+      }
+    >
+      <CustomersContent />
+    </Suspense>
   );
 }

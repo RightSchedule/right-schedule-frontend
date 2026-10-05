@@ -29,10 +29,8 @@ import {
   PaginationNav,
   initials,
 } from "@/components/shared";
-import {
-  BookingDetailDialog,
-  BookingStatusBadge,
-} from "@/features/bookings/components/BookingDetailDialog";
+import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
+import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { useCustomerBookingsPage } from "@/features/bookings/hooks/useBookings";
 import { CustomerFormDialog } from "@/features/customers/components/CustomerFormDialog";
 import { useCustomer, useDeleteCustomer, useExportCustomer } from "@/features/customers/hooks/useCustomers";

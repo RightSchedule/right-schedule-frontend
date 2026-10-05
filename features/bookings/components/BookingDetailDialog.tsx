@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CalendarCheck, CircleCheck, CircleX, Clock, Mail, NotebookText, Pencil, Phone, TriangleAlert, User, UserRound, Users, UserX } from "lucide-react";
+import { CircleCheck, Clock, Mail, NotebookText, Pencil, Phone, TriangleAlert, User, UserRound, Users, UserX } from "lucide-react";
 import { bookingMinutes, bookingTotal } from "@/features/bookings/calendarGeometry";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,51 +19,10 @@ import { ConfirmDialog, DetailsRow, LoadingButton } from "@/components/shared";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { morphFromRect } from "@/lib/utils/motion";
+import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { BookingEditPanel } from "@/features/bookings/components/BookingEditPanel";
 import { useUpdateBookingStatus } from "@/features/bookings/hooks/useBookingActions";
 import type { Booking, BookingStatus } from "@/types/domain";
-
-export function statusVariant(status: BookingStatus) {
-  switch (status) {
-    case "CONFIRMED":
-      return "secondary" as const;
-    case "CANCELLED":
-      return "destructive" as const;
-    case "NO_SHOW":
-      return "warning" as const;
-    case "COMPLETED":
-      return "success" as const;
-  }
-}
-
-const STATUS_ICON = {
-  CONFIRMED: CalendarCheck,
-  COMPLETED: CircleCheck,
-  CANCELLED: CircleX,
-  NO_SHOW: UserX,
-} as const;
-
-export function useStatusLabel(): (status: BookingStatus) => string {
-  const t = useTranslations("common.status");
-  return (status) => t(status);
-}
-
-export function BookingStatusBadge({
-  status,
-  className,
-}: {
-  status: BookingStatus;
-  className?: string;
-}) {
-  const statusLabel = useStatusLabel();
-  const Icon = STATUS_ICON[status];
-  return (
-    <Badge variant={statusVariant(status)} className={className}>
-      <Icon aria-hidden />
-      {statusLabel(status)}
-    </Badge>
-  );
-}
 
 export interface DialogOrigin {
   rect: DOMRect;

@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { CalendarClock, Clock, User } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { ConfirmDialog, LoadingButton } from "@/components/shared";
+import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { WhenStep } from "@/features/bookings/components/BookingWizard";
 import { PublicLoading, PublicNotFound } from "@/features/bookings/components/PublicShell";
 import {
@@ -16,18 +16,9 @@ import {
 } from "@/features/bookings/hooks/useManagedBooking";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
-import type { BookingStatus } from "@/types/domain";
-
-const statusVariant: Record<BookingStatus, "success" | "secondary" | "destructive" | "warning"> = {
-  CONFIRMED: "success",
-  COMPLETED: "secondary",
-  CANCELLED: "destructive",
-  NO_SHOW: "warning",
-};
 
 export function ManageBooking({ token }: { token: string }) {
   const t = useTranslations("public.manage");
-  const tStatus = useTranslations("common.status");
   const f = useLocaleFormat();
   const toast = useToast();
   const errorMessage = useErrorMessage();
@@ -74,7 +65,7 @@ export function ManageBooking({ token }: { token: string }) {
       <p className="text-sm text-muted-foreground">{booking.businessName}</p>
       <div className="mt-1 flex items-center gap-3">
         <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <Badge variant={statusVariant[booking.status]}>{tStatus(booking.status)}</Badge>
+        <BookingStatusBadge status={booking.status} />
       </div>
 
       <dl className="mt-6 flex flex-col gap-3 rounded-lg border border-border bg-card p-4 text-sm">

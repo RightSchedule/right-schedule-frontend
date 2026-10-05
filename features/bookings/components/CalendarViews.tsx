@@ -7,7 +7,7 @@ import { CalendarCheck, CalendarX, CheckCheck, TriangleAlert, UserX } from "luci
 import { cn } from "cn";
 import { EmptyState } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
-import { BookingStatusBadge, useStatusLabel } from "@/features/bookings/components/BookingDetailDialog";
+import { BookingStatusBadge, useStatusLabel } from "@/features/bookings/components/BookingStatusBadge";
 import {
   HOUR_PX,
   bookingMinutes,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { MessageSquareQuote } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,20 +14,25 @@ import {
   PaginationNav,
   SkeletonList,
 } from "@/components/shared";
-import { QuoteDialog, QuoteStatusBadge } from "@/features/quotes/components/QuoteDialog";
+import { QuoteDialog } from "@/features/quotes/components/QuoteDialog";
+import { QuoteStatusBadge } from "@/features/quotes/components/QuoteStatusBadge";
 import { useQuotesPage } from "@/features/quotes/hooks/useQuotes";
 import { useServices } from "@/features/services/hooks/useServices";
+import { pageFromParam, pageToParam, useUrlParams } from "@/lib/hooks/useUrlParams";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import type { QuoteRequest, QuoteStatus } from "@/types/domain";
 
 const FILTERS = ["ALL", "PENDING", "QUOTED", "ACCEPTED", "CONVERTED", "DECLINED", "CUSTOMER_DECLINED"] as const;
 type Filter = (typeof FILTERS)[number];
 
-export default function QuotesPage() {
+function QuotesContent() {
   const t = useTranslations("quotes.list");
   const f = useLocaleFormat();
-  const [filter, setFilter] = useState<Filter>("PENDING");
-  const [page, setPage] = useState(0);
+  const { params, set } = useUrlParams();
+  const rawFilter = params.get("status");
+  const filter: Filter = FILTERS.find((k) => k === rawFilter) ?? "PENDING";
+  const page = pageFromParam(params.get("page"));
+  const setPage = (p: number) => set({ page: pageToParam(p) });
   const [selected, setSelected] = useState<QuoteRequest | null>(null);
   const status: QuoteStatus | null = filter === "ALL" ? null : filter;
   const { data, isLoading, error, refetch, isPlaceholderData } = useQuotesPage(status, page);
@@ -47,10 +52,7 @@ export default function QuotesPage() {
 
       <Tabs
         value={filter}
-        onValueChange={(v) => {
-          setFilter(v as Filter);
-          setPage(0);
-        }}
+        onValueChange={(v) => set({ status: v === "PENDING" ? null : String(v), page: null })}
       >
         <TabsList aria-label={t("filters.label")} className="mb-5 w-full justify-start overflow-x-auto sm:w-fit">
           {FILTERS.map((k) => (
@@ -114,5 +116,19 @@ export default function QuotesPage() {
         }}
       />
     </PageContainer>
+  );
+}
+
+export default function QuotesPage() {
+  return (
+    <Suspense
+      fallback={
+        <PageContainer>
+          <SkeletonList className="h-20" />
+        </PageContainer>
+      }
+    >
+      <QuotesContent />
+    </Suspense>
   );
 }

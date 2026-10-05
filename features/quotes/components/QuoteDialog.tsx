@@ -28,32 +28,8 @@ import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { businessToday } from "@/lib/utils/clock";
 import { LIMITS } from "@/lib/validation";
+import { QuoteStatusBadge } from "@/features/quotes/components/QuoteStatusBadge";
 import type { QuoteRequest, QuoteStatus } from "@/types/domain";
-
-export function quoteStatusVariant(status: QuoteStatus) {
-  switch (status) {
-    case "PENDING":
-      return "pending" as const;
-    case "QUOTED":
-      return "warning" as const;
-    case "ACCEPTED":
-      return "success" as const;
-    case "CONVERTED":
-      return "default" as const;
-    case "DECLINED":
-    case "CUSTOMER_DECLINED":
-      return "secondary" as const;
-  }
-}
-
-export function QuoteStatusBadge({ status, className }: { status: QuoteStatus; className?: string }) {
-  const t = useTranslations("quotes.status");
-  return (
-    <Badge variant={quoteStatusVariant(status)} className={className}>
-      {t(status)}
-    </Badge>
-  );
-}
 
 const AMOUNT_PATTERN = /^\d{1,8}([.,]\d{1,2})?$/;
 

@@ -8,10 +8,8 @@ import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared";
-import {
-  BookingDetailDialog,
-  BookingStatusBadge,
-} from "@/features/bookings/components/BookingDetailDialog";
+import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
+import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import {
   CreateBookingDialog,
   type BookingDraft,
