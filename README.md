@@ -17,6 +17,7 @@ npm run dev                                                   # http://localhost
 | Variable              | Default                 | Purpose          |
 | --------------------- | ----------------------- | ---------------- |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8080` | Backend base URL |
+| `NEXT_PUBLIC_STORAGE_ORIGIN` | unset | Origin of the logo object storage (CSP `connect-src`); required for logo upload |
 
 Scripts: `npm run dev`, `npm run build`, `npm run start`, `npm run lint`. `npx tsc --noEmit` for a typecheck.
 

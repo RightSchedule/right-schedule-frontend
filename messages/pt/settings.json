@@ -69,5 +69,18 @@
       "cancellationWindow": "Deixe vazio ou introduza 0 a 43200",
       "load": "Regras de marcação não encontradas"
     }
+  },
+  "logo": {
+    "title": "Logótipo",
+    "choose": "Escolher imagem do logótipo",
+    "upload": "Carregar logótipo",
+    "replace": "Substituir logótipo",
+    "remove": "Remover",
+    "hint": "PNG, JPEG ou WebP, até {size} MB. Aparece na sua página de marcações.",
+    "badType": "Use uma imagem PNG, JPEG ou WebP",
+    "tooLarge": "A imagem tem mais de {size} MB",
+    "uploadFailed": "Não foi possível carregar a imagem. Tente novamente.",
+    "updated": "Logótipo atualizado",
+    "removed": "Logótipo removido"
   }
 }

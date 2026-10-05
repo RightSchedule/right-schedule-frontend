@@ -19,6 +19,7 @@ import {
 } from "@/components/shared";
 import { PrivacyCard } from "@/features/account/components/PrivacyCard";
 import { BookingRulesCard } from "@/features/business/components/BookingRulesCard";
+import { LogoCard } from "@/features/business/components/LogoCard";
 import { BookingLinkCard } from "@/features/business/components/BookingLinkCard";
 import { useBusiness, useUpdateBusiness } from "@/features/business/hooks/useBusiness";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
@@ -109,6 +110,8 @@ export default function SettingsPage() {
       ) : (
         <div className="flex max-w-2xl flex-col gap-8">
           <BookingLinkCard slug={business.slug} />
+
+          <LogoCard business={business} />
 
           <form
             onSubmit={handleSubmit(onSubmit)}

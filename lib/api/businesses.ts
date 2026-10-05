@@ -20,7 +20,17 @@ export interface CreateBusinessPayload extends BusinessPayload {
   slug: string;
 }
 
+export interface LogoUpload {
+  uploadUrl: string;
+  publicUrl: string;
+  expiresAt: string;
+  headers?: Record<string, string>;
+}
+
 export const businessApi = {
+  requestLogoUpload: (contentType: string) =>
+    apiClient.post<LogoUpload>("/api/v1/business/me/logo-upload", { contentType }),
+
   create: (payload: CreateBusinessPayload) =>
     apiClient.post<Business>("/api/v1/business", payload),
 

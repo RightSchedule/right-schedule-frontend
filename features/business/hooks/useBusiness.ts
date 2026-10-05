@@ -6,7 +6,9 @@ import {
   type BusinessPayload,
   type CreateBusinessPayload,
 } from "@/lib/api/businesses";
+import { isLocale } from "@/i18n/config";
 import { qk } from "@/lib/query/keys";
+import type { Business } from "@/types/domain";
 
 export function useBusiness() {
   return useQuery({
@@ -35,6 +37,46 @@ export function useCreateBusiness() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateBusinessPayload) => businessApi.create(payload),
+    onSuccess: (business) => qc.setQueryData(qk.business, business),
+  });
+}
+
+export const LOGO_TYPES = ["image/png", "image/jpeg", "image/webp"];
+export const LOGO_MAX_BYTES = 2 * 1024 * 1024;
+
+export function businessPayload(business: Business, logoUrl: string | undefined): BusinessPayload {
+  return {
+    name: business.name,
+    email: business.email || undefined,
+    phone: business.phone || undefined,
+    address: business.address || undefined,
+    timezone: business.timezone,
+    locale: isLocale(business.locale) ? business.locale : undefined,
+    defaultMaxPartySize: business.defaultMaxPartySize,
+    logoUrl,
+  };
+}
+
+export class LogoUploadError extends Error {}
+
+/** Presigned PUT to object storage, then save the resulting public URL on the business. */
+export function useChangeLogo() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ business, file }: { business: Business; file: File | null }) => {
+      let logoUrl: string | undefined;
+      if (file) {
+        const target = await businessApi.requestLogoUpload(file.type);
+        const res = await fetch(target.uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": file.type, ...target.headers },
+          body: file,
+        }).catch(() => null);
+        if (!res?.ok) throw new LogoUploadError();
+        logoUrl = target.publicUrl;
+      }
+      return businessApi.updateMe(businessPayload(business, logoUrl));
+    },
     onSuccess: (business) => qc.setQueryData(qk.business, business),
   });
 }

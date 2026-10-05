@@ -69,5 +69,18 @@
       "cancellationWindow": "Leave empty or enter 0 to 43200",
       "load": "Booking rules not found"
     }
+  },
+  "logo": {
+    "title": "Logo",
+    "choose": "Choose a logo image",
+    "upload": "Upload logo",
+    "replace": "Replace logo",
+    "remove": "Remove",
+    "hint": "PNG, JPEG or WebP, up to {size} MB. Shown on your booking page.",
+    "badType": "Use a PNG, JPEG or WebP image",
+    "tooLarge": "The image is larger than {size} MB",
+    "uploadFailed": "Couldn't upload the image. Try again.",
+    "updated": "Logo updated",
+    "removed": "Logo removed"
   }
 }
