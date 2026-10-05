@@ -33,6 +33,10 @@ export const qk = {
     list: (status: string | null, page: number) => ["quotes", "list", status, page] as const,
     pending: ["quotes", "pending-count"] as const,
   },
+  waitlist: {
+    all: ["waitlist"] as const,
+    list: (status: string | null, page: number) => ["waitlist", "list", status, page] as const,
+  },
   public: {
     business: (slug: string) => ["public", "business", slug] as const,
     managedBooking: (token: string) => ["public", "managed-booking", token] as const,

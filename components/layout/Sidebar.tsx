@@ -11,6 +11,7 @@ import {
   ChartColumn,
   ClipboardCheck,
   MessageSquareQuote,
+  Hourglass,
   Settings,
   LogOut,
   PanelLeftClose,
@@ -33,6 +34,7 @@ type NavKey =
   | "review"
   | "customers"
   | "quotes"
+  | "waitlist"
   | "services"
   | "staff"
   | "settings";
@@ -49,6 +51,7 @@ const NAV_ITEMS: NavEntry[] = [
   { href: "/analytics", labelKey: "analytics", icon: ChartColumn },
   { href: "/review", labelKey: "review", icon: ClipboardCheck },
   { href: "/quotes", labelKey: "quotes", icon: MessageSquareQuote },
+  { href: "/waitlist", labelKey: "waitlist", icon: Hourglass },
   { href: "/customers", labelKey: "customers", icon: Users },
   { href: "/services", labelKey: "services", icon: Scissors },
   { href: "/staff", labelKey: "staff", icon: IdCard },
@@ -56,7 +59,7 @@ const NAV_ITEMS: NavEntry[] = [
 ];
 
 // Review and analytics live in "More" on mobile; the dashboard banner is review's primary entry point there.
-const MOBILE_MORE_ONLY: NavKey[] = ["review", "analytics"];
+const MOBILE_MORE_ONLY: NavKey[] = ["review", "analytics", "waitlist"];
 const MOBILE_TABS = NAV_ITEMS.filter((item) => !MOBILE_MORE_ONLY.includes(item.labelKey)).slice(0, 5);
 const MOBILE_MORE = NAV_ITEMS.filter((item) => !MOBILE_TABS.includes(item));
 

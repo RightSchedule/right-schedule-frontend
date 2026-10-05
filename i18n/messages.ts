@@ -13,6 +13,7 @@ import enReview from "@/messages/en/review.json";
 import enServices from "@/messages/en/services.json";
 import enSettings from "@/messages/en/settings.json";
 import enStaff from "@/messages/en/staff.json";
+import enWaitlist from "@/messages/en/waitlist.json";
 import ptAnalytics from "@/messages/pt/analytics.json";
 import ptAuth from "@/messages/pt/auth.json";
 import ptCalendar from "@/messages/pt/calendar.json";
@@ -28,6 +29,7 @@ import ptReview from "@/messages/pt/review.json";
 import ptServices from "@/messages/pt/services.json";
 import ptSettings from "@/messages/pt/settings.json";
 import ptStaff from "@/messages/pt/staff.json";
+import ptWaitlist from "@/messages/pt/waitlist.json";
 import type { AppLocale } from "./config";
 
 // One file per feature namespace (messages/<locale>/<namespace>.json) keeps diffs small.
@@ -47,6 +49,7 @@ const en = {
   services: enServices,
   settings: enSettings,
   staff: enStaff,
+  waitlist: enWaitlist,
 };
 
 const pt: Messages = {
@@ -65,6 +68,7 @@ const pt: Messages = {
   services: ptServices,
   settings: ptSettings,
   staff: ptStaff,
+  waitlist: ptWaitlist,
 };
 
 export type Messages = typeof en;

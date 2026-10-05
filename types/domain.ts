@@ -188,3 +188,20 @@ export interface PublicBusiness
   extends Pick<Business, "id" | "slug" | "name" | "email" | "phone" | "address" | "timezone" | "locale" | "logoUrl"> {
   services: PublicService[];
 }
+
+export type WaitlistStatus = "WAITING" | "NOTIFIED" | "BOOKED" | "CANCELLED";
+
+export interface WaitlistEntry {
+  id: string;
+  serviceId: string;
+  staffId: string | null;
+  desiredDate: string;
+  fromTime?: string | null;
+  toTime?: string | null;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string | null;
+  status: WaitlistStatus;
+  notifiedAt?: string | null;
+  createdAt: string;
+}
