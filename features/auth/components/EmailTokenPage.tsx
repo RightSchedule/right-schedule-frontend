@@ -5,11 +5,10 @@ import { TokenAction } from "@/features/auth/components/TokenAction";
 import { authApi } from "@/lib/api/auth";
 import { waitlistApi } from "@/lib/api/waitlist";
 
-type Kind = "verifyEmail" | "confirmEmailChange" | "leaveWaitlist";
+type Kind = "verifyEmail" | "leaveWaitlist";
 
 const actions: Record<Kind, (token: string) => Promise<unknown>> = {
   verifyEmail: authApi.verifyEmail,
-  confirmEmailChange: authApi.confirmEmailChange,
   leaveWaitlist: waitlistApi.leave,
 };
 

@@ -25,8 +25,5 @@ export const authApi = {
   resetPassword: (token: string, newPassword: string) =>
     apiClient.post<void>("/api/v1/auth/reset-password", { token, newPassword }),
 
-  confirmEmailChange: (token: string) =>
-    apiClient.post<void>("/api/v1/auth/confirm-email-change", { token }),
-
   logout: requestLogout,
 };

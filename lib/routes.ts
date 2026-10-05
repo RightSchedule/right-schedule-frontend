@@ -6,7 +6,6 @@ export const PUBLIC_EXACT_PATHS = [
   "/quote",
   "/verify-email",
   "/reset-password",
-  "/confirm-email-change",
   "/forgot-password",
   "/resend-verification",
   "/leave-waitlist",
