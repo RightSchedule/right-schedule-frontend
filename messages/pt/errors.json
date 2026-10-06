@@ -5,6 +5,8 @@
   "tooManyAttemptsRetry": "Demasiadas tentativas. Tente novamente dentro de {seconds}s.",
   "requestChanged": "O pedido foi alterado. Tente novamente.",
   "codes": {
+    "EMAIL_DISABLED": "O envio de emails ainda não está configurado neste servidor, por isso não é possível enviar esse link. Contacte o suporte.",
+    "INVALID_ACTION_TOKEN": "Este link não é válido, expirou ou já foi usado.",
     "UNAUTHORIZED": "Inicie sessão para continuar.",
     "FORBIDDEN": "Não tem permissão para fazer isto.",
     "INVALID_CREDENTIALS": "Email ou palavra-passe incorretos.",

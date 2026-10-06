@@ -27,6 +27,10 @@ describe("useErrorMessage", () => {
     expect(msg(new ApiError(403, "x", undefined, "FORBIDDEN"))).toBe(errors.codes.FORBIDDEN);
   });
 
+  it("explains a 503 when email is disabled on the server", () => {
+    expect(msg(new ApiError(503, "x", undefined, "EMAIL_DISABLED"))).toBe(errors.codes.EMAIL_DISABLED);
+  });
+
   it("explains rate limits, with and without a wait time", () => {
     expect(msg(new ApiError(429, "x", 12))).toContain("12");
     expect(msg(new ApiError(429, "x"))).toBe(errors.tooManyAttempts);

@@ -5,6 +5,8 @@
   "tooManyAttemptsRetry": "Too many attempts. Try again in {seconds}s.",
   "requestChanged": "That request changed. Please try again.",
   "codes": {
+    "EMAIL_DISABLED": "Email isn't set up on this server yet, so we can't send that link. Please contact support.",
+    "INVALID_ACTION_TOKEN": "This link is invalid, expired or was already used.",
     "UNAUTHORIZED": "Please sign in to continue.",
     "FORBIDDEN": "You don't have permission to do that.",
     "INVALID_CREDENTIALS": "Wrong email or password.",
