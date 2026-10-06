@@ -120,7 +120,11 @@ export default function CalendarPage() {
           </Button>
         </div>
         <h2 className="min-w-40 flex-1 font-heading text-xl font-semibold leading-snug" aria-live="polite">
-          {label}
+          {businessQuery.isLoading ? (
+            <span aria-hidden className="skeleton-shimmer block h-7 w-56 rounded-md bg-muted" />
+          ) : (
+            label
+          )}
         </h2>
         <Tabs
           value={view}
