@@ -7,6 +7,6 @@ export default async function QuotePage({
   searchParams: Promise<{ token?: string }>;
 }) {
   const { token } = await searchParams;
-  if (!token) return <PublicNotFound />;
+  if (!token) return <PublicNotFound tokenKind="quote" />;
   return <ManageQuote token={token} />;
 }

@@ -7,6 +7,6 @@ export default async function ManageBookingPage({
   searchParams: Promise<{ token?: string }>;
 }) {
   const { token } = await searchParams;
-  if (!token) return <PublicNotFound />;
+  if (!token) return <PublicNotFound tokenKind="booking" />;
   return <ManageBooking token={token} />;
 }

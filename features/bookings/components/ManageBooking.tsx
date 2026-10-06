@@ -34,7 +34,7 @@ export function ManageBooking({ token }: { token: string }) {
 
   if (query.isLoading) return <PublicLoading />;
   if (query.error || !query.data) {
-    return <PublicNotFound error={query.error} onRetry={() => query.refetch()} />;
+    return <PublicNotFound error={query.error} onRetry={() => query.refetch()} tokenKind="booking" />;
   }
   const booking = query.data;
 

@@ -19,7 +19,7 @@ export function ManageQuote({ token }: { token: string }) {
 
   if (query.isLoading) return <PublicLoading />;
   if (query.error || !query.data) {
-    return <PublicNotFound error={query.error} onRetry={() => query.refetch()} />;
+    return <PublicNotFound error={query.error} onRetry={() => query.refetch()} tokenKind="quote" />;
   }
   const quote = query.data;
 

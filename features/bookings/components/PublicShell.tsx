@@ -54,17 +54,49 @@ export function PublicLoading() {
   );
 }
 
+const invalidLinkRecovery = {
+  verifyEmail: { href: "/resend-verification", label: "resendVerification" },
+  resetPassword: { href: "/forgot-password", label: "forgotPassword" },
+} as const;
+
+export type TokenLinkKind = keyof typeof invalidLinkRecovery | "booking" | "quote" | "waitlist";
+
+/** Shown when an emailed token link is missing its token or the backend rejects the token. */
+export function PublicInvalidLink({ kind }: { kind: TokenLinkKind }) {
+  const t = useTranslations("public.shell.invalidLink");
+  const recovery = kind === "verifyEmail" || kind === "resetPassword" ? invalidLinkRecovery[kind] : null;
+
+  return (
+    <main className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-24 text-center">
+      <SearchX className="mb-4 size-6 text-muted-foreground" aria-hidden />
+      <h1 className="text-xl font-semibold">{t("title")}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
+      {recovery ? (
+        <Link href={recovery.href} className={buttonVariants({ className: "mt-6" })}>
+          {t(recovery.label)}
+        </Link>
+      ) : (
+        <p className="mt-3 text-sm text-muted-foreground">{t("contactBusiness")}</p>
+      )}
+    </main>
+  );
+}
+
 export function PublicNotFound({
   error,
   onRetry,
+  tokenKind,
 }: {
   error?: unknown;
   onRetry?: () => void;
+  tokenKind?: TokenLinkKind;
 }) {
   const t = useTranslations("public.shell.notFound");
   const tShell = useTranslations("public.shell.loadError");
   const tActions = useTranslations("common.actions");
   const errorMessage = useErrorMessage();
+
+  if (tokenKind && (!error || isStatus(error, 404))) return <PublicInvalidLink kind={tokenKind} />;
 
   if (error && !isStatus(error, 404)) {
     return (

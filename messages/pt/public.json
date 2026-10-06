@@ -6,6 +6,13 @@
       "description": "Este link pode estar errado ou o negócio já não aceita marcações online.",
       "ownerSignIn": "É proprietário de um negócio? Inicie sessão"
     },
+    "invalidLink": {
+      "title": "Este link não é válido",
+      "description": "Faltam informações, expirou ou já foi usado. Confirme que abriu o link completo do email.",
+      "forgotPassword": "Pedir novo link de redefinição",
+      "resendVerification": "Pedir novo link de verificação",
+      "contactBusiness": "Se continuar a acontecer, contacte o negócio para obter um novo link."
+    },
     "loadError": {
       "title": "Não foi possível carregar esta página"
     }

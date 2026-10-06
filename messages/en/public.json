@@ -6,6 +6,13 @@
       "description": "This link may be mistyped or the business is no longer taking online bookings.",
       "ownerSignIn": "Are you a business owner? Sign in"
     },
+    "invalidLink": {
+      "title": "This link isn't valid",
+      "description": "It's missing information, has expired, or was already used. Check that you opened the full link from the email.",
+      "forgotPassword": "Request a new reset link",
+      "resendVerification": "Request a new verification link",
+      "contactBusiness": "If this keeps happening, contact the business for a new link."
+    },
     "loadError": {
       "title": "Couldn't load this page"
     }
