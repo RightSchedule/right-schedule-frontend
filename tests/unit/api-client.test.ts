@@ -124,7 +124,7 @@ describe("401 handling", () => {
       return json({}, 401);
     });
     await apiClient.get("/api/v1/bookings").catch(() => undefined);
-    expect(assign).toHaveBeenCalledWith("/login");
+    expect(assign).toHaveBeenCalledWith("/login?signedout=1");
     expect(fetchMock.mock.calls.some((c) => String(c[0]).includes("/auth/logout"))).toBe(true);
   });
 

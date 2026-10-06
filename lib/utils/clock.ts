@@ -37,6 +37,14 @@ export function businessMinuteOfDay(tz?: string, now = new Date()): number {
   return Number(p.hour) * 60 + Number(p.minute);
 }
 
+/** True once a booking's start (yyyy-MM-dd + HH:mm[:ss]) has passed in the business timezone. */
+export function bookingStarted(date: string, startTime: string, tz?: string, now = new Date()): boolean {
+  const today = businessToday(tz, now);
+  if (date !== today) return date < today;
+  const [h, m] = startTime.split(":").map(Number);
+  return businessMinuteOfDay(tz, now) >= h * 60 + m;
+}
+
 function subscribe(cb: () => void) {
   const id = setInterval(cb, 20_000);
   return () => clearInterval(id);

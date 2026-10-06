@@ -21,6 +21,8 @@ import { useLocaleFormat } from "@/lib/i18n/format";
 import { morphFromRect } from "@/lib/utils/motion";
 import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { BookingEditPanel } from "@/features/bookings/components/BookingEditPanel";
+import { useBusiness } from "@/features/business/hooks/useBusiness";
+import { bookingStarted } from "@/lib/utils/clock";
 import { useUpdateBookingStatus } from "@/features/bookings/hooks/useBookingActions";
 import type { Booking, BookingStatus } from "@/types/domain";
 
@@ -52,6 +54,8 @@ export function BookingDetailDialog({
   const toast = useToast();
   const mutation = useUpdateBookingStatus();
   const actionable = booking?.status === "CONFIRMED";
+  const { data: business } = useBusiness();
+  const started = booking ? bookingStarted(booking.date, booking.startTime, business?.timezone) : false;
   const [confirming, setConfirming] = useState<"cancel" | "no-show" | null>(null);
   const [editing, setEditing] = useState<"reschedule" | "notes" | null>(null);
   const [savedNotes, setSavedNotes] = useState<{ id: string; value: string | null } | null>(null);
@@ -210,18 +214,21 @@ export function BookingDetailDialog({
                 </Button>
                 <Button
                   variant="outline"
-                  disabled={mutation.isPending}
+                  disabled={mutation.isPending || !started}
                   onClick={() => setConfirming("no-show")}
                 >
                   {tStatus("NO_SHOW")}
                 </Button>
                 <LoadingButton
                   loading={mutation.isPending && mutation.variables?.action === "complete"}
-                  disabled={mutation.isPending}
+                  disabled={mutation.isPending || !started}
                   onClick={() => run("complete", t("toast.completed"))}
                 >
                   <CircleCheck /> {t("complete")}
                 </LoadingButton>
+                {!started && (
+                  <p className="w-full text-right text-xs text-muted-foreground">{t("notStartedHint")}</p>
+                )}
               </div>
             ) : null}
           </>

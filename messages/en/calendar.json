@@ -34,6 +34,7 @@
     "unknownCustomer": "Unknown customer",
     "deletedCustomer": "deleted customer",
     "needsReviewTitle": "This booking has ended",
+    "notStartedHint": "Complete and no-show unlock when the booking starts.",
     "needsReviewDescription": "Mark how it went. Cancelling still emails the customer.",
     "cancelBooking": "Cancel booking",
     "confirm": {

@@ -42,7 +42,7 @@ export function useAuth() {
   async function logout() {
     queryClient.clear();
     await authApi.logout().catch(() => undefined);
-    router.push("/login");
+    router.push("/login?signedout=1");
   }
 
   return { login, register, logout };

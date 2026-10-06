@@ -7,7 +7,7 @@ import {
   toStartDateTime,
   weekRange,
 } from "@/lib/utils/date";
-import { businessMinuteOfDay, businessToday } from "@/lib/utils/clock";
+import { bookingStarted, businessMinuteOfDay, businessToday } from "@/lib/utils/clock";
 import { formatPrice } from "@/lib/utils/currency";
 import { isPublicPath } from "@/lib/routes";
 
@@ -103,6 +103,14 @@ describe("business clock", () => {
     const now = new Date("2026-10-02T23:30:00Z");
     expect(businessMinuteOfDay("Europe/Lisbon", now)).toBe(30);
     expect(businessMinuteOfDay("UTC", now)).toBe(23 * 60 + 30);
+  });
+
+  it("detects whether a booking has started in the business timezone", () => {
+    const now = new Date("2026-10-02T23:30:00Z"); // 00:30 on 10-03 in Lisbon
+    expect(bookingStarted("2026-10-03", "00:30:00", "Europe/Lisbon", now)).toBe(true);
+    expect(bookingStarted("2026-10-03", "00:31:00", "Europe/Lisbon", now)).toBe(false);
+    expect(bookingStarted("2026-10-02", "23:00:00", "Europe/Lisbon", now)).toBe(true);
+    expect(bookingStarted("2026-10-04", "00:00:00", "Europe/Lisbon", now)).toBe(false);
   });
 
   it("follows the DST switch", () => {

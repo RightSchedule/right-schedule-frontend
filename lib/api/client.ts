@@ -42,7 +42,7 @@ async function signOut() {
   await requestLogout();
   // Hard navigation on purpose: drops every in-memory cache and query state of the expired session.
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-  window.location.assign("/login");
+  window.location.assign("/login?signedout=1");
 }
 
 /** One shared refresh for all parallel 401s; the backend rotates the HttpOnly cookies. */
