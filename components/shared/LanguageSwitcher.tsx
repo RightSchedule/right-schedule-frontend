@@ -17,12 +17,15 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   return (
     <label
       className={cn(
-        "relative inline-flex h-9 items-center gap-1.5 rounded-md border border-input bg-card px-3 text-sm has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
+        "relative inline-flex h-9 items-center text-sm",
         pending && "opacity-60",
         className
       )}
     >
-      <Languages className="size-4 text-muted-foreground" aria-hidden />
+      <Languages
+        className="pointer-events-none absolute left-3 size-4 text-muted-foreground"
+        aria-hidden
+      />
       <span className="sr-only">{t("label")}</span>
       <select
         value={locale}
@@ -34,7 +37,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             router.refresh();
           });
         }}
-        className="cursor-pointer bg-transparent pr-1 outline-none"
+        className="h-full w-full cursor-pointer rounded-md border border-input bg-card pl-9 pr-3 transition-colors focus-visible:border-ring focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed"
       >
         {locales.map((l) => (
           <option key={l} value={l}>
