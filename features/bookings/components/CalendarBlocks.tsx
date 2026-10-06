@@ -11,7 +11,7 @@ const BLOCK_STYLE: Record<BookingStatus, string> = {
   CONFIRMED: "border-primary/25 bg-accent/70 text-foreground",
   COMPLETED: "border-success/40 bg-success-muted text-success-foreground",
   CANCELLED: "border-destructive/30 bg-destructive/5 text-muted-foreground line-through",
-  NO_SHOW: "border-warning/50 bg-warning-muted text-warning-foreground",
+  NO_SHOW: "border-dashed border-muted-foreground/50 bg-muted text-muted-foreground",
 };
 
 export const BLOCK_HOVER = "hover:brightness-95 dark:hover:brightness-125";
@@ -86,7 +86,7 @@ const BLOCK_ACCENT: Record<BookingStatus, string> = {
   CONFIRMED: "bg-primary",
   COMPLETED: "bg-success",
   CANCELLED: "bg-destructive/60",
-  NO_SHOW: "bg-warning",
+  NO_SHOW: "bg-muted-foreground/60",
 };
 
 export function DayCard({

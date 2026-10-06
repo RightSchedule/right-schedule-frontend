@@ -12,7 +12,7 @@ export function statusVariant(status: BookingStatus) {
     case "CANCELLED":
       return "destructive" as const;
     case "NO_SHOW":
-      return "warning" as const;
+      return "outline" as const;
     case "COMPLETED":
       return "success" as const;
   }
