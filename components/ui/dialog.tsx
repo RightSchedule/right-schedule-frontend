@@ -21,9 +21,32 @@ function DialogBackdrop({ className, ...props }: DialogPrimitive.Backdrop.Props)
   )
 }
 
+const TABBABLE =
+  'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+
+// base-ui only aria-hides outside content and relies on focus guards, which hand focus to BODY on wrap.
+function wrapTab(e: React.KeyboardEvent<HTMLElement>) {
+  if (e.key !== "Tab") return
+  const items = Array.from(e.currentTarget.querySelectorAll<HTMLElement>(TABBABLE)).filter(
+    (el) => !el.hasAttribute("data-base-ui-focus-guard") && el.offsetParent !== null
+  )
+  if (items.length === 0) return
+  const first = items[0]
+  const last = items[items.length - 1]
+  const active = document.activeElement
+  if (e.shiftKey && active === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && active === last) {
+    e.preventDefault()
+    first.focus()
+  }
+}
+
 function DialogContent({
   className,
   children,
+  onKeyDown,
   ...props
 }: DialogPrimitive.Popup.Props) {
   const t = useTranslations("common.actions")
@@ -31,6 +54,10 @@ function DialogContent({
     <DialogPrimitive.Portal>
       <DialogBackdrop />
       <DialogPrimitive.Popup
+        onKeyDown={(e) => {
+          wrapTab(e)
+          if (typeof onKeyDown === "function") onKeyDown(e)
+        }}
         className={cn(
           "dialog-popup fixed left-[50%] top-[50%] z-50 max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg border border-border bg-card p-6 shadow-pop max-h-[92dvh] overflow-y-auto w-[calc(100%-2rem)]",
           className
