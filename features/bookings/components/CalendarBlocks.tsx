@@ -53,7 +53,7 @@ export function BookingChip({
   showDate,
 }: {
   booking: Booking;
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   showDate?: boolean;
 }) {
   const t = useTranslations("calendar.views");
@@ -61,7 +61,7 @@ export function BookingChip({
   return (
     <button
       type="button"
-      onClick={(e) => onSelect(booking, e.currentTarget)}
+      onClick={() => onSelect(booking)}
       className={cn(
         "w-full rounded-md border px-2.5 py-1.5 text-left text-xs transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:py-2.5",
         blockStyle(booking),
@@ -96,7 +96,7 @@ export function DayCard({
 }: {
   booking: Booking;
   height: number;
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
 }) {
   const t = useTranslations("calendar.views");
   const statusLabel = useStatusLabel();
@@ -112,7 +112,7 @@ export function DayCard({
   return (
     <button
       type="button"
-      onClick={(e) => onSelect(b, e.currentTarget)}
+      onClick={() => onSelect(b)}
       title={`${start}–${end} · ${customer} · ${service} · ${statusLabel(b.status)}`}
       className={cn(
         "group relative flex h-full w-full overflow-hidden rounded-md border text-left text-xs transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

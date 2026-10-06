@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { CircleCheck, Clock, Mail, NotebookText, Pencil, Phone, TriangleAlert, User, UserRound, Users, UserX } from "lucide-react";
@@ -18,7 +18,6 @@ import {
 import { ConfirmDialog, DetailsRow, LoadingButton } from "@/components/shared";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
-import { morphFromRect } from "@/lib/utils/motion";
 import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { BookingEditPanel } from "@/features/bookings/components/BookingEditPanel";
 import { useBusiness } from "@/features/business/hooks/useBusiness";
@@ -26,26 +25,13 @@ import { bookingStarted } from "@/lib/utils/clock";
 import { useUpdateBookingStatus } from "@/features/bookings/hooks/useBookingActions";
 import type { Booking, BookingStatus } from "@/types/domain";
 
-export interface DialogOrigin {
-  rect: DOMRect;
-  el: HTMLElement;
-}
-
 export function BookingDetailDialog({
   booking,
-  origin,
   onOpenChange,
 }: {
   booking: Booking | null;
-  origin?: DialogOrigin | null;
   onOpenChange: (open: boolean) => void;
 }) {
-  const popupRef = useCallback(
-    (el: HTMLElement | null) => {
-      if (el && origin) morphFromRect(el, origin.rect, origin.el);
-    },
-    [origin]
-  );
   const t = useTranslations("calendar.detail");
   const tStatus = useTranslations("common.status");
   const tPeople = useTranslations("public.service");
@@ -87,7 +73,7 @@ export function BookingDetailDialog({
         onOpenChange(open);
       }}
     >
-      <DialogContent ref={popupRef} className="max-w-md">
+      <DialogContent className="max-w-md">
         {booking && (
           <>
             <DialogHeader>

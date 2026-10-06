@@ -42,7 +42,7 @@ function StaffTimeline({
   hours: number[];
   firstHour: number;
   nowTop: number | null;
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
 }) {
   const t = useTranslations("calendar.views");
@@ -100,7 +100,7 @@ function StaffTimeline({
               <button
                 key={b.id}
                 type="button"
-                onClick={(e) => onSelect(b, e.currentTarget)}
+                onClick={() => onSelect(b)}
                 style={{ top, minHeight: blockHeight }}
                 className={cn(
                   "absolute inset-x-1 flex flex-col justify-center gap-0.5 overflow-hidden rounded-md border px-3 py-1.5 text-left transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -149,7 +149,7 @@ export function DayView({
   timezone?: string;
   bookings: Booking[];
   staff: Staff[];
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
 }) {
   const iso = format(date, "yyyy-MM-dd");
@@ -179,7 +179,7 @@ function DayGrid({
 }: {
   bookings: Booking[];
   staff: Staff[];
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
   nowMinute: number | null;
 }) {
@@ -317,7 +317,7 @@ export function WeekView({
   timezone?: string;
   days: Date[];
   bookingsByDay: Booking[][];
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onOpenDay: (d: Date) => void;
 }) {
   const today = businessToday(timezone);

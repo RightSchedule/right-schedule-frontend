@@ -8,10 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ErrorState, PageContainer, PageHeader } from "@/components/shared";
-import {
-  BookingDetailDialog,
-  type DialogOrigin,
-} from "@/features/bookings/components/BookingDetailDialog";
+import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
 import { DayView, WeekView } from "@/features/bookings/components/CalendarViews";
 import {
   CreateBookingDialog,
@@ -38,7 +35,6 @@ export default function CalendarPage() {
   const [picked, setCursor] = useState<Date | null>(null);
   const cursor = useMemo(() => picked ?? dateFromISO(businessToday(timezone)), [picked, timezone]);
   const [selected, setSelected] = useState<Booking | null>(null);
-  const [origin, setOrigin] = useState<DialogOrigin | null>(null);
   const [draft, setDraft] = useState<BookingDraft | null>(null);
 
   const weekDays = useMemo(() => getWeekDays(cursor), [cursor]);
@@ -70,11 +66,6 @@ export default function CalendarPage() {
           : direction === 1 ? addWeeks(cursor, 1) : subWeeks(cursor, 1)
       )
     );
-  }
-
-  function select(booking: Booking, el?: HTMLElement) {
-    setOrigin(el ? { rect: el.getBoundingClientRect(), el } : null);
-    setSelected(booking);
   }
 
   const label =
@@ -168,7 +159,7 @@ export default function CalendarPage() {
               timezone={timezone}
               bookings={bookings.data ?? []}
               staff={staff.data ?? []}
-              onSelect={select}
+              onSelect={setSelected}
               onCreate={(staffId, time) => setDraft({ date: dayIso, time, staffId })}
             />
           ) : (
@@ -176,7 +167,7 @@ export default function CalendarPage() {
               timezone={timezone}
               days={weekDays}
               bookingsByDay={bookingsByDay}
-              onSelect={select}
+              onSelect={setSelected}
               onOpenDay={(d) =>
                 transition("cal-open-day", () => {
                   setCursor(d);
@@ -190,7 +181,6 @@ export default function CalendarPage() {
 
       <BookingDetailDialog
         booking={selected}
-        origin={origin}
         onOpenChange={(o) => !o && setSelected(null)}
       />
       <CreateBookingDialog draft={draft} onOpenChange={(o) => !o && setDraft(null)} />

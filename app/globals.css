@@ -286,6 +286,52 @@
   animation-delay: calc(min(var(--i, 0), 12) * 22ms);
 }
 
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--dialog-rise));
+  }
+}
+
+@keyframes dialog-out {
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--dialog-rise) / 2));
+  }
+}
+
+@keyframes dialog-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.dialog-popup {
+  --dialog-rise: 8px;
+}
+
+.dialog-popup[data-open] {
+  animation: dialog-in 200ms var(--ease-out-expo) both;
+}
+
+.dialog-popup[data-closed] {
+  animation: dialog-out 140ms ease-in both;
+}
+
+.dialog-backdrop[data-open] {
+  animation: dialog-fade-in 200ms ease-out both;
+}
+
+.dialog-backdrop[data-closed] {
+  animation: dialog-fade-out 140ms ease-in both;
+}
+
 @keyframes stamp-ring {
   to {
     stroke-dashoffset: 0;
@@ -320,6 +366,9 @@
     --tw-exit-rotate: 0deg !important;
     --tw-exit-blur: 0px !important;
     scroll-behavior: auto !important;
+  }
+  .dialog-popup {
+    --dialog-rise: 0px;
   }
   .animate-pulse {
     animation: none;
