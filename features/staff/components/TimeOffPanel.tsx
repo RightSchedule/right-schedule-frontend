@@ -84,7 +84,7 @@ function AddTimeOffDialog({
           <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label={t("date")} htmlFor="off-date">
               <Input
