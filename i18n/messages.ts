@@ -1,3 +1,4 @@
+import enAdmin from "@/messages/en/admin.json";
 import enAnalytics from "@/messages/en/analytics.json";
 import enAuth from "@/messages/en/auth.json";
 import enCalendar from "@/messages/en/calendar.json";
@@ -15,6 +16,7 @@ import enServices from "@/messages/en/services.json";
 import enSettings from "@/messages/en/settings.json";
 import enStaff from "@/messages/en/staff.json";
 import enWaitlist from "@/messages/en/waitlist.json";
+import ptAdmin from "@/messages/pt/admin.json";
 import ptAnalytics from "@/messages/pt/analytics.json";
 import ptAuth from "@/messages/pt/auth.json";
 import ptCalendar from "@/messages/pt/calendar.json";
@@ -36,6 +38,7 @@ import type { AppLocale } from "./config";
 
 // One file per feature namespace (messages/<locale>/<namespace>.json) keeps diffs small.
 const en = {
+  admin: enAdmin,
   analytics: enAnalytics,
   auth: enAuth,
   calendar: enCalendar,
@@ -56,6 +59,7 @@ const en = {
 };
 
 const pt: Messages = {
+  admin: ptAdmin,
   analytics: ptAnalytics,
   auth: ptAuth,
   calendar: ptCalendar,

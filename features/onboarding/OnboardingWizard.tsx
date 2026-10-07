@@ -275,6 +275,9 @@ export function OnboardingWizard() {
     return <Skeleton className="h-96 rounded-lg" />;
   }
 
+  // With approval on, the link only works once platform staff approve the business.
+  const copyKey = step === "done" && business.data?.status === "PENDING_APPROVAL" ? "pending" : step;
+
   const serviceIds =
     createdServiceIds.length > 0
       ? createdServiceIds
@@ -290,8 +293,8 @@ export function OnboardingWizard() {
 
       <div>
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold">{t(`copy.${step}.title`)}</h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">{t(`copy.${step}.description`)}</p>
+          <h1 className="text-2xl font-semibold">{t(`copy.${copyKey}.title`)}</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">{t(`copy.${copyKey}.description`)}</p>
         </div>
         {step === "business" && <BusinessStep onDone={() => setStep("service")} />}
         {step === "service" && (

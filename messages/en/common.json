@@ -71,5 +71,19 @@
     "dismiss": "Dismiss notification"
   },
   "loading": "Loading…",
-  "optional": "optional"
+  "optional": "optional",
+  "businessStatus": {
+    "PENDING_APPROVAL": {
+      "title": "Your business is waiting for approval",
+      "description": "Our team reviews every new business before it goes live. You can keep setting up services and your team meanwhile; your booking page starts working as soon as it's approved."
+    },
+    "REJECTED": {
+      "title": "Your business was not approved",
+      "description": "Your booking page is not available to customers. Contact support if you think this is a mistake."
+    },
+    "SUSPENDED": {
+      "title": "Your business is suspended",
+      "description": "Your booking page is offline and new bookings are paused. Existing customers can still view and cancel their bookings. Contact support to find out more."
+    }
+  }
 }

@@ -54,7 +54,10 @@
     "ACTIVE_BOOKING_LIMIT_REACHED": "Atingiu o limite de marcações futuras neste negócio. Cancele uma ou aguarde que passe.",
     "QUOTES_DISABLED": "Este negócio não aceita pedidos de orçamento online.",
     "WAITLIST_DISABLED": "Este negócio não tem lista de espera.",
-    "REVIEWS_DISABLED": "Este negócio não aceita avaliações."
+    "REVIEWS_DISABLED": "Este negócio não aceita avaliações.",
+    "PROTECTED_ACCOUNT": "As contas de admin não podem ser alteradas aqui.",
+    "USER_NOT_FOUND": "Conta não encontrada.",
+    "INVALID_BUSINESS_STATUS_TRANSITION": "Este negócio não pode ser alterado dessa forma a partir do estado atual."
   },
   "page": {
     "notFoundTitle": "Página não encontrada",

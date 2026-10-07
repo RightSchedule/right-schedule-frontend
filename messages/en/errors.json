@@ -54,7 +54,10 @@
     "ACTIVE_BOOKING_LIMIT_REACHED": "You've reached the limit of upcoming bookings for this business. Cancel one or wait until it passes.",
     "QUOTES_DISABLED": "This business isn't accepting quote requests online.",
     "WAITLIST_DISABLED": "This business doesn't offer a waitlist.",
-    "REVIEWS_DISABLED": "This business isn't accepting reviews."
+    "REVIEWS_DISABLED": "This business isn't accepting reviews.",
+    "PROTECTED_ACCOUNT": "Admin accounts can't be changed here.",
+    "USER_NOT_FOUND": "Account not found.",
+    "INVALID_BUSINESS_STATUS_TRANSITION": "This business can't be changed that way from its current status."
   },
   "page": {
     "notFoundTitle": "Page not found",
