@@ -47,7 +47,14 @@
     "WORKING_HOURS_OVERLAP": "Os horários sobrepõem-se no mesmo dia. Ajuste as horas.",
     "CONCURRENT_MODIFICATION": "Isto foi alterado por outra pessoa. Recarregue e tente novamente.",
     "PAYLOAD_TOO_LARGE": "O ficheiro é demasiado grande.",
-    "TOO_MANY_REQUESTS": "Demasiadas tentativas. Aguarde um momento e tente novamente."
+    "TOO_MANY_REQUESTS": "Demasiadas tentativas. Aguarde um momento e tente novamente.",
+    "PUBLIC_BOOKING_DISABLED": "Este negócio não aceita marcações online de momento. Contacte-o diretamente.",
+    "SERVICE_NOT_PUBLICLY_BOOKABLE": "Este serviço não pode ser marcado online. Contacte o negócio.",
+    "DAILY_BOOKING_LIMIT_REACHED": "Atingiu o limite diário de marcações neste negócio. Tente outro dia.",
+    "ACTIVE_BOOKING_LIMIT_REACHED": "Atingiu o limite de marcações futuras neste negócio. Cancele uma ou aguarde que passe.",
+    "QUOTES_DISABLED": "Este negócio não aceita pedidos de orçamento online.",
+    "WAITLIST_DISABLED": "Este negócio não tem lista de espera.",
+    "REVIEWS_DISABLED": "Este negócio não aceita avaliações."
   },
   "page": {
     "notFoundTitle": "Página não encontrada",

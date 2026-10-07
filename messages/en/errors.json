@@ -47,7 +47,14 @@
     "WORKING_HOURS_OVERLAP": "Working hours overlap on the same day. Adjust the times.",
     "CONCURRENT_MODIFICATION": "This was changed by someone else. Reload and try again.",
     "PAYLOAD_TOO_LARGE": "That is too large to upload.",
-    "TOO_MANY_REQUESTS": "Too many attempts. Please wait a moment and try again."
+    "TOO_MANY_REQUESTS": "Too many attempts. Please wait a moment and try again.",
+    "PUBLIC_BOOKING_DISABLED": "This business isn't taking online bookings right now. Please contact them directly.",
+    "SERVICE_NOT_PUBLICLY_BOOKABLE": "This service can't be booked online. Please contact the business.",
+    "DAILY_BOOKING_LIMIT_REACHED": "You've reached the daily booking limit for this business. Try another day.",
+    "ACTIVE_BOOKING_LIMIT_REACHED": "You've reached the limit of upcoming bookings for this business. Cancel one or wait until it passes.",
+    "QUOTES_DISABLED": "This business isn't accepting quote requests online.",
+    "WAITLIST_DISABLED": "This business doesn't offer a waitlist.",
+    "REVIEWS_DISABLED": "This business isn't accepting reviews."
   },
   "page": {
     "notFoundTitle": "Page not found",

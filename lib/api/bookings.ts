@@ -104,6 +104,15 @@ export const bookingsApi = {
     return normalizeBooking(res);
   },
 
+  /** Staff-side creation: skips the public booking switch and customer limits. */
+  createByOwner: async (payload: Omit<PublicBookingRequest, "businessId">, idempotencyKey?: string) => {
+    const body = { ...payload, staffId: payload.staffId ?? undefined };
+    const res = await apiClient.post<BookingResponse>("/api/v1/bookings", body, {
+      headers: idempotencyKey ? { "Idempotency-Key": idempotencyKey } : undefined,
+    });
+    return normalizeBooking(res);
+  },
+
   list: async (params: ListBookingsParams = {}): Promise<Booking[]> => {
     const rows = await listAll<BookingResponse>("/api/v1/bookings", { ...params });
     return rows.map(normalizeBooking);

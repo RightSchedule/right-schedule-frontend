@@ -43,6 +43,32 @@ export function BusinessContact({ business }: { business: PublicBusiness }) {
   );
 }
 
+/** Shown in place of a public flow the business has switched off, with whatever contact details it has. */
+export function FeatureClosed({
+  business,
+  kind,
+}: {
+  business: PublicBusiness;
+  kind: "booking" | "quotes";
+}) {
+  const t = useTranslations("public.closed");
+  return (
+    <main className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-20 text-center">
+      <h1 className="text-2xl font-semibold">{business.name}</h1>
+      <p className="mt-4 text-lg font-medium">{t(`${kind}.title`)}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{t(`${kind}.description`)}</p>
+      <div className="mt-6 flex flex-col items-center gap-2 text-sm">
+        <BusinessContact business={business} />
+        {business.email && (
+          <a href={`mailto:${business.email}`} className="text-primary hover:underline">
+            {business.email}
+          </a>
+        )}
+      </div>
+    </main>
+  );
+}
+
 export function PublicLoading() {
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-8">

@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Field, FormError, LoadingButton } from "@/components/shared";
 import {
   BusinessBadge,
+  FeatureClosed,
   PublicLoading,
   PublicNotFound,
 } from "@/features/bookings/components/PublicShell";
@@ -75,6 +76,9 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
 
   if (isLoading) return <PublicLoading />;
   if (loadError || !business) return <PublicNotFound error={loadError} onRetry={() => refetch()} />;
+  if (business.policy && !business.policy.quotesEnabled) {
+    return <FeatureClosed business={business} kind="quotes" />;
+  }
 
   async function onSubmit(values: Values) {
     setError(null);

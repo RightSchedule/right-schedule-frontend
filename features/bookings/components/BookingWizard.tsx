@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "cn";
 import { FormError } from "@/components/shared";
-import { BusinessBadge, PublicLoading, PublicNotFound } from "@/features/bookings/components/PublicShell";
+import { BusinessBadge, FeatureClosed, PublicLoading, PublicNotFound } from "@/features/bookings/components/PublicShell";
 import { BookingTicket } from "@/features/bookings/components/BookingTicket";
 import { PrivacyNoticeLink } from "@/features/legal/components/PrivacyNoticeLink";
 import { useCreatePublicBooking } from "@/features/bookings/hooks/useCreatePublicBooking";
@@ -116,6 +116,9 @@ export function BookingWizard({
 
   if (isLoading) return <PublicLoading />;
   if (error || !business) return <PublicNotFound error={error} onRetry={() => refetch()} />;
+  if (business.policy && !business.policy.bookingEnabled) {
+    return <FeatureClosed business={business} kind="booking" />;
+  }
 
   const stepIndex = steps.indexOf(step);
 
@@ -276,7 +279,7 @@ export function BookingWizard({
           {step === "when" && service && (
             <WhenStep
               slug={slug}
-              businessId={business.id}
+              businessId={business.policy?.waitlistEnabled === false ? undefined : business.id}
               timezone={timezone}
               serviceId={service.id}
               partySize={partySize}

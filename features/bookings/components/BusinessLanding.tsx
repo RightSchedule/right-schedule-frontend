@@ -26,6 +26,8 @@ export function BusinessLanding({ slug }: { slug: string }) {
   if (error || !business) return <PublicNotFound error={error} onRetry={() => refetch()} />;
 
   const services = business.services;
+  const bookingOpen = business.policy?.bookingEnabled !== false;
+  const quotesOpen = business.policy?.quotesEnabled !== false;
 
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-8 sm:py-12">
@@ -43,7 +45,7 @@ export function BusinessLanding({ slug }: { slug: string }) {
           <BusinessContact business={business} />
         </div>
         <div className="mt-6 flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          {services.length > 0 && (
+          {bookingOpen && services.length > 0 && (
             <Link
               href={`/b/${slug}/booking`}
               className={buttonVariants({ size: "lg", className: "reveal h-12 w-full px-8 text-base sm:w-auto" })}
@@ -52,17 +54,19 @@ export function BusinessLanding({ slug }: { slug: string }) {
               {t("landing.book")}
             </Link>
           )}
-          <Link
-            href={`/b/${slug}/quote`}
-            className={buttonVariants({
-              variant: services.length > 0 ? "outline" : "default",
-              size: "lg",
-              className: "reveal h-12 w-full px-8 text-base sm:w-auto",
-            })}
-            style={stagger(3)}
-          >
-            {tQuotes("landing.cta")}
-          </Link>
+          {quotesOpen && (
+            <Link
+              href={`/b/${slug}/quote`}
+              className={buttonVariants({
+                variant: bookingOpen && services.length > 0 ? "outline" : "default",
+                size: "lg",
+                className: "reveal h-12 w-full px-8 text-base sm:w-auto",
+              })}
+              style={stagger(3)}
+            >
+              {tQuotes("landing.cta")}
+            </Link>
+          )}
         </div>
       </header>
 
@@ -73,7 +77,11 @@ export function BusinessLanding({ slug }: { slug: string }) {
         >
           {t("landing.services")}
         </h2>
-        {services.length === 0 ? (
+        {!bookingOpen ? (
+          <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+            {t("closed.booking.description")}
+          </p>
+        ) : services.length === 0 ? (
           <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
             {t("landing.closed")}
           </p>
@@ -105,7 +113,7 @@ export function BusinessLanding({ slug }: { slug: string }) {
         )}
       </section>
 
-      <BusinessReviews slug={slug} />
+      {business.policy?.reviewsEnabled !== false && <BusinessReviews slug={slug} />}
     </main>
   );
 }

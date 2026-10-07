@@ -43,6 +43,10 @@ export interface Service {
   price: number;
   /** Per-service party size limit; null inherits the business default. */
   maxPartySize?: number | null;
+  /** null inherits (publicly bookable); false makes the service staff-only. */
+  publicBookable?: boolean | null;
+  /** null inherits the business buffer. */
+  bufferMinutes?: number | null;
   active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -168,6 +172,28 @@ export interface BookingSettings {
   maxAdvanceDays: number;
   cancellationWindowMinutes: number | null;
   slotIntervalMinutes: number;
+  /** null reuses the cancellation window. */
+  rescheduleWindowMinutes: number | null;
+  bufferMinutes: number;
+  publicBookingEnabled: boolean;
+  quotesEnabled: boolean;
+  waitlistEnabled: boolean;
+  reviewsEnabled: boolean;
+  showReviewsPublicly: boolean;
+  maxBookingsPerCustomerPerDay: number | null;
+  maxActiveBookingsPerCustomer: number | null;
+  notifyCustomerConfirmation: boolean;
+  notifyBusinessNewBooking: boolean;
+  /** 0 turns the customer reminder off. */
+  reminderLeadHours: 0 | 2 | 24;
+}
+
+/** Customer-facing subset of the booking policy; clients hide whatever is switched off. */
+export interface PublicPolicy {
+  bookingEnabled: boolean;
+  quotesEnabled: boolean;
+  waitlistEnabled: boolean;
+  reviewsEnabled: boolean;
 }
 
 export type PublicService = Pick<
@@ -186,6 +212,7 @@ export interface PublicStaff {
 
 export interface PublicBusiness
   extends Pick<Business, "id" | "slug" | "name" | "email" | "phone" | "address" | "timezone" | "locale" | "logoUrl"> {
+  policy?: PublicPolicy;
   services: PublicService[];
 }
 

@@ -37,8 +37,15 @@
       "durationMin": "At least 5 minutes",
       "durationMax": "At most 12 hours",
       "priceRequired": "Enter a price",
-      "priceMin": "Price can't be negative"
-    }
+      "priceMin": "Price can't be negative",
+      "bufferInvalid": "Enter a whole number from 0 to 240"
+    },
+    "bufferMinutes": "Buffer after booking (minutes)",
+    "bufferMinutesHint": "Leave empty to use the business buffer.",
+    "visibility": "Online booking",
+    "visibilityHint": "Staff-only services stay bookable from the calendar but are hidden from your public page.",
+    "visibilityPublic": "Customers can book online",
+    "visibilityStaffOnly": "Staff only"
   },
   "dialog": {
     "editTitle": "Edit service",

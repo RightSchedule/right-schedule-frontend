@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { Field, FormError } from "@/components/shared";
@@ -33,6 +34,13 @@ export function createServiceSchema(t: ServiceErrorTranslator) {
       .min(1, t("partySizeInvalid"))
       .max(LIMITS.partySize, t("partySizeInvalid"))
       .nullable(),
+    publicBookable: z.boolean().nullable(),
+    bufferMinutes: z
+      .number({ error: t("bufferInvalid") })
+      .int(t("bufferInvalid"))
+      .min(0, t("bufferInvalid"))
+      .max(240, t("bufferInvalid"))
+      .nullable(),
   });
 }
 
@@ -41,6 +49,8 @@ export type ServiceFormValues = z.infer<ReturnType<typeof createServiceSchema>>;
 const DEFAULTS: ServiceFormValues = { name: "", description: "", durationMinutes: 30,
   price: 0,
   maxPartySize: null,
+  publicBookable: null,
+  bufferMinutes: null,
 };
 
 /** Inline service form, reused by the dialog and the onboarding wizard. */
@@ -63,6 +73,8 @@ export function ServiceForm({
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ServiceFormValues>({
     resolver: zodResolver(schema),
@@ -73,9 +85,13 @@ export function ServiceForm({
           durationMinutes: service.durationMinutes,
           price: service.price,
           maxPartySize: service.maxPartySize ?? null,
+          publicBookable: service.publicBookable ?? null,
+          bufferMinutes: service.bufferMinutes ?? null,
         }
       : DEFAULTS,
   });
+
+  const visibility = useWatch({ control, name: "publicBookable" });
 
   async function submit(values: ServiceFormValues) {
     setError(null);
@@ -147,6 +163,34 @@ export function ServiceForm({
             setValueAs: (v) => (v === "" || v == null ? null : Number(v)),
           })}
         />
+      </Field>
+      <Field
+        label={t("bufferMinutes")}
+        htmlFor="service-buffer"
+        hint={t("bufferMinutesHint")}
+        error={errors.bufferMinutes?.message}
+      >
+        <Input
+          id="service-buffer"
+          type="number"
+          inputMode="numeric"
+          min={0}
+          max={240}
+          aria-invalid={!!errors.bufferMinutes}
+          {...register("bufferMinutes", {
+            setValueAs: (v) => (v === "" || v == null ? null : Number(v)),
+          })}
+        />
+      </Field>
+      <Field label={t("visibility")} htmlFor="service-visibility" hint={t("visibilityHint")}>
+        <Select
+          id="service-visibility"
+          value={visibility === false ? "staff" : "public"}
+          onChange={(e) => setValue("publicBookable", e.target.value === "staff" ? false : null)}
+        >
+          <option value="public">{t("visibilityPublic")}</option>
+          <option value="staff">{t("visibilityStaffOnly")}</option>
+        </Select>
       </Field>
       <FormError message={error} />
       <FormActions submitLabel={submitLabel} loading={isSubmitting} onCancel={onCancel} />

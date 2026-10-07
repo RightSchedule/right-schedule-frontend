@@ -45,7 +45,7 @@ function CreateBookingForm({
   const business = useBusiness().data;
   const allStaff = useStaff().data;
   const allServices = useServices().data;
-  const create = useCreatePublicBooking();
+  const create = useCreatePublicBooking({ asOwner: true });
 
   const [date, setDate] = useState(draft.date);
   const [time, setTime] = useState(draft.time);

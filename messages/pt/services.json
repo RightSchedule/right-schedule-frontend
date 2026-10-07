@@ -37,8 +37,15 @@
       "durationMin": "No mínimo 5 minutos",
       "durationMax": "No máximo 12 horas",
       "priceRequired": "Introduza o preço",
-      "priceMin": "O preço não pode ser negativo"
-    }
+      "priceMin": "O preço não pode ser negativo",
+      "bufferInvalid": "Introduza um número inteiro de 0 a 240"
+    },
+    "bufferMinutes": "Intervalo após a marcação (minutos)",
+    "bufferMinutesHint": "Deixe vazio para usar o intervalo do negócio.",
+    "visibility": "Marcação online",
+    "visibilityHint": "Serviços só para a equipa continuam disponíveis no calendário, mas ficam escondidos na página pública.",
+    "visibilityPublic": "Os clientes podem marcar online",
+    "visibilityStaffOnly": "Só equipa"
   },
   "dialog": {
     "editTitle": "Editar serviço",

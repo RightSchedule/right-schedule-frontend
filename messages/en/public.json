@@ -120,5 +120,15 @@
     "success": "You're on the waitlist",
     "successDescription": "We'll email you if a time opens up. Every email has a link to leave the waitlist.",
     "close": "Close"
+  },
+  "closed": {
+    "booking": {
+      "title": "Online booking is closed",
+      "description": "This business isn't taking online bookings right now. Get in touch directly to book."
+    },
+    "quotes": {
+      "title": "Quote requests are closed",
+      "description": "This business isn't accepting online quote requests right now. Get in touch directly."
+    }
   }
 }

@@ -120,5 +120,15 @@
     "success": "Está na lista de espera",
     "successDescription": "Avisamos por email se surgir uma vaga. Cada email tem um link para sair da lista.",
     "close": "Fechar"
+  },
+  "closed": {
+    "booking": {
+      "title": "As marcações online estão fechadas",
+      "description": "Este negócio não aceita marcações online de momento. Contacte-o diretamente para marcar."
+    },
+    "quotes": {
+      "title": "Os pedidos de orçamento estão fechados",
+      "description": "Este negócio não aceita pedidos de orçamento online de momento. Contacte-o diretamente."
+    }
   }
 }
