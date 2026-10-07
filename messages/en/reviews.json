@@ -1,0 +1,17 @@
+{
+  "heading": "Reviews",
+  "count": "{count, plural, one {# review} other {# reviews}}",
+  "outOfFive": "{rating} out of 5 stars",
+  "stars": "{count, plural, one {# star} other {# stars}}",
+  "previous": "Previous",
+  "next": "Next",
+  "page": "Page {page} of {total}",
+  "form": {
+    "title": "How was your visit?",
+    "ratingLabel": "Rating",
+    "ratingRequired": "Choose a rating from 1 to 5 stars",
+    "comment": "Comment (optional)",
+    "submit": "Send review",
+    "thanks": "Thanks for your review"
+  }
+}

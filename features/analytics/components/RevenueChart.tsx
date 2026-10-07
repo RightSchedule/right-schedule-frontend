@@ -69,7 +69,7 @@ export function RevenueChart({
                 const point = active ? (payload?.[0]?.payload as Point | undefined) : undefined;
                 if (!point) return null;
                 return (
-                  <div className="rounded-2xl border border-border bg-popover px-3 py-2 text-sm text-popover-foreground shadow-card">
+                  <div className="rounded-md border border-border bg-popover px-3 py-2 text-sm text-popover-foreground">
                     <div className="font-semibold">{label(point.bucket, granularity)}</div>
                     <div>{t("tooltipRevenue", { amount: f.price(point.revenue) })}</div>
                     <div className="text-muted-foreground">
@@ -79,7 +79,7 @@ export function RevenueChart({
                 );
               }}
             />
-            <Bar dataKey="revenue" fill="var(--primary)" radius={[6, 6, 0, 0]} maxBarSize={48} />
+            <Bar dataKey="revenue" fill="var(--primary)" radius={[2, 2, 0, 0]} maxBarSize={48} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -40,7 +40,9 @@ async function signOut() {
   if (signingOut) return;
   signingOut = true;
   await requestLogout();
-  window.location.assign("/login");
+  // Hard navigation on purpose: drops every in-memory cache and query state of the expired session.
+  // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+  window.location.assign("/login?signedout=1");
 }
 
 /** One shared refresh for all parallel 401s; the backend rotates the HttpOnly cookies. */
@@ -111,9 +113,11 @@ export const apiClient = {
   delete: <T = void>(path: string) => request<T>(path, { method: "DELETE" }),
 };
 
+/** A missing route. A 404 carrying an error `code` is a real "entity not found", not an unbuilt endpoint. */
 export function isUnavailable(error: unknown): boolean {
-  if (error instanceof ApiError) return [404, 405, 501].includes(error.status);
-  return error instanceof TypeError;
+  if (!(error instanceof ApiError)) return false;
+  if (error.status === 404) return !error.code;
+  return [405, 501].includes(error.status);
 }
 
 export function isStatus(error: unknown, ...codes: number[]): boolean {

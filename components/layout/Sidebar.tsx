@@ -11,6 +11,7 @@ import {
   ChartColumn,
   ClipboardCheck,
   MessageSquareQuote,
+  Hourglass,
   Settings,
   LogOut,
   PanelLeftClose,
@@ -33,6 +34,7 @@ type NavKey =
   | "review"
   | "customers"
   | "quotes"
+  | "waitlist"
   | "services"
   | "staff"
   | "settings";
@@ -49,6 +51,7 @@ const NAV_ITEMS: NavEntry[] = [
   { href: "/analytics", labelKey: "analytics", icon: ChartColumn },
   { href: "/review", labelKey: "review", icon: ClipboardCheck },
   { href: "/quotes", labelKey: "quotes", icon: MessageSquareQuote },
+  { href: "/waitlist", labelKey: "waitlist", icon: Hourglass },
   { href: "/customers", labelKey: "customers", icon: Users },
   { href: "/services", labelKey: "services", icon: Scissors },
   { href: "/staff", labelKey: "staff", icon: IdCard },
@@ -56,7 +59,7 @@ const NAV_ITEMS: NavEntry[] = [
 ];
 
 // Review and analytics live in "More" on mobile; the dashboard banner is review's primary entry point there.
-const MOBILE_MORE_ONLY: NavKey[] = ["review", "analytics"];
+const MOBILE_MORE_ONLY: NavKey[] = ["review", "analytics", "waitlist"];
 const MOBILE_TABS = NAV_ITEMS.filter((item) => !MOBILE_MORE_ONLY.includes(item.labelKey)).slice(0, 5);
 const MOBILE_MORE = NAV_ITEMS.filter((item) => !MOBILE_TABS.includes(item));
 
@@ -93,18 +96,18 @@ export function BrandMark({ className }: { className?: string }) {
     <span
       aria-hidden
       className={cn(
-        "flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-cta",
+        "flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground",
         className
       )}
     >
-      <CalendarDays className="size-[1.15rem]" strokeWidth={2.2} />
+      <CalendarDays className="size-4" />
     </span>
   );
 }
 
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cn("text-[1.05rem] font-bold tracking-tight text-foreground", className)}>
+    <span className={cn("font-heading text-xl font-semibold text-foreground", className)}>
       <span className="text-primary">Right</span>Schedule
     </span>
   );
@@ -142,13 +145,13 @@ function NavItem({
       aria-label={collapsed ? label : undefined}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex items-center gap-3 rounded-md px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active
           ? "bg-primary/10 font-semibold text-primary"
           : "text-muted-foreground hover:bg-muted hover:text-foreground"
       )}
     >
-      <Icon className="size-[1.15rem] shrink-0" aria-hidden />
+      <Icon className="size-5 shrink-0" aria-hidden />
       {!collapsed && <span>{label}</span>}
       {!collapsed && labelKey === "quotes" && <PendingDot className="ml-auto" />}
       {!collapsed && labelKey === "review" && <ReviewDot className="ml-auto" />}
@@ -205,23 +208,23 @@ export function Sidebar() {
           onClick={logout}
           title={collapsed ? t("signOut") : undefined}
           aria-label={collapsed ? t("signOut") : undefined}
-          className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex w-full items-center gap-3 rounded-md px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <LogOut className="size-[1.15rem] shrink-0" aria-hidden />
+          <LogOut className="size-5 shrink-0" aria-hidden />
           {!collapsed && <span>{t("signOut")}</span>}
         </button>
         <button
           type="button"
           onClick={() => setCollapsed((c) => !c)}
-          className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex w-full items-center gap-3 rounded-md px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
           aria-expanded={!collapsed}
         >
           {collapsed ? (
-            <PanelLeftOpen className="size-[1.15rem]" aria-hidden />
+            <PanelLeftOpen className="size-5" aria-hidden />
           ) : (
             <>
-              <PanelLeftClose className="size-[1.15rem]" aria-hidden />
+              <PanelLeftClose className="size-5" aria-hidden />
               <span>{t("collapseSidebar")}</span>
             </>
           )}
@@ -274,7 +277,7 @@ export function MobileTopBar() {
                   onClick={() => setOpen(false)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex min-h-12 items-center gap-3 rounded-2xl px-3 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "flex min-h-12 items-center gap-3 rounded-md px-3 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
                   )}
                 >
@@ -290,7 +293,7 @@ export function MobileTopBar() {
                 setOpen(false);
                 logout();
               }}
-              className="flex min-h-12 items-center gap-3 rounded-2xl px-3 text-base font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex min-h-12 items-center gap-3 rounded-md px-3 text-base font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <LogOut className="size-5" aria-hidden />
               {t("signOut")}
@@ -322,12 +325,12 @@ export function MobileBottomNav() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[0.7rem] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "flex min-h-12 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 active ? "font-semibold text-primary" : "text-muted-foreground"
               )}
             >
               <span className="relative">
-                <Icon className="size-[1.4rem]" strokeWidth={active ? 2.4 : 1.7} aria-hidden />
+                <Icon className="size-6" strokeWidth={active ? 2.4 : 1.7} aria-hidden />
                 {item.labelKey === "quotes" && (
                   <PendingDot className="absolute -right-2.5 -top-2 h-4 min-w-4 px-1 text-[0.6rem] leading-4" />
                 )}

@@ -32,9 +32,9 @@ export function PageHeader({
   return (
     <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0">
-        <h1 className="text-[1.75rem] font-bold leading-tight tracking-tight sm:text-3xl">{title}</h1>
+        <h1 className="text-3xl font-semibold leading-tight">{title}</h1>
         {description && (
-          <p className="mt-1 text-[0.95rem] text-muted-foreground">{description}</p>
+          <p className="mt-1 text-muted-foreground">{description}</p>
         )}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
@@ -68,14 +68,10 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-card px-6 py-14 text-center">
-      <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
-        <Icon className="size-5" />
-      </div>
-      <h3 className="text-base font-semibold">{title}</h3>
-      {description && (
-        <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p>
-      )}
+    <div className="flex flex-col items-start border-t border-border px-1 py-10">
+      <Icon aria-hidden className="mb-3 size-5 text-muted-foreground" />
+      <h3 className="font-heading text-xl font-semibold">{title}</h3>
+      {description && <p className="mt-1 max-w-md text-muted-foreground">{description}</p>}
       {action && <div className="mt-5">{action}</div>}
     </div>
   );
@@ -98,30 +94,27 @@ export function ErrorState({
   return (
     <div
       role="alert"
-      className="flex flex-col items-center justify-center rounded-3xl border border-border bg-card px-6 py-12 text-center"
+      className={cn(
+        "flex flex-col items-start rounded-md border-l-4 px-4 py-4",
+        unavailable ? "border-warning bg-warning-muted" : "border-destructive bg-destructive/8"
+      )}
     >
-      <div
-        className={cn(
-          "mb-4 flex size-12 items-center justify-center rounded-full",
-          unavailable
-            ? "bg-warning-muted text-warning-foreground"
-            : "bg-destructive/10 text-destructive"
-        )}
-      >
-        <Icon className="size-5" />
-      </div>
-      <h3 className="text-base font-semibold">
+      <Icon
+        aria-hidden
+        className={cn("mb-2 size-5", unavailable ? "text-warning-foreground" : "text-destructive")}
+      />
+      <h3 className="font-semibold">
         {unavailable
           ? feature
             ? t("shared.unavailableTitle", { feature })
             : t("shared.unavailableTitleGeneric")
           : t("shared.loadErrorTitle")}
       </h3>
-      <p className="mt-1 max-w-sm text-sm text-muted-foreground">
+      <p className="mt-1 max-w-md text-sm text-muted-foreground">
         {unavailable ? t("shared.unavailableDescription") : errorMessage(error)}
       </p>
       {onRetry && (
-        <Button variant="outline" className="mt-5" onClick={onRetry}>
+        <Button variant="outline" className="mt-4" onClick={onRetry}>
           {t("actions.tryAgain")}
         </Button>
       )}
@@ -186,7 +179,7 @@ export function Field({
 export function FormError({ message }: { message?: string | null }) {
   if (!message) return null;
   return (
-    <p role="alert" className="rounded-2xl bg-destructive/10 px-4 py-2.5 text-sm text-destructive">
+    <p role="alert" className="rounded-md bg-destructive/10 px-4 py-2.5 text-sm text-destructive">
       {message}
     </p>
   );
@@ -198,6 +191,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  cancelLabel,
   destructive,
   loading,
   onConfirm,
@@ -207,6 +201,7 @@ export function ConfirmDialog({
   title: string;
   description: string;
   confirmLabel?: string;
+  cancelLabel?: string;
   destructive?: boolean;
   loading?: boolean;
   onConfirm: () => void;
@@ -221,10 +216,11 @@ export function ConfirmDialog({
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t("cancel")}
+            {cancelLabel ?? t("cancel")}
           </Button>
           <LoadingButton
             variant={destructive ? "destructive" : "default"}
+            className={destructive ? "border-transparent bg-destructive text-white hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90" : undefined}
             loading={loading}
             onClick={onConfirm}
           >
@@ -246,7 +242,7 @@ export function SkeletonList({
   return (
     <div className="flex flex-col gap-2">
       {Array.from({ length: count }, (_, i) => (
-        <Skeleton key={i} className={cn("rounded-3xl", className)} />
+        <Skeleton key={i} className={cn("rounded-lg", className)} />
       ))}
     </div>
   );
@@ -262,7 +258,7 @@ export function ListContainer({
   return (
     <ul
       className={cn(
-        "divide-y divide-border overflow-hidden rounded-3xl border border-border bg-card shadow-card",
+        "divide-y divide-border overflow-hidden rounded-lg border border-border bg-card",
         className
       )}
     >
@@ -368,8 +364,8 @@ export function DetailsRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-3.5 text-[0.95rem]">
-      <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+    <div className="flex items-start gap-3">
+      <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
       <div className="min-w-0">{children}</div>
     </div>
   );

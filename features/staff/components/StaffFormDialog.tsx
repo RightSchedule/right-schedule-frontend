@@ -6,17 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Field, FormError, LoadingButton } from "@/components/shared";
+import { Field, FormError } from "@/components/shared";
+import { FormActions, FormDialog } from "@/components/shared/FormDialog";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { LIMITS, optionalEmail, optionalText, requiredName } from "@/lib/validation";
 import { useCreateStaff, useUpdateStaff } from "@/features/staff/hooks/useStaff";
 import type { Staff } from "@/types/domain";
 
@@ -24,9 +18,9 @@ type StaffErrorTranslator = ReturnType<typeof useTranslations<"staff.form.errors
 
 export function createStaffSchema(t: StaffErrorTranslator) {
   return z.object({
-    name: z.string().trim().min(1, t("nameRequired")).max(255),
-    email: z.union([z.literal(""), z.email(t("emailInvalid"))]),
-    phone: z.string().max(50).optional(),
+    name: requiredName(t("nameRequired")),
+    email: optionalEmail(t("emailInvalid")),
+    phone: optionalText(LIMITS.phone),
   });
 }
 
@@ -49,7 +43,6 @@ export function StaffForm({
 }) {
   const t = useTranslations("staff.form");
   const tErrors = useTranslations("staff.form.errors");
-  const tc = useTranslations("common.actions");
   const errorMessage = useErrorMessage();
   const [error, setError] = useState<string | null>(null);
   const schema = useMemo(() => createStaffSchema(tErrors), [tErrors]);
@@ -109,16 +102,7 @@ export function StaffForm({
       </div>
       {children}
       <FormError message={error} />
-      <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel}>
-            {tc("cancel")}
-          </Button>
-        )}
-        <LoadingButton type="submit" loading={isSubmitting}>
-          {submitLabel}
-        </LoadingButton>
-      </div>
+      <FormActions submitLabel={submitLabel} loading={isSubmitting} onCancel={onCancel} />
     </form>
   );
 }
@@ -144,21 +128,18 @@ export function StaffFormDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t("title")}</DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
-        </DialogHeader>
-        {open && (
-          <StaffForm
-            submitLabel={t("submit")}
-            onSubmit={onSubmit}
-            onCancel={() => onOpenChange(false)}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("title")}
+      description={t("description")}
+    >
+      <StaffForm
+        submitLabel={t("submit")}
+        onSubmit={onSubmit}
+        onCancel={() => onOpenChange(false)}
+      />
+    </FormDialog>
   );
 }
 

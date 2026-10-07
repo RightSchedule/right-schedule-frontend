@@ -5,6 +5,16 @@
       "title": "Booking page not found",
       "description": "This link may be mistyped or the business is no longer taking online bookings.",
       "ownerSignIn": "Are you a business owner? Sign in"
+    },
+    "invalidLink": {
+      "title": "This link isn't valid",
+      "description": "It's missing information, has expired, or was already used. Check that you opened the full link from the email.",
+      "forgotPassword": "Request a new reset link",
+      "resendVerification": "Request a new verification link",
+      "contactBusiness": "If this keeps happening, contact the business for a new link."
+    },
+    "loadError": {
+      "title": "Couldn't load this page"
     }
   },
   "landing": {
@@ -13,17 +23,24 @@
     "closed": "Online booking isn't open yet. Please check back soon."
   },
   "service": {
-    "duration": "{count, plural, one {# min} other {# min}}"
+    "duration": "{count, plural, one {# min} other {# min}}",
+    "people": "{count, plural, one {# person} other {# people}}"
   },
   "wizard": {
     "steps": {
       "service": "Choose a service",
+      "party": "How many people?",
       "staff": "Choose a professional",
       "when": "Pick a date and time",
       "details": "Your details"
     },
     "exit": "Exit booking",
     "progress": "Step {current} of {total}",
+    "party": {
+      "label": "Number of people",
+      "summary": "{people, plural, one {# person} other {# people}} · {minutes} min in a row · {total}",
+      "continue": "Continue"
+    },
     "staff": {
       "any": "Any professional",
       "anyHint": "Most availability"
@@ -73,5 +90,45 @@
     "phoneInvalid": "Enter a valid phone number",
     "emailInvalid": "Enter a valid email",
     "contactRequired": "Add a phone number or an email"
+  },
+  "manage": {
+    "title": "Your booking",
+    "when": "Date",
+    "time": "Time",
+    "with": "With",
+    "locked": "This booking can no longer be changed online. Please contact the business.",
+    "reschedule": "Change time",
+    "cancel": "Cancel booking",
+    "keep": "Keep booking",
+    "pickNewTime": "Pick a new time",
+    "confirmReschedule": "Confirm new time",
+    "cancelTitle": "Cancel this booking?",
+    "cancelDescription": "The business will be notified and the time slot will be released.",
+    "cancelled": "Booking cancelled",
+    "rescheduled": "Booking moved"
+  },
+  "waitlist": {
+    "cta": "Join the waitlist",
+    "hint": "Not seeing a time that suits you? We'll email you if one opens up.",
+    "title": "Join the waitlist",
+    "description": "We'll email you if a time opens up on {date}.",
+    "from": "Earliest time (optional)",
+    "to": "Latest time (optional)",
+    "phone": "Phone (optional)",
+    "timeOrder": "Latest time must be after the earliest",
+    "submit": "Join waitlist",
+    "success": "You're on the waitlist",
+    "successDescription": "We'll email you if a time opens up. Every email has a link to leave the waitlist.",
+    "close": "Close"
+  },
+  "closed": {
+    "booking": {
+      "title": "Online booking is closed",
+      "description": "This business isn't taking online bookings right now. Get in touch directly to book."
+    },
+    "quotes": {
+      "title": "Quote requests are closed",
+      "description": "This business isn't accepting online quote requests right now. Get in touch directly."
+    }
   }
 }

@@ -33,6 +33,11 @@
     "description": "Não pode ser anulado. Se o cliente não compareceu, use Não compareceu em cada marcação.",
     "confirm": "Concluir"
   },
+  "noShowConfirm": {
+    "title": "Registar {name} como não compareceu?",
+    "description": "O cliente não apareceu. Conta para as suas faltas e não pode ser anulado.",
+    "confirm": "Não compareceu"
+  },
   "pagination": {
     "label": "Paginação",
     "previous": "Anterior",

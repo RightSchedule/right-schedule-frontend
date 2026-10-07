@@ -23,5 +23,11 @@ export const customersApi = {
 
   remove: (id: string) => apiClient.delete<void>(`/api/v1/customers/${id}`),
 
+  tags: (id: string) =>
+    apiClient.get<{ tags: string[] }>(`/api/v1/customers/${id}/tags`).then((r) => r.tags),
+
+  replaceTags: (id: string, tags: string[]) =>
+    apiClient.put<{ tags: string[] }>(`/api/v1/customers/${id}/tags`, { tags }).then((r) => r.tags),
+
   export: (id: string) => apiClient.get<unknown>(`/api/v1/customers/${id}/export`),
 };

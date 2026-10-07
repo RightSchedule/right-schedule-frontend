@@ -1,6 +1,6 @@
 import { apiClient } from "./client";
 import { fetchPage, listAll, type PageResponse } from "./page";
-import type { Booking, BookingStatus } from "@/types/domain";
+import type { Booking, BookingStatus, ManagedBooking } from "@/types/domain";
 
 export interface PublicBookingRequest {
   businessId: string;
@@ -9,6 +9,8 @@ export interface PublicBookingRequest {
   startDateTime: string;
   customer: { name: string; phone?: string; email?: string };
   notes?: string;
+  /** Omitted means 1; the backend validates against the service limit and recomputes duration and price. */
+  partySize?: number;
   /** Customer's UI language ("en" | "pt"); the backend uses it for confirmation/reminder emails. */
   locale?: string;
 }
@@ -26,6 +28,8 @@ export interface BookingResponse {
   customerPhone?: string | null;
   customerEmail?: string | null;
   notes?: string | null;
+  partySize?: number;
+  totalPrice?: number;
   needsReviewAt?: string | null;
 }
 
@@ -41,6 +45,8 @@ function normalizeBooking(r: BookingResponse): Booking {
     endTime: r.endDateTime.slice(11, 16),
     status: r.status,
     notes: r.notes,
+    partySize: r.partySize,
+    totalPrice: r.totalPrice,
     needsReviewAt: r.needsReviewAt,
     customer: {
       id: r.customerId ?? "",
@@ -98,10 +104,36 @@ export const bookingsApi = {
     return normalizeBooking(res);
   },
 
+  /** Staff-side creation: skips the public booking switch and customer limits. */
+  createByOwner: async (payload: Omit<PublicBookingRequest, "businessId">, idempotencyKey?: string) => {
+    const body = { ...payload, staffId: payload.staffId ?? undefined };
+    const res = await apiClient.post<BookingResponse>("/api/v1/bookings", body, {
+      headers: idempotencyKey ? { "Idempotency-Key": idempotencyKey } : undefined,
+    });
+    return normalizeBooking(res);
+  },
+
   list: async (params: ListBookingsParams = {}): Promise<Booking[]> => {
     const rows = await listAll<BookingResponse>("/api/v1/bookings", { ...params });
     return rows.map(normalizeBooking);
   },
+
+  reschedule: (id: string, payload: { startDateTime: string; staffId?: string }) =>
+    apiClient.patch<BookingResponse>(`/api/v1/bookings/${id}/reschedule`, payload).then(normalizeBooking),
+
+  updateNotes: (id: string, notes: string | null) =>
+    apiClient.patch<BookingResponse>(`/api/v1/bookings/${id}/notes`, { notes }).then(normalizeBooking),
+
+  getManaged: (token: string) =>
+    apiClient.get<ManagedBooking>(`/api/v1/public/bookings/${encodeURIComponent(token)}`),
+
+  cancelManaged: (token: string) =>
+    apiClient.patch<ManagedBooking>(`/api/v1/public/bookings/${encodeURIComponent(token)}/cancel`, {}),
+
+  rescheduleManaged: (token: string, startDateTime: string) =>
+    apiClient.patch<ManagedBooking>(`/api/v1/public/bookings/${encodeURIComponent(token)}/reschedule`, {
+      startDateTime,
+    }),
 
   cancel: (id: string) =>
     apiClient.patch<BookingResponse>(`/api/v1/bookings/${id}/cancel`, {}).then(normalizeBooking),

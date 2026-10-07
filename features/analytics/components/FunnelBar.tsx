@@ -25,7 +25,7 @@ export function FunnelBar({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex h-3 w-full overflow-hidden rounded-full bg-muted" aria-hidden>
+      <div className="flex h-3 w-full overflow-hidden rounded-sm bg-muted" aria-hidden>
         {SEGMENTS.map(({ key, color }) => (
           <div
             key={key}
@@ -41,7 +41,7 @@ export function FunnelBar({
               <span className={cn("size-2.5 rounded-full", color)} aria-hidden />
               {t(key)}
             </span>
-            <span className="text-xl font-bold">{funnel[key]}</span>
+            <span className="text-xl font-semibold">{funnel[key]}</span>
             <span className="text-xs text-muted-foreground">{f.percent(share(funnel[key]))}</span>
           </li>
         ))}

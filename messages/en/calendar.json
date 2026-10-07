@@ -34,13 +34,35 @@
     "unknownCustomer": "Unknown customer",
     "deletedCustomer": "deleted customer",
     "needsReviewTitle": "This booking has ended",
+    "notStartedHint": "Complete and no-show unlock when the booking starts.",
     "needsReviewDescription": "Mark how it went. Cancelling still emails the customer.",
     "cancelBooking": "Cancel booking",
+    "confirm": {
+      "cancelTitle": "Cancel this booking?",
+      "cancelDescription": "The time slot opens up again and the customer is emailed if they left an address. This can't be undone.",
+      "noShowTitle": "Mark as no-show?",
+      "noShowDescription": "The customer didn't turn up. This counts towards your no-show numbers and can't be undone.",
+      "noShowConfirm": "Mark no-show",
+      "keep": "Go back"
+    },
     "complete": "Complete",
     "toast": {
       "cancelled": "Booking cancelled",
       "noShow": "Marked as no-show",
       "completed": "Marked as completed"
+    },
+    "edit": {
+      "reschedule": "Reschedule",
+      "editNotes": "Edit notes",
+      "noNotes": "No notes",
+      "date": "Date",
+      "time": "Time",
+      "professional": "Professional",
+      "rescheduleHint": "The customer is emailed about the new time.",
+      "rescheduled": "Booking rescheduled",
+      "notes": "Notes",
+      "notesCount": "{count}/{max}",
+      "notesSaved": "Notes saved"
     }
   },
   "create": {
@@ -52,6 +74,8 @@
     "service": "Service",
     "noServices": "This professional has no active services.",
     "serviceOption": "{name} · {minutes} min",
+    "people": "People",
+    "peopleOption": "{count, plural, one {# person} other {# people}} · {minutes} min",
     "customerName": "Customer name",
     "submit": "Create booking",
     "created": "Booking created"

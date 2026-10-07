@@ -29,11 +29,10 @@ import {
   PaginationNav,
   initials,
 } from "@/components/shared";
-import {
-  BookingDetailDialog,
-  BookingStatusBadge,
-} from "@/features/bookings/components/BookingDetailDialog";
+import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
+import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { useCustomerBookingsPage } from "@/features/bookings/hooks/useBookings";
+import { CustomerTags } from "@/features/customers/components/CustomerTags";
 import { CustomerFormDialog } from "@/features/customers/components/CustomerFormDialog";
 import { useCustomer, useDeleteCustomer, useExportCustomer } from "@/features/customers/hooks/useCustomers";
 import type { SortDirection } from "@/lib/api/bookings";
@@ -95,7 +94,7 @@ export default function CustomerDetailPage({
       </Link>
 
       {customer.isLoading ? (
-        <Skeleton className="h-32 rounded-3xl" />
+        <Skeleton className="h-32 rounded-lg" />
       ) : customer.error || !customer.data ? (
         <ErrorState
           error={customer.error ?? new Error(t("notFound"))}
@@ -109,7 +108,7 @@ export default function CustomerDetailPage({
               <AvatarFallback className="text-base">{initials(customer.data.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-2xl font-semibold tracking-tight">
+              <h1 className="truncate text-2xl font-semibold">
                 {customer.data.name}
               </h1>
               <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
@@ -150,6 +149,8 @@ export default function CustomerDetailPage({
             </div>
           </div>
 
+          <CustomerTags customerId={customerId} />
+
           <CustomerFormDialog open={editing} customer={customer.data} onOpenChange={setEditing} />
           <ConfirmDialog
             open={confirmingDelete}
@@ -163,7 +164,7 @@ export default function CustomerDetailPage({
           />
 
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <h2 className="text-sm font-semibold text-muted-foreground">
               {t("history.title")}
             </h2>
             {(history.bookings?.length ?? 0) > 0 && (
@@ -181,7 +182,7 @@ export default function CustomerDetailPage({
             )}
           </div>
           {history.isLoading ? (
-            <Skeleton className="h-40 rounded-3xl" />
+            <Skeleton className="h-40 rounded-lg" />
           ) : history.error ? (
             <ErrorState
               error={history.error}

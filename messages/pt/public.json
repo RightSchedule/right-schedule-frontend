@@ -5,6 +5,16 @@
       "title": "Página de marcações não encontrada",
       "description": "Este link pode estar errado ou o negócio já não aceita marcações online.",
       "ownerSignIn": "É proprietário de um negócio? Inicie sessão"
+    },
+    "invalidLink": {
+      "title": "Este link não é válido",
+      "description": "Faltam informações, expirou ou já foi usado. Confirme que abriu o link completo do email.",
+      "forgotPassword": "Pedir novo link de redefinição",
+      "resendVerification": "Pedir novo link de verificação",
+      "contactBusiness": "Se continuar a acontecer, contacte o negócio para obter um novo link."
+    },
+    "loadError": {
+      "title": "Não foi possível carregar esta página"
     }
   },
   "landing": {
@@ -13,17 +23,24 @@
     "closed": "As marcações online ainda não estão abertas. Volte a consultar em breve."
   },
   "service": {
-    "duration": "{count, plural, one {# min} other {# min}}"
+    "duration": "{count, plural, one {# min} other {# min}}",
+    "people": "{count, plural, one {# pessoa} other {# pessoas}}"
   },
   "wizard": {
     "steps": {
       "service": "Escolha um serviço",
+      "party": "Para quantas pessoas?",
       "staff": "Escolha um profissional",
       "when": "Escolha a data e a hora",
       "details": "Os seus dados"
     },
     "exit": "Sair da marcação",
     "progress": "Passo {current} de {total}",
+    "party": {
+      "label": "Número de pessoas",
+      "summary": "{people, plural, one {# pessoa} other {# pessoas}} · {minutes} min seguidos · {total}",
+      "continue": "Continuar"
+    },
     "staff": {
       "any": "Qualquer profissional",
       "anyHint": "Maior disponibilidade"
@@ -73,5 +90,45 @@
     "phoneInvalid": "Introduza um número de telefone válido",
     "emailInvalid": "Introduza um e-mail válido",
     "contactRequired": "Adicione um número de telefone ou um e-mail"
+  },
+  "manage": {
+    "title": "A sua marcação",
+    "when": "Data",
+    "time": "Hora",
+    "with": "Com",
+    "locked": "Esta marcação já não pode ser alterada online. Contacte o negócio.",
+    "reschedule": "Alterar hora",
+    "cancel": "Cancelar marcação",
+    "keep": "Manter marcação",
+    "pickNewTime": "Escolha uma nova hora",
+    "confirmReschedule": "Confirmar nova hora",
+    "cancelTitle": "Cancelar esta marcação?",
+    "cancelDescription": "O negócio será notificado e o horário ficará livre.",
+    "cancelled": "Marcação cancelada",
+    "rescheduled": "Marcação alterada"
+  },
+  "waitlist": {
+    "cta": "Entrar na lista de espera",
+    "hint": "Não encontra um horário? Avisamos por email se surgir uma vaga.",
+    "title": "Entrar na lista de espera",
+    "description": "Avisamos por email se surgir uma vaga a {date}.",
+    "from": "Hora mais cedo (opcional)",
+    "to": "Hora mais tarde (opcional)",
+    "phone": "Telefone (opcional)",
+    "timeOrder": "A hora final tem de ser depois da inicial",
+    "submit": "Entrar na lista",
+    "success": "Está na lista de espera",
+    "successDescription": "Avisamos por email se surgir uma vaga. Cada email tem um link para sair da lista.",
+    "close": "Fechar"
+  },
+  "closed": {
+    "booking": {
+      "title": "As marcações online estão fechadas",
+      "description": "Este negócio não aceita marcações online de momento. Contacte-o diretamente para marcar."
+    },
+    "quotes": {
+      "title": "Os pedidos de orçamento estão fechados",
+      "description": "Este negócio não aceita pedidos de orçamento online de momento. Contacte-o diretamente."
+    }
   }
 }

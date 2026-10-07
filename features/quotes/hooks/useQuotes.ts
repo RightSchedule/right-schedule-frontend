@@ -45,11 +45,41 @@ export function useDeclineQuote() {
   });
 }
 
+export function useConvertQuote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...payload }: { id: string; startDateTime: string; serviceId?: string; staffId?: string }) =>
+      quotesApi.convert(id, payload),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: qk.quotes.all }),
+        qc.invalidateQueries({ queryKey: qk.bookings.all }),
+      ]),
+  });
+}
+
 export function useDeleteQuote() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => quotesApi.remove(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.quotes.all }),
+  });
+}
+
+export function useManagedQuote(token: string) {
+  return useQuery({
+    queryKey: qk.public.managedQuote(token),
+    queryFn: () => quotesApi.getManaged(token),
+    retry: false,
+  });
+}
+
+export function useRespondToManagedQuote(token: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (response: "accept" | "decline") =>
+      response === "accept" ? quotesApi.acceptManaged(token) : quotesApi.declineManaged(token),
+    onSuccess: (quote) => qc.setQueryData(qk.public.managedQuote(token), quote),
   });
 }
 

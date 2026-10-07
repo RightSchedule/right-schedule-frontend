@@ -5,23 +5,22 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { FormError, LoadingButton } from "@/components/shared";
+import { FormError } from "@/components/shared";
+import { FormActions, FormDialog } from "@/components/shared/FormDialog";
 import { CustomerFields } from "@/features/bookings/components/CustomerFields";
 import type { CustomerValues } from "@/features/bookings/schemas";
 import { useCreateCustomer, useUpdateCustomer } from "@/features/customers/hooks/useCustomers";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import {
+  LIMITS,
+  hasContact,
+  optionalEmail,
+  optionalPhone,
+  optionalText,
+  requiredName,
+} from "@/lib/validation";
 import type { Customer } from "@/types/domain";
-
-const PHONE_PATTERN = /^[+\d][\d\s()-]{5,}$/;
 
 type CustomerTranslator = ReturnType<typeof useTranslations<"customers.form.errors">>;
 
@@ -29,15 +28,12 @@ type CustomerTranslator = ReturnType<typeof useTranslations<"customers.form.erro
 function createCustomerSchema(t: CustomerTranslator) {
   return z
     .object({
-      name: z.string().trim().min(1, t("nameRequired")).max(255),
-      phone: z.union([
-        z.literal(""),
-        z.string().trim().regex(PHONE_PATTERN, t("phoneInvalid")),
-      ]),
-      email: z.union([z.literal(""), z.email(t("emailInvalid"))]),
-      notes: z.string().max(1000).optional(),
+      name: requiredName(t("nameRequired")),
+      phone: optionalPhone(t("phoneInvalid")),
+      email: optionalEmail(t("emailInvalid")),
+      notes: optionalText(LIMITS.notes),
     })
-    .refine((v) => v.phone.trim() !== "" || v.email !== "", {
+    .refine(hasContact, {
       path: ["phone"],
       message: t("contactRequired"),
     });
@@ -103,14 +99,11 @@ function CustomerForm({
         showNotes
       />
       <FormError message={error} />
-      <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button type="button" variant="outline" onClick={onDone}>
-          {tc("cancel")}
-        </Button>
-        <LoadingButton type="submit" loading={isSubmitting}>
-          {customer ? tc("saveChanges") : t("submitNew")}
-        </LoadingButton>
-      </div>
+      <FormActions
+        submitLabel={customer ? tc("saveChanges") : t("submitNew")}
+        loading={isSubmitting}
+        onCancel={onDone}
+      />
     </form>
   );
 }
@@ -126,16 +119,14 @@ export function CustomerFormDialog({
 }) {
   const t = useTranslations("customers.form");
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90dvh] max-w-md overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{customer ? t("editTitle") : t("newTitle")}</DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
-        </DialogHeader>
-        {open && (
-          <CustomerForm customer={customer} onDone={() => onOpenChange(false)} />
-        )}
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={customer ? t("editTitle") : t("newTitle")}
+      description={t("description")}
+      className="max-h-[90dvh] max-w-md overflow-y-auto"
+    >
+      <CustomerForm customer={customer} onDone={() => onOpenChange(false)} />
+    </FormDialog>
   );
 }

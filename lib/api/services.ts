@@ -7,6 +7,12 @@ export interface ServicePayload {
   description?: string;
   durationMinutes: number;
   price: number;
+  /** null clears the override so the business default applies. */
+  maxPartySize?: number | null;
+  /** null inherits (publicly bookable); false is staff-only. */
+  publicBookable?: boolean | null;
+  /** null inherits the business buffer. */
+  bufferMinutes?: number | null;
 }
 
 export const servicesApi = {

@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowRight, CalendarDays, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,7 @@ import {
 import { ApiError } from "@/lib/api/client";
 import { isLocale } from "@/i18n/config";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { requiredName } from "@/lib/validation";
 import {
   SLUG_PATTERN,
   browserTimezone,
@@ -52,44 +53,20 @@ function Progress({ step }: { step: Step }) {
   const t = useTranslations("onboarding");
   const current = step === "done" ? STEPS.length : STEPS.findIndex((s) => s.id === step);
   return (
-    <ol
-      className="flex w-full items-center gap-1 rounded-full border border-border bg-card p-1.5 shadow-card"
-      aria-label={t("progress")}
-    >
-      {STEPS.map((s, i) => {
-        const complete = i < current;
-        const active = i === current;
-        return (
+    <div className="w-full">
+      <ol className="flex gap-1.5" aria-label={t("progress")}>
+        {STEPS.map((s, i) => (
           <li
             key={s.id}
-            className={cn(
-              "flex flex-1 items-center justify-center gap-2 rounded-full px-2 py-1.5",
-              active && "bg-accent"
-            )}
-          >
-            <span
-              aria-current={active ? "step" : undefined}
-              className={cn(
-                "flex size-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-bold",
-                (complete || active) && "bg-primary text-primary-foreground",
-                !complete && !active && "bg-muted text-muted-foreground"
-              )}
-            >
-              {complete ? <Check className="size-3" strokeWidth={3} /> : i + 1}
-            </span>
-            <span
-              className={cn(
-                "truncate text-xs font-semibold",
-                active ? "text-primary" : "text-muted-foreground",
-                !active && "hidden sm:block"
-              )}
-            >
-              {t(`steps.${s.id}`)}
-            </span>
-          </li>
-        );
-      })}
-    </ol>
+            aria-current={i === current ? "step" : undefined}
+            className={cn("h-1 flex-1 rounded-sm", i <= current ? "bg-primary" : "bg-border")}
+          />
+        ))}
+      </ol>
+      <p className="mt-2 text-xs font-semibold text-muted-foreground">
+        {t(`steps.${STEPS[Math.min(current, STEPS.length - 1)].id}`)}
+      </p>
+    </div>
   );
 }
 
@@ -97,7 +74,7 @@ type Translator = ReturnType<typeof useTranslations<"onboarding">>;
 
 function makeBusinessSchema(t: Translator) {
   return z.object({
-    name: z.string().trim().min(2, t("validation.nameRequired")).max(255),
+    name: requiredName(t("validation.nameRequired"), 2),
     slug: z
       .string()
       .min(3, t("validation.slugMin"))
@@ -173,7 +150,7 @@ function BusinessStep({ onDone }: { onDone: () => void }) {
         error={errors.slug?.message}
         hint={t("business.slugHint")}
       >
-        <div className="flex items-center rounded-2xl border border-input bg-muted/40 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
+        <div className="flex items-center rounded-md border border-input bg-muted/40 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
           <span className="pl-3.5 text-sm text-muted-foreground">/b/</span>
           <input
             id="ob-slug"
@@ -283,11 +260,19 @@ export function OnboardingWizard() {
   const services = useServices();
   const [chosenStep, setStep] = useState<Step | null>(null);
   const [createdServiceIds, setCreatedServiceIds] = useState<string[]>([]);
-  const step: Step | null =
-    chosenStep ?? (business.isLoading ? null : business.data ? "service" : "business");
+  const resumeStep: Step | null = business.isLoading
+    ? null
+    : !business.data
+      ? "business"
+      : services.isLoading
+        ? null
+        : (services.data?.length ?? 0) > 0
+          ? "team"
+          : "service";
+  const step: Step | null = chosenStep ?? resumeStep;
 
   if (step === null) {
-    return <Skeleton className="h-96 rounded-3xl" />;
+    return <Skeleton className="h-96 rounded-lg" />;
   }
 
   const serviceIds =
@@ -297,16 +282,15 @@ export function OnboardingWizard() {
 
   return (
     <div>
-      <div className="mb-5 flex flex-col items-center gap-4 text-center">
-        <div className="flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-cta">
-          <CalendarDays className="size-6" strokeWidth={2.2} />
+      {step !== "done" && (
+        <div className="mb-8">
+          <Progress step={step} />
         </div>
-        {step !== "done" && <Progress step={step} />}
-      </div>
+      )}
 
-      <div className="rounded-3xl border border-border bg-card p-5 shadow-pop sm:p-6">
+      <div>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight">{t(`copy.${step}.title`)}</h1>
+          <h1 className="text-2xl font-semibold">{t(`copy.${step}.title`)}</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">{t(`copy.${step}.description`)}</p>
         </div>
         {step === "business" && <BusinessStep onDone={() => setStep("service")} />}

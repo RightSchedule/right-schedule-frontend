@@ -27,6 +27,8 @@ export interface Business {
   /** Language of emails sent to the business ("en" | "pt"). */
   locale?: string;
   logoUrl?: string;
+  /** Party size limit for services that don't set their own. */
+  defaultMaxPartySize?: number;
   active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -39,6 +41,12 @@ export interface Service {
   description?: string;
   durationMinutes: number;
   price: number;
+  /** Per-service party size limit; null inherits the business default. */
+  maxPartySize?: number | null;
+  /** null inherits (publicly bookable); false makes the service staff-only. */
+  publicBookable?: boolean | null;
+  /** null inherits the business buffer. */
+  bufferMinutes?: number | null;
   active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -93,6 +101,10 @@ export interface Booking {
   endTime: string;
   status: BookingStatus;
   notes?: string | null;
+  /** People covered by this booking; absent on legacy rows means 1. */
+  partySize?: number;
+  /** Server-computed total (price × partySize). */
+  totalPrice?: number;
   /** Set while a CONFIRMED booking is overdue for resolution; cleared by complete, no-show or cancel. */
   needsReviewAt?: string | null;
   /** Language of emails sent to the customer ("en" | "pt"). */
@@ -102,7 +114,13 @@ export interface Booking {
   customer?: Customer;
 }
 
-export type QuoteStatus = "PENDING" | "QUOTED" | "DECLINED";
+export type QuoteStatus =
+  | "PENDING"
+  | "QUOTED"
+  | "ACCEPTED"
+  | "DECLINED"
+  | "CUSTOMER_DECLINED"
+  | "CONVERTED";
 
 export interface QuoteRequest {
   id: string;
@@ -118,12 +136,73 @@ export interface QuoteRequest {
   respondedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  bookingId?: string | null;
+}
+
+/** What a customer sees behind the emailed booking link. */
+export interface ManagedBooking {
+  id: string;
+  status: BookingStatus;
+  startDateTime: string;
+  endDateTime: string;
+  businessName: string;
+  businessSlug: string;
+  serviceId: string;
+  serviceName: string;
+  staffId?: string | null;
+  staffName?: string | null;
+  canCancel: boolean;
+  canReschedule: boolean;
+}
+
+/** What a customer sees behind the emailed quote link. */
+export interface ManagedQuote {
+  status: QuoteStatus;
+  businessName: string;
+  serviceName?: string | null;
+  description: string;
+  quotedAmount: number | null;
+  responseMessage?: string | null;
+  respondedAt?: string | null;
+  createdAt: string;
+}
+
+export interface BookingSettings {
+  minNoticeMinutes: number;
+  maxAdvanceDays: number;
+  cancellationWindowMinutes: number | null;
+  slotIntervalMinutes: number;
+  /** null reuses the cancellation window. */
+  rescheduleWindowMinutes: number | null;
+  bufferMinutes: number;
+  publicBookingEnabled: boolean;
+  quotesEnabled: boolean;
+  waitlistEnabled: boolean;
+  reviewsEnabled: boolean;
+  showReviewsPublicly: boolean;
+  maxBookingsPerCustomerPerDay: number | null;
+  maxActiveBookingsPerCustomer: number | null;
+  notifyCustomerConfirmation: boolean;
+  notifyBusinessNewBooking: boolean;
+  /** 0 turns the customer reminder off. */
+  reminderLeadHours: 0 | 2 | 24;
+}
+
+/** Customer-facing subset of the booking policy; clients hide whatever is switched off. */
+export interface PublicPolicy {
+  bookingEnabled: boolean;
+  quotesEnabled: boolean;
+  waitlistEnabled: boolean;
+  reviewsEnabled: boolean;
 }
 
 export type PublicService = Pick<
   Service,
   "id" | "name" | "description" | "durationMinutes" | "price"
->;
+> & {
+  /** Effective limit resolved by the backend (service override, else business default). */
+  maxPartySize?: number;
+};
 
 export interface PublicStaff {
   id: string;
@@ -133,5 +212,43 @@ export interface PublicStaff {
 
 export interface PublicBusiness
   extends Pick<Business, "id" | "slug" | "name" | "email" | "phone" | "address" | "timezone" | "locale" | "logoUrl"> {
+  policy?: PublicPolicy;
   services: PublicService[];
+}
+
+export type WaitlistStatus = "WAITING" | "NOTIFIED" | "BOOKED" | "CANCELLED";
+
+export interface WaitlistEntry {
+  id: string;
+  serviceId: string;
+  staffId: string | null;
+  desiredDate: string;
+  fromTime?: string | null;
+  toTime?: string | null;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string | null;
+  status: WaitlistStatus;
+  notifiedAt?: string | null;
+  createdAt: string;
+}
+
+export interface Review {
+  id: string;
+  rating: number;
+  comment?: string | null;
+  customerName: string;
+  createdAt: string;
+}
+
+export interface BusinessReviews {
+  averageRating: number;
+  totalReviews: number;
+  reviews: {
+    content: Review[];
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
 }

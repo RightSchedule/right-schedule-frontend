@@ -10,9 +10,12 @@ function Avatar({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-function AvatarImage({ className, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) {
+function AvatarImage({ className, alt = "", ...props }: React.ImgHTMLAttributes<HTMLImageElement>) {
   return (
+    // Photo and logo URLs are arbitrary user-supplied hosts, so next/image would need open remotePatterns.
+    // eslint-disable-next-line @next/next/no-img-element
     <img
+      alt={alt}
       loading="lazy"
       decoding="async"
       data-slot="avatar-image"

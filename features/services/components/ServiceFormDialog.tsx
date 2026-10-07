@@ -1,23 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Field, FormError, LoadingButton } from "@/components/shared";
+import { Field, FormError } from "@/components/shared";
+import { FormActions, FormDialog } from "@/components/shared/FormDialog";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { LIMITS, optionalText, requiredName } from "@/lib/validation";
 import { useCreateService, useUpdateService } from "@/features/services/hooks/useServices";
 import type { Service } from "@/types/domain";
 
@@ -25,20 +20,38 @@ type ServiceErrorTranslator = ReturnType<typeof useTranslations<"services.form.e
 
 export function createServiceSchema(t: ServiceErrorTranslator) {
   return z.object({
-    name: z.string().trim().min(1, t("nameRequired")).max(255),
-    description: z.string().max(1000).optional(),
+    name: requiredName(t("nameRequired")),
+    description: optionalText(LIMITS.description),
     durationMinutes: z
       .number({ error: t("durationRequired") })
       .int(t("durationInteger"))
       .min(5, t("durationMin"))
       .max(720, t("durationMax")),
     price: z.number({ error: t("priceRequired") }).min(0, t("priceMin")),
+    maxPartySize: z
+      .number({ error: t("partySizeInvalid") })
+      .int(t("partySizeInvalid"))
+      .min(1, t("partySizeInvalid"))
+      .max(LIMITS.partySize, t("partySizeInvalid"))
+      .nullable(),
+    publicBookable: z.boolean().nullable(),
+    bufferMinutes: z
+      .number({ error: t("bufferInvalid") })
+      .int(t("bufferInvalid"))
+      .min(0, t("bufferInvalid"))
+      .max(240, t("bufferInvalid"))
+      .nullable(),
   });
 }
 
 export type ServiceFormValues = z.infer<ReturnType<typeof createServiceSchema>>;
 
-const DEFAULTS: ServiceFormValues = { name: "", description: "", durationMinutes: 30, price: 0 };
+const DEFAULTS: ServiceFormValues = { name: "", description: "", durationMinutes: 30,
+  price: 0,
+  maxPartySize: null,
+  publicBookable: null,
+  bufferMinutes: null,
+};
 
 /** Inline service form, reused by the dialog and the onboarding wizard. */
 export function ServiceForm({
@@ -54,13 +67,14 @@ export function ServiceForm({
 }) {
   const t = useTranslations("services.form");
   const tErrors = useTranslations("services.form.errors");
-  const tc = useTranslations("common.actions");
   const errorMessage = useErrorMessage();
   const [error, setError] = useState<string | null>(null);
   const schema = useMemo(() => createServiceSchema(tErrors), [tErrors]);
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ServiceFormValues>({
     resolver: zodResolver(schema),
@@ -70,9 +84,14 @@ export function ServiceForm({
           description: service.description ?? "",
           durationMinutes: service.durationMinutes,
           price: service.price,
+          maxPartySize: service.maxPartySize ?? null,
+          publicBookable: service.publicBookable ?? null,
+          bufferMinutes: service.bufferMinutes ?? null,
         }
       : DEFAULTS,
   });
+
+  const visibility = useWatch({ control, name: "publicBookable" });
 
   async function submit(values: ServiceFormValues) {
     setError(null);
@@ -127,17 +146,54 @@ export function ServiceForm({
           />
         </Field>
       </div>
+      <Field
+        label={t("maxPartySize")}
+        htmlFor="service-party"
+        hint={t("maxPartySizeHint")}
+        error={errors.maxPartySize?.message}
+      >
+        <Input
+          id="service-party"
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={LIMITS.partySize}
+          aria-invalid={!!errors.maxPartySize}
+          {...register("maxPartySize", {
+            setValueAs: (v) => (v === "" || v == null ? null : Number(v)),
+          })}
+        />
+      </Field>
+      <Field
+        label={t("bufferMinutes")}
+        htmlFor="service-buffer"
+        hint={t("bufferMinutesHint")}
+        error={errors.bufferMinutes?.message}
+      >
+        <Input
+          id="service-buffer"
+          type="number"
+          inputMode="numeric"
+          min={0}
+          max={240}
+          aria-invalid={!!errors.bufferMinutes}
+          {...register("bufferMinutes", {
+            setValueAs: (v) => (v === "" || v == null ? null : Number(v)),
+          })}
+        />
+      </Field>
+      <Field label={t("visibility")} htmlFor="service-visibility" hint={t("visibilityHint")}>
+        <Select
+          id="service-visibility"
+          value={visibility === false ? "staff" : "public"}
+          onChange={(e) => setValue("publicBookable", e.target.value === "staff" ? false : null)}
+        >
+          <option value="public">{t("visibilityPublic")}</option>
+          <option value="staff">{t("visibilityStaffOnly")}</option>
+        </Select>
+      </Field>
       <FormError message={error} />
-      <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel}>
-            {tc("cancel")}
-          </Button>
-        )}
-        <LoadingButton type="submit" loading={isSubmitting}>
-          {submitLabel}
-        </LoadingButton>
-      </div>
+      <FormActions submitLabel={submitLabel} loading={isSubmitting} onCancel={onCancel} />
     </form>
   );
 }
@@ -169,22 +225,19 @@ export function ServiceFormDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{service ? t("editTitle") : t("newTitle")}</DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
-        </DialogHeader>
-        {open && (
-          <ServiceForm
-            key={service?.id ?? "new"}
-            service={service}
-            submitLabel={service ? tc("saveChanges") : t("submitNew")}
-            onSubmit={onSubmit}
-            onCancel={() => onOpenChange(false)}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={service ? t("editTitle") : t("newTitle")}
+      description={t("description")}
+    >
+      <ServiceForm
+        key={service?.id ?? "new"}
+        service={service}
+        submitLabel={service ? tc("saveChanges") : t("submitNew")}
+        onSubmit={onSubmit}
+        onCancel={() => onOpenChange(false)}
+      />
+    </FormDialog>
   );
 }

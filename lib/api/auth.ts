@@ -13,5 +13,17 @@ export const authApi = {
       termsVersion,
     }),
 
+  verifyEmail: (token: string) =>
+    apiClient.post<void>("/api/v1/auth/verify-email", { token }),
+
+  resendVerification: (email: string) =>
+    apiClient.post<void>("/api/v1/auth/resend-verification", { email }),
+
+  forgotPassword: (email: string) =>
+    apiClient.post<void>("/api/v1/auth/forgot-password", { email }),
+
+  resetPassword: (token: string, newPassword: string) =>
+    apiClient.post<void>("/api/v1/auth/reset-password", { token, newPassword }),
+
   logout: requestLogout,
 };

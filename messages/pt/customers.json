@@ -49,5 +49,14 @@
       "emailInvalid": "Introduza um email válido",
       "contactRequired": "Adicione um telemóvel ou um email"
     }
+  },
+  "tags": {
+    "title": "Etiquetas",
+    "empty": "Sem etiquetas",
+    "add": "Adicionar",
+    "placeholder": "ex.: VIP",
+    "remove": "Remover etiqueta {tag}",
+    "duplicate": "Essa etiqueta já existe",
+    "limit": "Um cliente pode ter no máximo {count} etiquetas"
   }
 }

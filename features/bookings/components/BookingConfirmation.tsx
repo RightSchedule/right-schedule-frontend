@@ -30,12 +30,10 @@ export function BookingConfirmation({
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-12 text-center">
-      <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-success-muted text-success-foreground">
-        <svg viewBox="0 0 32 32" className="size-9" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <circle className="stamp-ring" cx="16" cy="16" r="13" pathLength="100" />
-          <path className="stamp-check" d="M10.5 16.5l4 4 7-8" pathLength="30" />
-        </svg>
-      </div>
+      <svg viewBox="0 0 32 32" className="mb-4 size-12 text-success-foreground" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <circle className="stamp-ring" cx="16" cy="16" r="13" pathLength="100" />
+        <path className="stamp-check" d="M10.5 16.5l4 4 7-8" pathLength="30" />
+      </svg>
       <h1 className="text-2xl font-semibold tracking-tight">{t("confirmation.title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {summary
@@ -50,6 +48,7 @@ export function BookingConfirmation({
             serviceId={summary.serviceId}
             serviceName={summary.serviceName}
             price={summary.price}
+            partySize={summary.partySize}
             staffName={summary.staffName ?? t("wizard.staff.any")}
             date={summary.date}
             startTime={summary.startTime}

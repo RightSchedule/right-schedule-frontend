@@ -1,0 +1,44 @@
+{
+  "list": {
+    "title": "Waitlist",
+    "description": "Customers who asked to be told when a slot opens up.",
+    "errorFeature": "Waitlist",
+    "emptyTitle": "Nobody on the waitlist",
+    "emptyDescription": "When a customer joins the waitlist from your booking page, they show up here.",
+    "emptyFilteredTitle": "Nothing here",
+    "emptyFilteredDescription": "No entries with this status.",
+    "anyStaff": "Any staff",
+    "anyTime": "Any time",
+    "timeRange": "{from} to {to}",
+    "timeFrom": "From {from}",
+    "timeUntil": "Until {to}",
+    "joined": "Joined {date}",
+    "filters": {
+      "label": "Filter by status",
+      "all": "All",
+      "WAITING": "Waiting",
+      "NOTIFIED": "Notified",
+      "BOOKED": "Booked",
+      "CANCELLED": "Cancelled"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {total}"
+    }
+  },
+  "status": {
+    "WAITING": "Waiting",
+    "NOTIFIED": "Notified",
+    "BOOKED": "Booked",
+    "CANCELLED": "Cancelled"
+  },
+  "remove": {
+    "action": "Remove {name} from the waitlist",
+    "title": "Remove from waitlist?",
+    "description": "{name} will no longer be notified when a slot opens up.",
+    "confirm": "Remove",
+    "removed": "Removed from the waitlist"
+  }
+}

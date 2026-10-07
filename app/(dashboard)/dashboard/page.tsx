@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CalendarDays, ClipboardCheck, Clock, CircleCheck, CircleX, Users, Plus } from "lucide-react";
-import { stagger } from "@/components/ui/aurora";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus } from "lucide-react";
+import { cn } from "cn";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared";
-import { BookingStatusBadge } from "@/features/bookings/components/BookingDetailDialog";
+import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
+import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import {
   CreateBookingDialog,
   type BookingDraft,
@@ -29,52 +29,55 @@ function greetingKey(minuteOfDay: number) {
   return "evening" as const;
 }
 
-function BookingRow({ booking }: { booking: Booking }) {
+function clockLabel(minuteOfDay: number) {
+  const h = Math.floor(minuteOfDay / 60);
+  const m = minuteOfDay % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function NowMarker({ label, time }: { label: string; time: string }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4 last:border-0">
-      <div className="flex min-w-0 items-center gap-3.5">
-        <div className="flex h-12 min-w-[3.5rem] shrink-0 items-center justify-center rounded-2xl bg-muted px-2">
-          <span className="font-mono text-sm font-bold text-foreground">
-            {booking.startTime.slice(0, 5)}
-          </span>
-        </div>
-        <div className="min-w-0">
-          <p className="truncate text-[0.95rem] font-semibold">{booking.customer?.name ?? "—"}</p>
-          <p className="truncate text-sm text-muted-foreground">
-            {booking.service?.name ?? "—"} · {booking.staff?.name ?? "—"}
-          </p>
-        </div>
-      </div>
-      <BookingStatusBadge status={booking.status} className="shrink-0" />
-    </div>
+    <li aria-label={`${label} ${time}`} className="flex items-center gap-3 py-1">
+      <span className="w-14 shrink-0 text-right font-mono text-xs font-medium text-primary">{time}</span>
+      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-primary" />
+      <span aria-hidden className="h-px flex-1 bg-primary/60" />
+      <span className="text-xs font-medium text-primary">{label}</span>
+    </li>
   );
 }
 
-function StatCard({
-  label,
-  value,
-  icon: Icon,
-  color,
-  index,
-}: {
-  label: string;
-  value: number | string;
-  icon: React.ElementType;
-  color: string;
-  index: number;
-}) {
+function TimelineRow({ booking, onOpen }: { booking: Booking; onOpen: () => void }) {
+  const closed = booking.status !== "CONFIRMED";
   return (
-    <Card className="reveal" style={stagger(index + 1)}>
-      <CardContent className="flex flex-col gap-3 p-4 pt-4 sm:p-5 sm:pt-5">
-        <div className="flex items-start justify-between gap-2">
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <div className={`flex size-9 shrink-0 items-center justify-center rounded-full ${color}`}>
-            <Icon className="size-4" />
-          </div>
-        </div>
-        <p className="text-4xl font-bold tabular-nums leading-none">{value}</p>
-      </CardContent>
-    </Card>
+    <li className="border-t border-border first:border-t-0">
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex w-full items-start gap-3 py-3.5 text-left transition-colors hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:outline-none"
+      >
+        <span className="w-14 shrink-0 text-right">
+          <span className={cn("block font-mono text-sm font-medium", closed && "text-muted-foreground")}>
+            {booking.startTime.slice(0, 5)}
+          </span>
+          <span className="block font-mono text-xs text-muted-foreground">{booking.endTime.slice(0, 5)}</span>
+        </span>
+        <span aria-hidden className="mt-1.5 h-4 w-px shrink-0 bg-border" />
+        <span className="min-w-0 flex-1">
+          <span
+            className={cn(
+              "block truncate font-medium",
+              booking.status === "CANCELLED" && "text-muted-foreground line-through"
+            )}
+          >
+            {booking.customer?.name ?? "—"}
+          </span>
+          <span className="block truncate text-sm text-muted-foreground">
+            {booking.service?.name ?? "—"} · {booking.staff?.name ?? "—"}
+          </span>
+        </span>
+        <BookingStatusBadge status={booking.status} className="shrink-0" />
+      </button>
+    </li>
   );
 }
 
@@ -96,24 +99,27 @@ export default function DashboardPage() {
   } = useBookingsRange(today, today, { enabled: !business.isLoading });
   const isLoading = business.isLoading || bookingsLoading;
   const [draft, setDraft] = useState<BookingDraft | null>(null);
+  const [selected, setSelected] = useState<Booking | null>(null);
 
-  const confirmed = bookings.filter((b) => b.status === "CONFIRMED").length;
-  const completed = bookings.filter((b) => b.status === "COMPLETED").length;
-  const cancelled = bookings.filter((b) => b.status === "CANCELLED").length;
+  const count = (status: Booking["status"]) => bookings.filter((b) => b.status === status).length;
+  const summary = [
+    { key: "total", value: bookings.length },
+    { key: "confirmed", value: count("CONFIRMED") },
+    { key: "completed", value: count("COMPLETED") },
+    { key: "cancelled", value: count("CANCELLED") },
+  ] as const;
 
-  const upcoming = bookings
-    .filter((b) => b.status === "CONFIRMED" && toMinutes(b.startTime) >= nowMinute)
-    .sort((a, b) => a.startTime.localeCompare(b.startTime))
-    .slice(0, 8);
+  const sorted = [...bookings].sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const nowIndex = sorted.findIndex((b) => toMinutes(b.startTime) >= nowMinute);
+  const markerAt = nowIndex === -1 ? sorted.length : nowIndex;
+  const hasUpcoming = sorted.some((b) => b.status === "CONFIRMED" && toMinutes(b.startTime) >= nowMinute);
 
   return (
-    <div className="mx-auto w-full max-w-3xl p-4 pt-5 sm:p-6">
-      <div className="mb-5 flex items-start justify-between gap-3">
+    <div className="mx-auto w-full max-w-5xl p-4 pt-5 sm:p-6">
+      <div className="mb-6 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="reveal text-[1.6rem] font-bold leading-tight tracking-tight sm:text-3xl">
-            {t(`greeting.${greetingKey(nowMinute)}`)}
-          </h1>
-          <p className="mt-0.5 text-[0.95rem] text-muted-foreground">
+          <h1 className="text-3xl font-semibold leading-tight">{t(`greeting.${greetingKey(nowMinute)}`)}</h1>
+          <p className="mt-1 text-muted-foreground">
             {t("today", {
               weekday: f.date(today, "EEEE"),
               day: f.date(today, "d"),
@@ -122,105 +128,80 @@ export default function DashboardPage() {
             })}
           </p>
         </div>
-        <Button size="lg" className="shrink-0" onClick={() => setDraft({ date: today, time: "09:00" })}>
+        <Button className="shrink-0" onClick={() => setDraft({ date: today, time: "09:00" })}>
           <Plus /> {t("new")}
         </Button>
       </div>
 
       {!!reviewCount && (
-        <Card className="reveal mb-5 border-warning/40 bg-warning-muted" style={stagger(1)}>
-          <CardContent className="flex flex-col gap-4 p-4 pt-4 sm:flex-row sm:items-center sm:p-5 sm:pt-5">
-            <div className="flex min-w-0 flex-1 items-start gap-3.5">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-card text-warning-foreground">
-                <ClipboardCheck className="size-5" aria-hidden />
-              </span>
-              <div className="min-w-0">
-                <p className="font-semibold text-warning-foreground">
-                  {tReview("banner.title", { count: reviewCount })}
-                </p>
-                <p className="mt-0.5 text-sm text-warning-foreground/80">{tReview("banner.description")}</p>
-              </div>
-            </div>
-            <Link href="/review" className={buttonVariants({ className: "shrink-0" })}>
-              {tReview("banner.cta")}
-            </Link>
-          </CardContent>
-        </Card>
-      )}
-
-      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard
-          index={0}
-          label={t("stats.total")}
-          value={isLoading ? "—" : bookings.length}
-          icon={CalendarDays}
-          color="bg-accent text-accent-foreground"
-        />
-        <StatCard
-          index={1}
-          label={t("stats.confirmed")}
-          value={isLoading ? "—" : confirmed}
-          icon={Clock}
-          color="bg-info-muted text-info-foreground"
-        />
-        <StatCard
-          index={2}
-          label={t("stats.completed")}
-          value={isLoading ? "—" : completed}
-          icon={CircleCheck}
-          color="bg-success-muted text-success-foreground"
-        />
-        <StatCard
-          index={3}
-          label={t("stats.cancelled")}
-          value={isLoading ? "—" : cancelled}
-          icon={CircleX}
-          color="bg-destructive/10 text-destructive"
-        />
-      </div>
-
-      <Card className="reveal mb-5 overflow-hidden" style={stagger(5)}>
-        <CardHeader className="flex-row items-center justify-between border-b border-border px-5 py-4 sm:p-5">
-          <CardTitle className="flex items-center gap-2.5 text-sm font-bold uppercase tracking-wider text-muted-foreground">
-            <Users className="size-[1.15rem] text-primary" /> {t("upcoming.title")}
-          </CardTitle>
-          {!isLoading && !error && (
-            <Link href="/calendar" className="text-sm font-semibold text-primary hover:underline">
-              {t("upcoming.count", { count: upcoming.length })}
-            </Link>
-          )}
-        </CardHeader>
-        <CardContent className="p-0 sm:p-0">
-          {error ? (
-            <div className="p-4">
-              <ErrorState error={error} feature={t("upcoming.feature")} onRetry={() => refetch()} />
-            </div>
-          ) : isLoading ? (
-            <div className="flex flex-col gap-3 p-4">
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className="h-14 rounded-2xl" />
-              ))}
-            </div>
-          ) : upcoming.length === 0 ? (
-            <div className="px-5 py-12 text-center text-sm text-muted-foreground">
-              {t("upcoming.empty")}
-            </div>
-          ) : (
-            <div>
-              {upcoming.map((b) => (
-                <BookingRow key={b.id} booking={b} />
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {business.data && (
-        <div className="reveal" style={stagger(6)}>
-          <BookingLinkCard slug={business.data.slug} variant="compact" />
+        <div className="mb-6 flex flex-col gap-2 rounded-md border-l-4 border-warning bg-warning-muted px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="min-w-0">
+            <p className="font-medium text-warning-foreground">{tReview("banner.title", { count: reviewCount })}</p>
+            <p className="text-sm text-warning-foreground/80">{tReview("banner.description")}</p>
+          </div>
+          <Link
+            href="/review"
+            className="shrink-0 text-sm font-semibold text-warning-foreground underline underline-offset-4 hover:no-underline"
+          >
+            {tReview("banner.cta")}
+          </Link>
         </div>
       )}
 
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_17rem]">
+        <section aria-labelledby="timeline-title">
+          <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-border pb-3">
+            <h2 id="timeline-title" className="text-xl font-semibold">
+              {t("timeline.title")}
+            </h2>
+            {!isLoading && !error && (
+              <dl className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                {summary.map((s) => (
+                  <div key={s.key} className="flex gap-1.5">
+                    <dd className="font-semibold tabular-nums text-foreground">{s.value}</dd>
+                    <dt>{t(`stats.${s.key}`)}</dt>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+
+          {error ? (
+            <div className="pt-4">
+              <ErrorState error={error} feature={t("timeline.feature")} onRetry={() => refetch()} />
+            </div>
+          ) : isLoading ? (
+            <div className="flex flex-col gap-3 pt-4">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="h-12" />
+              ))}
+            </div>
+          ) : sorted.length === 0 ? (
+            <p className="py-12 text-muted-foreground">{t("timeline.empty")}</p>
+          ) : (
+            <>
+              <ol>
+                {sorted.map((b, i) => (
+                  <Fragment key={b.id}>
+                    {i === markerAt && <NowMarker label={t("timeline.now")} time={clockLabel(nowMinute)} />}
+                    <TimelineRow booking={b} onOpen={() => setSelected(b)} />
+                  </Fragment>
+                ))}
+                {markerAt === sorted.length && <NowMarker label={t("timeline.now")} time={clockLabel(nowMinute)} />}
+              </ol>
+              {!hasUpcoming && <p className="pt-4 text-sm text-muted-foreground">{t("timeline.allDone")}</p>}
+            </>
+          )}
+        </section>
+
+        {business.data && (
+          <aside className="lg:pt-1">
+            <BookingLinkCard slug={business.data.slug} variant="compact" />
+          </aside>
+        )}
+      </div>
+
+      <BookingDetailDialog booking={selected} onOpenChange={(o) => !o && setSelected(null)} />
       <CreateBookingDialog draft={draft} onOpenChange={(o) => !o && setDraft(null)} />
     </div>
   );

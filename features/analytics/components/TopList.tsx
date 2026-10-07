@@ -1,7 +1,5 @@
 "use client";
 
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-
 export interface TopListItem {
   id: string;
   name: string;
@@ -22,17 +20,15 @@ export function TopList({
   const max = Math.max(...items.map((i) => i.revenue), 0);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
+    <section>
+      <h2 className="mb-4 text-xl font-semibold">{title}</h2>
       {items.length === 0 ? (
-        <p className="px-5 pb-6 text-sm text-muted-foreground sm:px-6">{emptyLabel}</p>
+        <p className="text-sm text-muted-foreground">{emptyLabel}</p>
       ) : (
-        <ol className="flex flex-col gap-4 px-5 pb-6 sm:px-6">
+        <ol className="flex flex-col gap-4">
           {items.map((item, index) => (
             <li key={item.id} className="flex items-start gap-3">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+              <span className="w-4 shrink-0 pt-0.5 text-right font-mono text-sm text-muted-foreground">
                 {index + 1}
               </span>
               <div className="min-w-0 flex-1">
@@ -41,9 +37,9 @@ export function TopList({
                   <span className="shrink-0 text-sm font-semibold">{item.revenueLabel}</span>
                 </div>
                 <div className="text-xs text-muted-foreground">{item.detail}</div>
-                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-hidden>
+                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-sm bg-muted" aria-hidden>
                   <div
-                    className="h-full rounded-full bg-primary"
+                    className="h-full rounded-sm bg-primary"
                     style={{ width: max > 0 ? `${(item.revenue / max) * 100}%` : "0%" }}
                   />
                 </div>
@@ -52,6 +48,6 @@ export function TopList({
           ))}
         </ol>
       )}
-    </Card>
+    </section>
   );
 }

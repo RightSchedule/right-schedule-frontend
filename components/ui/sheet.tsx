@@ -32,7 +32,7 @@ function SheetContent({
         )}
         {...props}
       >
-        <DialogPrimitive.Close className="absolute right-4 top-4 flex size-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+        <DialogPrimitive.Close className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
           <X className="size-4" />
           <span className="sr-only">{t("close")}</span>
         </DialogPrimitive.Close>

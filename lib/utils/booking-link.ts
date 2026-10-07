@@ -7,6 +7,15 @@ export function bookingUrl(slug: string): string {
   return `${origin}${bookingPath(slug)}`;
 }
 
+export function quotePath(slug: string): string {
+  return `${bookingPath(slug)}/quote`;
+}
+
+export function quoteUrl(slug: string): string {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  return `${origin}${quotePath(slug)}`;
+}
+
 export function slugify(input: string): string {
   return input
     .normalize("NFD")

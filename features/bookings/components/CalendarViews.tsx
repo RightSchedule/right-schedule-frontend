@@ -3,162 +3,16 @@
 import { ViewTransition } from "react";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
-import { CalendarCheck, CalendarX, CheckCheck, TriangleAlert, UserX } from "lucide-react";
+import { CalendarX } from "lucide-react";
 import { cn } from "cn";
-import { EmptyState, initials } from "@/components/shared";
+import { EmptyState } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
-import { BookingStatusBadge, useStatusLabel } from "@/features/bookings/components/BookingDetailDialog";
-import { HOUR_PX, snapOffsetToTime, toMinutes } from "@/features/bookings/calendarGeometry";
+import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
+import { HOUR_PX, bookingMinutes, bookingTotal, snapOffsetToTime, toMinutes } from "@/features/bookings/calendarGeometry";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { businessToday, useBusinessMinute } from "@/lib/utils/clock";
-import type { Booking, BookingStatus, Staff } from "@/types/domain";
-
-const BLOCK_STYLE: Record<BookingStatus, string> = {
-  CONFIRMED: "border-primary/25 bg-accent/70 text-foreground",
-  COMPLETED: "border-success/40 bg-success-muted text-success-foreground",
-  CANCELLED: "border-destructive/30 bg-destructive/5 text-muted-foreground line-through",
-  NO_SHOW: "border-warning/50 bg-warning-muted text-warning-foreground",
-};
-
-const BLOCK_HOVER = "hover:brightness-95 dark:hover:brightness-125";
-
-const STATUS_ICON: Record<BookingStatus, React.ElementType> = {
-  CONFIRMED: CalendarCheck,
-  COMPLETED: CheckCheck,
-  CANCELLED: CalendarX,
-  NO_SHOW: UserX,
-};
-
-const NEEDS_REVIEW_STYLE = "border-warning/60 bg-warning-muted text-warning-foreground";
-
-function blockStyle(b: Booking) {
-  return b.needsReviewAt ? NEEDS_REVIEW_STYLE : BLOCK_STYLE[b.status];
-}
-
-function StatusMark({ booking }: { booking: Booking }) {
-  const Icon = booking.needsReviewAt ? TriangleAlert : STATUS_ICON[booking.status];
-  const t = useTranslations("calendar.views");
-  const statusLabel = useStatusLabel();
-  return (
-    <>
-      <Icon className="mr-1 inline size-3 shrink-0 align-[-1px]" aria-hidden />
-      <span className="sr-only">
-        {booking.needsReviewAt ? t("needsReview") : t("statusPrefix", { status: statusLabel(booking.status) })}{" "}
-      </span>
-    </>
-  );
-}
-
-function sortByStart(bookings: Booking[]) {
-  return [...bookings].sort((a, b) => a.startTime.localeCompare(b.startTime));
-}
-
-export function BookingChip({
-  booking,
-  onSelect,
-  showDate,
-}: {
-  booking: Booking;
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
-  showDate?: boolean;
-}) {
-  const t = useTranslations("calendar.views");
-  const f = useLocaleFormat();
-  return (
-    <button
-      type="button"
-      onClick={(e) => onSelect(booking, e.currentTarget)}
-      className={cn(
-        "w-full rounded-2xl border px-3 py-2 text-left text-xs transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:py-2.5",
-        blockStyle(booking),
-        BLOCK_HOVER
-      )}
-    >
-      <span className="block font-semibold">
-        <StatusMark booking={booking} />
-        {showDate && `${f.date(booking.date, "EEE")} `}
-        <span className="font-mono">{booking.startTime.slice(0, 5)}</span> · {booking.customer?.name ?? t("customerFallback")}
-      </span>
-      <span className="block truncate opacity-80">
-        {booking.service?.name ?? t("serviceFallback")}
-        {booking.staff ? ` · ${booking.staff.name}` : ""}
-      </span>
-      {booking.notes && <span className="block truncate opacity-70">{booking.notes}</span>}
-    </button>
-  );
-}
-
-const BLOCK_ACCENT: Record<BookingStatus, string> = {
-  CONFIRMED: "bg-primary",
-  COMPLETED: "bg-success",
-  CANCELLED: "bg-destructive/60",
-  NO_SHOW: "bg-warning",
-};
-
-function DayCard({
-  booking: b,
-  height,
-  onSelect,
-}: {
-  booking: Booking;
-  height: number;
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
-}) {
-  const t = useTranslations("calendar.views");
-  const customer = b.customer?.name ?? t("customerFallback");
-  const service = b.service?.name ?? t("serviceFallback");
-  const start = b.startTime.slice(0, 5);
-  const end = b.endTime.slice(0, 5);
-  const compact = height < 36;
-  const stacked = height >= 64;
-  const roomy = height >= 88;
-  const accent = b.needsReviewAt ? "bg-warning" : BLOCK_ACCENT[b.status];
-
-  return (
-    <button
-      type="button"
-      onClick={(e) => onSelect(b, e.currentTarget)}
-      title={`${start}–${end} · ${customer} · ${service}`}
-      className={cn(
-        "group relative flex h-full w-full overflow-hidden rounded-lg border text-left text-xs shadow-xs transition-[filter,box-shadow] hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        compact ? "items-center py-0.5 pl-3 pr-2" : "flex-col justify-center gap-0.5 py-1 pl-3.5 pr-2.5 leading-4",
-        blockStyle(b),
-        BLOCK_HOVER
-      )}
-    >
-      <span aria-hidden className={cn("absolute inset-y-0 left-0 w-1", accent)} />
-      {compact ? (
-        <span className="flex min-w-0 flex-1 items-center gap-1.5 whitespace-nowrap">
-          <StatusMark booking={b} />
-          <span className="shrink-0 font-mono font-semibold">{start}</span>
-          <span className="min-w-0 truncate font-semibold">{customer}</span>
-          <span className="min-w-0 shrink-[3] truncate opacity-70">· {service}</span>
-        </span>
-      ) : (
-        <>
-          <span className="flex min-w-0 items-center gap-1 font-semibold">
-            <StatusMark booking={b} />
-            <span className="min-w-0 truncate">{customer}</span>
-          </span>
-          {stacked ? (
-            <>
-              <span className="truncate font-mono opacity-80">
-                {start} – {end}
-              </span>
-              <span className="truncate opacity-80">{service}</span>
-            </>
-          ) : (
-            <span className="flex min-w-0 gap-1 whitespace-nowrap opacity-80">
-              <span className="shrink-0 font-mono">{start}–{end}</span>
-              <span className="min-w-0 truncate">· {service}</span>
-            </span>
-          )}
-          {roomy && b.notes && <span className="truncate italic opacity-70">{b.notes}</span>}
-        </>
-      )}
-    </button>
-  );
-}
+import type { Booking, Staff } from "@/types/domain";
+import { BLOCK_HOVER, blockStyle, sortByStart, BookingChip, DayCard } from "@/features/bookings/components/CalendarBlocks";
 
 type Column = { id: string; name: string; active: boolean };
 
@@ -188,21 +42,19 @@ function StaffTimeline({
   hours: number[];
   firstHour: number;
   nowTop: number | null;
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
 }) {
   const t = useTranslations("calendar.views");
+  const tPeople = useTranslations("public.service");
   const f = useLocaleFormat();
   const creatable = !!onCreate && column.id !== "__other";
   const height = hours.length * HOUR_PX;
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
-      <header className="flex items-center gap-3 border-b border-border bg-muted/40 px-5 py-4">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-foreground">
-          {initials(column.name)}
-        </span>
-        <span className="truncate font-bold">{column.name}</span>
+    <section className="overflow-hidden rounded-lg border border-border bg-card">
+      <header className="flex items-center gap-3 border-b border-border bg-muted/40 px-4 py-3">
+        <span className="truncate font-heading text-lg font-semibold">{column.name}</span>
         <Badge variant={column.active ? "success" : "secondary"}>
           {column.active ? t("active") : t("inactive")}
         </Badge>
@@ -216,7 +68,7 @@ function StaffTimeline({
           {hours.map((h, i) => (
             <span
               key={h}
-              className="absolute left-0 -translate-y-1/2 font-mono text-[0.8rem] text-muted-foreground"
+              className="absolute left-0 -translate-y-1/2 font-mono text-xs text-muted-foreground"
               style={{ top: i * HOUR_PX + (i === 0 ? 8 : 0) }}
             >
               {String(h).padStart(2, "0")}:00
@@ -243,36 +95,36 @@ function StaffTimeline({
             const start = toMinutes(b.startTime);
             const end = toMinutes(b.endTime);
             const top = ((start - firstHour * 60) / 60) * HOUR_PX;
-            const blockHeight = Math.max(((end - start) / 60) * HOUR_PX - 4, 60);
+            const blockHeight = Math.max(((end - start) / 60) * HOUR_PX - 4, 48);
             return (
               <button
                 key={b.id}
                 type="button"
-                onClick={(e) => onSelect(b, e.currentTarget)}
+                onClick={() => onSelect(b)}
                 style={{ top, minHeight: blockHeight }}
                 className={cn(
-                  "absolute inset-x-1 flex flex-col justify-center gap-1 overflow-hidden rounded-2xl border px-3.5 py-2 text-left transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "absolute inset-x-1 flex flex-col justify-center gap-0.5 overflow-hidden rounded-md border px-3 py-1.5 text-left transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   blockStyle(b),
                   BLOCK_HOVER
                 )}
               >
                 <span className="flex items-start gap-2 text-sm font-semibold">
-                  <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" aria-hidden />
                   <span className="min-w-0 flex-1">
                     <span className="font-mono">
                       {b.startTime.slice(0, 5)} – {b.endTime.slice(0, 5)}
                     </span>{" "}
                     · {b.customer?.name ?? t("customerFallback")}
                   </span>
-                  <BookingStatusBadge status={b.status} className="shrink-0 px-2.5 text-[0.7rem]" />
+                  <BookingStatusBadge status={b.status} className="shrink-0" />
                 </span>
-                <span className="block truncate pl-4 text-xs text-muted-foreground">
+                <span className="block truncate text-xs text-muted-foreground">
                   {b.service?.name ?? t("serviceFallback")}
                   {b.service &&
                     ` · ${t("summary", {
-                      minutes: b.service.durationMinutes,
-                      price: f.price(b.service.price),
+                      minutes: bookingMinutes(b),
+                      price: f.price(bookingTotal(b) ?? b.service.price),
                     })}`}
+                  {(b.partySize ?? 1) > 1 && ` · ${tPeople("people", { count: b.partySize! })}`}
                 </span>
               </button>
             );
@@ -297,7 +149,7 @@ export function DayView({
   timezone?: string;
   bookings: Booking[];
   staff: Staff[];
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
 }) {
   const iso = format(date, "yyyy-MM-dd");
@@ -327,7 +179,7 @@ function DayGrid({
 }: {
   bookings: Booking[];
   staff: Staff[];
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
   nowMinute: number | null;
 }) {
@@ -378,7 +230,7 @@ function DayGrid({
         )}
       </div>
 
-      <div className="hidden overflow-x-auto rounded-3xl border border-border bg-card shadow-card md:block">
+      <div className="hidden rounded-lg border border-border bg-card md:block">
         <div
           className="grid min-w-[36rem]"
           style={{ gridTemplateColumns: `3.5rem repeat(${columns.length}, minmax(9rem, 1fr))` }}
@@ -387,7 +239,7 @@ function DayGrid({
           {columns.map((c) => (
             <div
               key={c.id}
-              className="sticky top-0 z-10 truncate border-b border-l border-border bg-card px-3 py-2 text-sm font-medium"
+              className="sticky top-0 z-10 truncate border-b border-l border-border bg-card px-3 py-2 font-heading font-semibold"
             >
               {c.name}
             </div>
@@ -431,7 +283,7 @@ function DayGrid({
                 {nowTop !== null && (
                   <div
                     aria-hidden
-                    className="now-line pointer-events-none absolute inset-x-0 h-px bg-primary transition-[top] duration-1000 ease-linear"
+                    className="pointer-events-none absolute inset-x-0 h-px bg-primary transition-[top] duration-1000 ease-linear"
                     style={{ top: nowTop }}
                   />
                 )}
@@ -465,7 +317,7 @@ export function WeekView({
   timezone?: string;
   days: Date[];
   bookingsByDay: Booking[][];
-  onSelect: (b: Booking, origin?: HTMLElement) => void;
+  onSelect: (b: Booking) => void;
   onOpenDay: (d: Date) => void;
 }) {
   const today = businessToday(timezone);
@@ -485,8 +337,8 @@ export function WeekView({
           >
           <section
             className={cn(
-              "flex min-h-28 flex-col gap-2 rounded-3xl border border-border bg-card p-4 shadow-card md:p-2.5",
-              isToday && "border-primary/50 ring-2 ring-primary/20"
+              "flex min-h-28 flex-col gap-2 rounded-lg border border-border bg-card p-4 md:p-2.5",
+              isToday && "border-primary"
             )}
           >
             <button
@@ -499,12 +351,12 @@ export function WeekView({
                 month: f.date(day, "MMMM"),
               })}
             >
-              <span className="text-sm font-bold uppercase tracking-wide text-muted-foreground md:text-xs">
+              <span className="text-sm font-medium text-muted-foreground md:text-xs">
                 {f.date(day, "EEE")}
               </span>
               <span
                 className={cn(
-                  "text-xl font-bold md:text-sm md:font-semibold",
+                  "text-xl font-semibold md:text-sm",
                   isToday && "text-primary"
                 )}
               >

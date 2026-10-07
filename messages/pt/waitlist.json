@@ -1,0 +1,44 @@
+{
+  "list": {
+    "title": "Lista de espera",
+    "description": "Clientes que pediram para ser avisados quando surgir uma vaga.",
+    "errorFeature": "Lista de espera",
+    "emptyTitle": "Ninguém na lista de espera",
+    "emptyDescription": "Quando um cliente entrar na lista de espera a partir da sua página de marcações, aparece aqui.",
+    "emptyFilteredTitle": "Nada por aqui",
+    "emptyFilteredDescription": "Sem entradas com este estado.",
+    "anyStaff": "Qualquer profissional",
+    "anyTime": "Qualquer hora",
+    "timeRange": "{from} às {to}",
+    "timeFrom": "A partir das {from}",
+    "timeUntil": "Até às {to}",
+    "joined": "Entrou a {date}",
+    "filters": {
+      "label": "Filtrar por estado",
+      "all": "Todas",
+      "WAITING": "Em espera",
+      "NOTIFIED": "Avisadas",
+      "BOOKED": "Marcadas",
+      "CANCELLED": "Canceladas"
+    },
+    "pagination": {
+      "label": "Paginação",
+      "previous": "Anterior",
+      "next": "Seguinte",
+      "page": "Página {page} de {total}"
+    }
+  },
+  "status": {
+    "WAITING": "Em espera",
+    "NOTIFIED": "Avisado",
+    "BOOKED": "Marcado",
+    "CANCELLED": "Cancelado"
+  },
+  "remove": {
+    "action": "Remover {name} da lista de espera",
+    "title": "Remover da lista de espera?",
+    "description": "{name} deixa de ser avisado quando surgir uma vaga.",
+    "confirm": "Remover",
+    "removed": "Removido da lista de espera"
+  }
+}

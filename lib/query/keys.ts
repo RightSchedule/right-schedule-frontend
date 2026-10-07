@@ -1,5 +1,6 @@
 export const qk = {
   business: ["business"] as const,
+  bookingSettings: ["business", "booking-settings"] as const,
   services: ["services"] as const,
   staff: {
     all: ["staff"] as const,
@@ -26,18 +27,31 @@ export const qk = {
     lists: ["customers", "list"] as const,
     list: (search: string, page: number) => ["customers", "list", search, page] as const,
     one: (id: string) => ["customers", "one", id] as const,
+    tags: (id: string) => ["customers", "tags", id] as const,
   },
   quotes: {
     all: ["quotes"] as const,
     list: (status: string | null, page: number) => ["quotes", "list", status, page] as const,
     pending: ["quotes", "pending-count"] as const,
   },
+  waitlist: {
+    all: ["waitlist"] as const,
+    list: (status: string | null, page: number) => ["waitlist", "list", status, page] as const,
+  },
   public: {
     business: (slug: string) => ["public", "business", slug] as const,
+    managedBooking: (token: string) => ["public", "managed-booking", token] as const,
+    reviews: (slug: string, page: number) => ["public", "reviews", slug, page] as const,
+    managedQuote: (token: string) => ["public", "managed-quote", token] as const,
     staff: (slug: string, serviceId: string | null) =>
       ["public", "staff", slug, serviceId] as const,
     availabilityAll: ["public", "availability"] as const,
-    availability: (slug: string, serviceId: string | null, staffId: string | null, date: string | null) =>
-      ["public", "availability", slug, serviceId, staffId, date] as const,
+    availability: (
+      slug: string,
+      serviceId: string | null,
+      staffId: string | null,
+      date: string | null,
+      partySize = 1
+    ) => ["public", "availability", slug, serviceId, staffId, date, partySize] as const,
   },
 };

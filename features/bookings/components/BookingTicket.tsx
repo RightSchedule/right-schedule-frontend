@@ -2,7 +2,7 @@
 
 import { ViewTransition } from "react";
 import { useTranslations } from "next-intl";
-import { CalendarDays, Clock, UserRound } from "lucide-react";
+import { CalendarDays, Clock, UserRound, Users } from "lucide-react";
 import { cn } from "cn";
 import { useLocaleFormat } from "@/lib/i18n/format";
 
@@ -13,6 +13,7 @@ export function BookingTicket({
   serviceName,
   price,
   durationMinutes,
+  partySize = 1,
   staffName,
   date,
   startTime,
@@ -21,8 +22,11 @@ export function BookingTicket({
 }: {
   serviceId?: string;
   serviceName: string;
+  /** Total for the whole party. */
   price: number;
+  /** Total for the whole party. */
   durationMinutes?: number;
+  partySize?: number;
   staffName?: string;
   date?: string | null;
   startTime?: string | null;
@@ -44,20 +48,27 @@ export function BookingTicket({
     >
       <div
         className={cn(
-          "overflow-hidden rounded-3xl border border-border bg-card text-left text-sm shadow-card",
+          "overflow-hidden rounded-lg border border-border bg-card text-left text-sm",
           className
         )}
       >
         <div className="flex items-start justify-between gap-3 p-4">
           <div className="min-w-0">
-            <p className="font-bold">{serviceName}</p>
-            {durationMinutes ? (
-              <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock className="size-3" /> {t("service.duration", { count: durationMinutes })}
-              </p>
-            ) : null}
+            <p className="font-semibold">{serviceName}</p>
+            <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+              {durationMinutes ? (
+                <span className="inline-flex items-center gap-1">
+                  <Clock className="size-3" /> {t("service.duration", { count: durationMinutes })}
+                </span>
+              ) : null}
+              {partySize > 1 && (
+                <span className="inline-flex items-center gap-1">
+                  <Users className="size-3" aria-hidden /> {t("service.people", { count: partySize })}
+                </span>
+              )}
+            </p>
           </div>
-          <p className="shrink-0 font-bold tabular-nums text-primary">{f.price(price)}</p>
+          <p className="shrink-0 font-semibold tabular-nums text-primary">{f.price(price)}</p>
         </div>
 
         {showDetails && (

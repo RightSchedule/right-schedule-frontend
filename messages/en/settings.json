@@ -11,7 +11,10 @@
     "copiedToast": "Booking link copied",
     "copyFailed": "Couldn't copy. Select the link and copy it manually.",
     "label": "Booking link",
-    "copyLink": "Copy link"
+    "copyLink": "Copy link",
+    "quoteTitle": "Your quote request link",
+    "quoteLabel": "Quote request link",
+    "quoteCopiedToast": "Quote request link copied"
   },
   "profile": {
     "title": "Business profile",
@@ -22,11 +25,14 @@
     "timezone": "Timezone",
     "timezoneHint": "Booking times are shown in this timezone.",
     "emailLanguage": "Email language",
-    "emailLanguageHint": "The language of the notification emails your business receives."
+    "emailLanguageHint": "The language of the notification emails your business receives.",
+    "defaultMaxPartySize": "Default max people per booking",
+    "defaultMaxPartySizeHint": "1 means one person per booking. Services can override this."
   },
   "validation": {
     "nameRequired": "Business name is required",
-    "emailInvalid": "Enter a valid email"
+    "emailInvalid": "Enter a valid email",
+    "partySizeInvalid": "Enter a whole number from 1 to 10"
   },
   "privacy": {
     "title": "Privacy and data",
@@ -42,5 +48,74 @@
     "legal": "Legal"
   },
   "saved": "Settings saved",
-  "notFound": "Business not found"
+  "notFound": "Business not found",
+  "bookingRules": {
+    "title": "Booking rules",
+    "description": "Control what customers can do online and how bookings are spaced.",
+    "minNotice": "Minimum notice (minutes)",
+    "minNoticeHint": "How far ahead customers must book. 0 allows last-minute bookings.",
+    "maxAdvance": "Booking horizon (days)",
+    "maxAdvanceHint": "How far into the future customers can book.",
+    "cancellationWindow": "Cancellation window (minutes)",
+    "cancellationWindowHint": "Customers can't cancel online inside this window before the start.",
+    "noLimit": "No limit",
+    "slotInterval": "Time slot spacing",
+    "slotIntervalHint": "Gap between start times offered to customers.",
+    "minutes": "{count} min",
+    "saved": "Booking rules saved",
+    "errors": {
+      "minNotice": "Enter a whole number from 0 to 43200",
+      "maxAdvance": "Enter a whole number from 1 to 730",
+      "cancellationWindow": "Leave empty or enter 0 to 43200",
+      "load": "Booking rules not found",
+      "buffer": "Enter a whole number from 0 to 240",
+      "perDay": "Leave empty or enter 1 to 50",
+      "active": "Leave empty or enter 1 to 100"
+    },
+    "sections": {
+      "online": "Online features",
+      "timing": "Timing",
+      "limits": "Per-customer limits",
+      "notifications": "Emails"
+    },
+    "publicBooking": "Accept online bookings",
+    "publicBookingHint": "When off, your booking page shows a closed notice. You can still add bookings from the calendar.",
+    "quotes": "Accept quote requests",
+    "quotesHint": "Show the quote request form on your public page.",
+    "waitlist": "Offer a waitlist",
+    "waitlistHint": "Let customers join a waitlist when a day is full.",
+    "reviews": "Collect reviews",
+    "reviewsHint": "Customers can rate completed bookings from their booking link.",
+    "showReviews": "Show reviews publicly",
+    "showReviewsHint": "Display collected reviews on your public page.",
+    "buffer": "Buffer between bookings (minutes)",
+    "bufferHint": "Gap kept free after each booking. Services can override it.",
+    "rescheduleWindow": "Reschedule window (minutes)",
+    "rescheduleWindowHint": "Customers can't reschedule online inside this window. Empty reuses the cancellation window.",
+    "sameAsCancellation": "Same as cancellation",
+    "limitsHint": "Apply to bookings customers make online. Staff bookings are never limited. Customers are identified by email or phone.",
+    "perDay": "Max bookings per customer per day",
+    "activeLimit": "Max upcoming bookings per customer",
+    "notifyCustomer": "Confirmation email to customer",
+    "notifyCustomerHint": "Sent when a booking is made.",
+    "notifyBusiness": "Email me about new bookings",
+    "notifyBusinessHint": "Sent to the business email for each new booking.",
+    "reminder": "Customer reminder",
+    "reminderHint": "Sent before the booking starts.",
+    "reminderOff": "Off",
+    "reminderHours": "{count} hours before"
+  },
+  "logo": {
+    "title": "Logo",
+    "choose": "Choose a logo image",
+    "upload": "Upload logo",
+    "replace": "Replace logo",
+    "remove": "Remove",
+    "hint": "PNG, JPEG or WebP, up to {size} MB. Shown on your booking page.",
+    "badType": "Use a PNG, JPEG or WebP image",
+    "tooLarge": "The image is larger than {size} MB",
+    "uploadFailed": "Couldn't upload the image. Try again.",
+    "updated": "Logo updated",
+    "removed": "Logo removed"
+  }
 }

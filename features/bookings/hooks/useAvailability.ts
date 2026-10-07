@@ -9,17 +9,19 @@ interface Params {
   serviceId: string | null;
   staffId?: string | null;
   date: string | null;
+  partySize?: number;
 }
 
-export function useAvailability({ slug, serviceId, staffId, date }: Params) {
+export function useAvailability({ slug, serviceId, staffId, date, partySize = 1 }: Params) {
   return useQuery({
-    queryKey: qk.public.availability(slug, serviceId, staffId ?? null, date),
+    queryKey: qk.public.availability(slug, serviceId, staffId ?? null, date, partySize),
     queryFn: () =>
       publicApi.getAvailability({
         slug,
         serviceId: serviceId!,
         date: date!,
         staffId: staffId ?? undefined,
+        partySize,
       }),
     enabled: !!serviceId && !!date,
   });

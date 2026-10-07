@@ -11,11 +11,13 @@
     "completed": "Completed",
     "cancelled": "Cancelled"
   },
-  "upcoming": {
-    "title": "Upcoming today",
-    "empty": "No upcoming bookings for today.",
+  "new": "New",
+  "timeline": {
+    "title": "Today",
+    "empty": "Nothing booked today.",
+    "now": "Now",
+    "allDone": "No more bookings today.",
     "feature": "Bookings",
-    "count": "{count, plural, one {# booking} other {# bookings}}"
-  },
-  "new": "New"
+    "open": "Open calendar"
+  }
 }

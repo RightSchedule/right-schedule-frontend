@@ -9,10 +9,12 @@ import enLegal from "@/messages/en/legal.json";
 import enOnboarding from "@/messages/en/onboarding.json";
 import enPublic from "@/messages/en/public.json";
 import enQuotes from "@/messages/en/quotes.json";
+import enReviews from "@/messages/en/reviews.json";
 import enReview from "@/messages/en/review.json";
 import enServices from "@/messages/en/services.json";
 import enSettings from "@/messages/en/settings.json";
 import enStaff from "@/messages/en/staff.json";
+import enWaitlist from "@/messages/en/waitlist.json";
 import ptAnalytics from "@/messages/pt/analytics.json";
 import ptAuth from "@/messages/pt/auth.json";
 import ptCalendar from "@/messages/pt/calendar.json";
@@ -24,10 +26,12 @@ import ptLegal from "@/messages/pt/legal.json";
 import ptOnboarding from "@/messages/pt/onboarding.json";
 import ptPublic from "@/messages/pt/public.json";
 import ptQuotes from "@/messages/pt/quotes.json";
+import ptReviews from "@/messages/pt/reviews.json";
 import ptReview from "@/messages/pt/review.json";
 import ptServices from "@/messages/pt/services.json";
 import ptSettings from "@/messages/pt/settings.json";
 import ptStaff from "@/messages/pt/staff.json";
+import ptWaitlist from "@/messages/pt/waitlist.json";
 import type { AppLocale } from "./config";
 
 // One file per feature namespace (messages/<locale>/<namespace>.json) keeps diffs small.
@@ -44,9 +48,11 @@ const en = {
   public: enPublic,
   quotes: enQuotes,
   review: enReview,
+  reviews: enReviews,
   services: enServices,
   settings: enSettings,
   staff: enStaff,
+  waitlist: enWaitlist,
 };
 
 const pt: Messages = {
@@ -62,9 +68,11 @@ const pt: Messages = {
   public: ptPublic,
   quotes: ptQuotes,
   review: ptReview,
+  reviews: ptReviews,
   services: ptServices,
   settings: ptSettings,
   staff: ptStaff,
+  waitlist: ptWaitlist,
 };
 
 export type Messages = typeof en;

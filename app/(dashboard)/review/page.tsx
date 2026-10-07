@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { differenceInCalendarDays, parseISO } from "date-fns";
@@ -27,6 +27,7 @@ import {
 import { useReviewBookings } from "@/features/bookings/hooks/useBookings";
 import { useBusiness } from "@/features/business/hooks/useBusiness";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { pageFromParam, pageToParam, useUrlParams } from "@/lib/hooks/useUrlParams";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { businessToday } from "@/lib/utils/clock";
 import type { Booking } from "@/types/domain";
@@ -68,18 +69,18 @@ function ReviewRow({
           type="button"
           onClick={onOpen}
           aria-label={`${t("page.details")}: ${name}`}
-          className="flex min-w-0 flex-1 items-center gap-3.5 rounded-2xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex min-w-0 flex-1 items-center gap-3.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="flex h-12 w-16 shrink-0 flex-col items-center justify-center rounded-2xl bg-warning-muted text-warning-foreground">
-            <span className="text-xs font-bold uppercase leading-none">
+          <span className="flex h-12 w-16 shrink-0 flex-col items-center justify-center rounded-md bg-warning-muted text-warning-foreground">
+            <span className="text-xs font-semibold leading-none">
               {f.date(booking.date, "d MMM")}
             </span>
-            <span className="mt-1 font-mono text-sm font-bold leading-none">
+            <span className="mt-1 font-mono text-sm font-semibold leading-none">
               {booking.startTime.slice(0, 5)}
             </span>
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-[0.95rem] font-semibold">{name}</span>
+            <span className="block truncate text-base font-medium">{name}</span>
             <span className="block truncate text-sm text-muted-foreground">
               {booking.service?.name ?? t("page.serviceFallback")}
               {booking.staff ? ` · ${booking.staff.name}` : ""}
@@ -116,17 +117,20 @@ function ReviewRow({
   );
 }
 
-export default function ReviewPage() {
+function ReviewContent() {
   const t = useTranslations("review");
   const toast = useToast();
   const errorMessage = useErrorMessage();
   const business = useBusiness();
   const today = businessToday(business.data?.timezone);
 
-  const [page, setPage] = useState(0);
+  const { params, set } = useUrlParams();
+  const page = pageFromParam(params.get("page"));
+  const setPage = (p: number) => set({ page: pageToParam(p) });
   const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
   const [detail, setDetail] = useState<Booking | null>(null);
   const [confirmingBulk, setConfirmingBulk] = useState(false);
+  const [noShowTarget, setNoShowTarget] = useState<Booking | null>(null);
 
   const { bookings = [], totalPages, isLoading, isPlaceholderData, error, refetch } =
     useReviewBookings(page);
@@ -134,9 +138,10 @@ export default function ReviewPage() {
   const bulk = useBulkCompleteBookings();
 
   // Resolving the last row of a later page leaves it empty; step back instead of showing a blank page.
-  if (page > 0 && !isLoading && !isPlaceholderData && bookings.length === 0) {
-    setPage(page - 1);
-  }
+  const stepBack = page > 0 && !isLoading && !isPlaceholderData && bookings.length === 0;
+  useEffect(() => {
+    if (stepBack) set({ page: pageToParam(page - 1) });
+  }, [stepBack, page, set]);
 
   const selected = bookings.filter((b) => selectedIds.has(b.id));
   const allSelected = bookings.length > 0 && selected.length === bookings.length;
@@ -221,13 +226,13 @@ export default function ReviewPage() {
                 disabled={busy}
                 onToggle={(c) => toggle(b.id, c)}
                 onOpen={() => setDetail(b)}
-                onResolve={(action) => resolve(b, action)}
+                onResolve={(action) => (action === "no-show" ? setNoShowTarget(b) : resolve(b, action))}
               />
             ))}
           </ListContainer>
 
           {selected.length > 0 && (
-            <div className="sticky bottom-20 z-20 flex items-center justify-between gap-3 rounded-3xl border border-border bg-card p-3 pl-5 shadow-lg md:bottom-4">
+            <div className="sticky bottom-20 z-20 flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 pl-5 md:bottom-4">
               <span className="text-sm font-semibold">{t("select.count", { count: selected.length })}</span>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" disabled={busy} onClick={() => setSelectedIds(new Set())}>
@@ -264,6 +269,34 @@ export default function ReviewPage() {
         loading={bulk.isPending}
         onConfirm={completeSelected}
       />
+
+      <ConfirmDialog
+        open={noShowTarget !== null}
+        onOpenChange={(open) => !open && !single.isPending && setNoShowTarget(null)}
+        title={t("noShowConfirm.title", { name: noShowTarget?.customer?.name || t("page.unknownCustomer") })}
+        description={t("noShowConfirm.description")}
+        confirmLabel={t("noShowConfirm.confirm")}
+        loading={single.isPending}
+        onConfirm={async () => {
+          if (!noShowTarget) return;
+          await resolve(noShowTarget, "no-show");
+          setNoShowTarget(null);
+        }}
+      />
     </PageContainer>
+  );
+}
+
+export default function ReviewPage() {
+  return (
+    <Suspense
+      fallback={
+        <PageContainer>
+          <SkeletonList className="h-20" />
+        </PageContainer>
+      }
+    >
+      <ReviewContent />
+    </Suspense>
   );
 }

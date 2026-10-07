@@ -26,8 +26,8 @@ export function LegalDocument({
           <ArrowLeft className="size-4" /> {backLabel}
         </Link>
       )}
-      <article className="rounded-3xl border border-border bg-card p-6 shadow-card sm:p-8">
-        <h1 className="text-2xl font-bold tracking-tight">{doc.title}</h1>
+      <article className="rounded-lg border border-border bg-card p-6 sm:p-8">
+        <h1 className="text-2xl font-semibold">{doc.title}</h1>
         {updated && <p className="mt-1 text-xs text-muted-foreground">{updated}</p>}
         {doc.intro && <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{doc.intro}</p>}
         {doc.sections.map((s) => (

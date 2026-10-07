@@ -8,10 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ErrorState, PageContainer, PageHeader } from "@/components/shared";
-import {
-  BookingDetailDialog,
-  type DialogOrigin,
-} from "@/features/bookings/components/BookingDetailDialog";
+import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
 import { DayView, WeekView } from "@/features/bookings/components/CalendarViews";
 import {
   CreateBookingDialog,
@@ -38,7 +35,6 @@ export default function CalendarPage() {
   const [picked, setCursor] = useState<Date | null>(null);
   const cursor = useMemo(() => picked ?? dateFromISO(businessToday(timezone)), [picked, timezone]);
   const [selected, setSelected] = useState<Booking | null>(null);
-  const [origin, setOrigin] = useState<DialogOrigin | null>(null);
   const [draft, setDraft] = useState<BookingDraft | null>(null);
 
   const weekDays = useMemo(() => getWeekDays(cursor), [cursor]);
@@ -46,8 +42,12 @@ export default function CalendarPage() {
   const dayIso = format(cursor, DAY_FORMAT);
   const range = view === "day" ? { from: dayIso, to: dayIso } : weekRange(cursor);
   const bookings = useBookingsRange(range.from, range.to, { enabled: !businessQuery.isLoading });
-  const { error } = bookings;
-  const loading = businessQuery.isLoading || bookings.isLoading;
+  const error = bookings.error ?? staff.error;
+  const loading = businessQuery.isLoading || bookings.isLoading || staff.isLoading;
+  const retry = () => {
+    if (bookings.error) bookings.refetch();
+    if (staff.error) staff.refetch();
+  };
 
   const bookingsByDay = useMemo(
     () =>
@@ -68,11 +68,6 @@ export default function CalendarPage() {
     );
   }
 
-  function select(booking: Booking, el?: HTMLElement) {
-    setOrigin(el ? { rect: el.getBoundingClientRect(), el } : null);
-    setSelected(booking);
-  }
-
   const label =
     view === "day"
       ? t("dayLabel", {
@@ -87,7 +82,7 @@ export default function CalendarPage() {
         });
 
   return (
-    <PageContainer className="max-w-6xl">
+    <PageContainer className="max-w-6xl md:flex md:h-full md:flex-col">
       <PageHeader
         title={t("title")}
         description={t("description")}
@@ -98,9 +93,9 @@ export default function CalendarPage() {
         }
       />
 
-      <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-4 rounded-3xl border border-border bg-card p-4 shadow-card">
+      <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-3">
         <div className="flex items-center gap-3">
-          <div className="flex items-center rounded-full border border-border bg-muted/40 p-0.5">
+          <div className="flex items-center rounded-md border border-border">
             <Button variant="ghost" size="icon" onClick={() => step(-1)} aria-label={t("previous")}>
               <ChevronLeft />
             </Button>
@@ -115,8 +110,12 @@ export default function CalendarPage() {
             {t("today")}
           </Button>
         </div>
-        <h2 className="min-w-40 flex-1 text-[0.95rem] font-bold leading-snug sm:text-base" aria-live="polite">
-          {label}
+        <h2 className="min-w-40 flex-1 font-heading text-xl font-semibold leading-snug" aria-live="polite">
+          {businessQuery.isLoading ? (
+            <span aria-hidden className="skeleton-shimmer block h-7 w-56 rounded-md bg-muted" />
+          ) : (
+            label
+          )}
         </h2>
         <Tabs
           value={view}
@@ -145,14 +144,14 @@ export default function CalendarPage() {
         }}
         default="none"
       >
-        <div>
+        <div className="md:min-h-0 md:flex-1 md:overflow-auto">
           {loading ? (
-            <Skeleton className="h-96 rounded-3xl" />
+            <Skeleton className="h-96 rounded-lg" />
           ) : error ? (
             <ErrorState
               error={error}
               feature={t("feature")}
-              onRetry={() => bookings.refetch()}
+              onRetry={retry}
             />
           ) : view === "day" ? (
             <DayView
@@ -160,7 +159,7 @@ export default function CalendarPage() {
               timezone={timezone}
               bookings={bookings.data ?? []}
               staff={staff.data ?? []}
-              onSelect={select}
+              onSelect={setSelected}
               onCreate={(staffId, time) => setDraft({ date: dayIso, time, staffId })}
             />
           ) : (
@@ -168,7 +167,7 @@ export default function CalendarPage() {
               timezone={timezone}
               days={weekDays}
               bookingsByDay={bookingsByDay}
-              onSelect={select}
+              onSelect={setSelected}
               onOpenDay={(d) =>
                 transition("cal-open-day", () => {
                   setCursor(d);
@@ -182,7 +181,6 @@ export default function CalendarPage() {
 
       <BookingDetailDialog
         booking={selected}
-        origin={origin}
         onOpenChange={(o) => !o && setSelected(null)}
       />
       <CreateBookingDialog draft={draft} onOpenChange={(o) => !o && setDraft(null)} />

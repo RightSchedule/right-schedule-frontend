@@ -13,7 +13,10 @@
       "all": "All",
       "PENDING": "Pending",
       "QUOTED": "Quoted",
-      "DECLINED": "Declined"
+      "ACCEPTED": "Accepted",
+      "CONVERTED": "Booked",
+      "DECLINED": "Declined",
+      "CUSTOMER_DECLINED": "Customer declined"
     },
     "pagination": {
       "label": "Pagination",
@@ -24,8 +27,11 @@
   },
   "status": {
     "PENDING": "Pending",
-    "QUOTED": "Quoted",
-    "DECLINED": "Declined"
+    "QUOTED": "Awaiting customer",
+    "ACCEPTED": "Accepted",
+    "CONVERTED": "Booked",
+    "DECLINED": "Declined",
+    "CUSTOMER_DECLINED": "Customer declined"
   },
   "detail": {
     "received": "Received {date}",
@@ -37,6 +43,7 @@
     "answeredOn": "Answered {date}",
     "noMessage": "No message included.",
     "sendQuote": "Send quote",
+    "convert": "Create booking",
     "decline": "Decline",
     "close": "Close",
     "delete": "Delete",
@@ -63,6 +70,19 @@
       "amountTooLarge": "Price is too large",
       "messageTooLong": "Keep the message under 2000 characters"
     }
+  },
+  "convertForm": {
+    "title": "Create a booking",
+    "description": "{name} accepted your quote. Pick when the appointment happens.",
+    "date": "Date",
+    "time": "Time",
+    "service": "Service",
+    "servicePlaceholder": "Choose a service",
+    "staff": "Professional",
+    "staffHint": "Leave on automatic to let the system pick someone available.",
+    "anyStaff": "Automatic",
+    "submit": "Create booking",
+    "converted": "Booking created"
   },
   "declineForm": {
     "title": "Decline this request?",
@@ -104,6 +124,23 @@
       "note": "You won't get a confirmation email now. You'll hear back once they answer.",
       "another": "Send another request",
       "back": "Back to {business}"
+    }
+  },
+  "manage": {
+    "title": "Your quote",
+    "requestedOn": "Requested on {date}",
+    "yourRequest": "Your request",
+    "quote": "Quote",
+    "accept": "Accept quote",
+    "decline": "Decline",
+    "accepted": "Quote accepted",
+    "declined": "Quote declined",
+    "state": {
+      "PENDING": "The business has not replied yet. You will receive an email when your quote is ready.",
+      "ACCEPTED": "You accepted this quote. The business will be in touch to schedule it.",
+      "CONVERTED": "This quote has been turned into a booking. Check your email for the details.",
+      "DECLINED": "The business was unable to provide a quote for this request.",
+      "CUSTOMER_DECLINED": "You declined this quote."
     }
   }
 }

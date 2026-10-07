@@ -6,6 +6,8 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const isDev = process.env.NODE_ENV === "development";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 const apiOrigin = new URL(apiUrl).origin;
+// Logo uploads PUT straight to object storage; its origin must be allowed in connect-src.
+const storageOrigin = process.env.NEXT_PUBLIC_STORAGE_ORIGIN ? new URL(process.env.NEXT_PUBLIC_STORAGE_ORIGIN).origin : null;
 
 // Next.js injects inline bootstrap scripts, so script-src needs 'unsafe-inline' without a nonce pipeline.
 const csp = [
@@ -14,7 +16,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  `connect-src 'self' ${apiOrigin}`,
+  `connect-src 'self' ${apiOrigin}${storageOrigin ? ` ${storageOrigin}` : ""}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

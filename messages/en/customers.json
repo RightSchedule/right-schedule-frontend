@@ -49,5 +49,14 @@
       "emailInvalid": "Enter a valid email",
       "contactRequired": "Add a phone number or an email"
     }
+  },
+  "tags": {
+    "title": "Tags",
+    "empty": "No tags yet",
+    "add": "Add tag",
+    "placeholder": "e.g. VIP",
+    "remove": "Remove tag {tag}",
+    "duplicate": "That tag already exists",
+    "limit": "A customer can have at most {count} tags"
   }
 }

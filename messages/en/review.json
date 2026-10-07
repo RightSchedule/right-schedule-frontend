@@ -33,6 +33,11 @@
     "description": "This can't be undone. Use No-show on a booking individually if the customer didn't turn up.",
     "confirm": "Mark completed"
   },
+  "noShowConfirm": {
+    "title": "Mark {name} as no-show?",
+    "description": "The customer didn't turn up. This counts towards your no-show numbers and can't be undone.",
+    "confirm": "Mark no-show"
+  },
   "pagination": {
     "label": "Pagination",
     "previous": "Previous",

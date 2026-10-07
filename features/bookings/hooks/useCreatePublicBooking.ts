@@ -18,6 +18,7 @@ export interface NewBookingInput {
   time: string;
   customer: { name: string; phone?: string; email?: string };
   notes?: string;
+  partySize?: number;
   /** Customer's language for emails; defaults to the active UI locale. */
   locale?: string;
 }
@@ -28,7 +29,7 @@ export interface NewBookingInput {
  * `error` is a translated message derived from the raw failure at render time, so it
  * follows the active language.
  */
-export function useCreatePublicBooking() {
+export function useCreatePublicBooking({ asOwner = false }: { asOwner?: boolean } = {}) {
   const qc = useQueryClient();
   const activeLocale = useLocale();
   const tErrors = useTranslations("errors");
@@ -47,8 +48,11 @@ export function useCreatePublicBooking() {
       startDateTime: toStartDateTime(input.date, input.time),
       customer: input.customer,
       notes: input.notes || undefined,
+      partySize: input.partySize && input.partySize > 1 ? input.partySize : undefined,
       locale: input.locale ?? activeLocale,
     };
+    const ownerPayload: Omit<typeof payload, "businessId"> & { businessId?: string } = { ...payload };
+    delete ownerPayload.businessId;
     const fingerprint = JSON.stringify(payload);
     if (keyRef.current?.fingerprint !== fingerprint) {
       keyRef.current = { fingerprint, key: crypto.randomUUID() };
@@ -58,7 +62,9 @@ export function useCreatePublicBooking() {
     setConflict(false);
     setPending(true);
     try {
-      const booking = await bookingsApi.createPublic(payload, keyRef.current.key);
+      const booking = asOwner
+        ? await bookingsApi.createByOwner(ownerPayload, keyRef.current.key)
+        : await bookingsApi.createPublic(payload, keyRef.current.key);
       keyRef.current = null;
       qc.invalidateQueries({ queryKey: qk.bookings.all });
       qc.invalidateQueries({ queryKey: qk.customers.all });

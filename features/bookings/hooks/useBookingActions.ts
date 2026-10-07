@@ -22,6 +22,23 @@ export function useUpdateBookingStatus() {
   });
 }
 
+export function useRescheduleBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...payload }: { id: string; startDateTime: string; staffId?: string }) =>
+      bookingsApi.reschedule(id, payload),
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.bookings.all }),
+  });
+}
+
+export function useUpdateBookingNotes() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, notes }: { id: string; notes: string | null }) => bookingsApi.updateNotes(id, notes),
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.bookings.all }),
+  });
+}
+
 /** Completes many bookings at once. Failures don't abort the rest; the result reports both counts. */
 export function useBulkCompleteBookings() {
   const qc = useQueryClient();

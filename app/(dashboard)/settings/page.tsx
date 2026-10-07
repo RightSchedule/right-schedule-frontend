@@ -18,22 +18,30 @@ import {
   PageHeader,
 } from "@/components/shared";
 import { PrivacyCard } from "@/features/account/components/PrivacyCard";
+import { BookingRulesCard } from "@/features/business/components/BookingRulesCard";
+import { LogoCard } from "@/features/business/components/LogoCard";
 import { BookingLinkCard } from "@/features/business/components/BookingLinkCard";
 import { useBusiness, useUpdateBusiness } from "@/features/business/hooks/useBusiness";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { timezones } from "@/lib/utils/booking-link";
+import { LIMITS, optionalEmail, optionalText, requiredName } from "@/lib/validation";
 
 type Translator = ReturnType<typeof useTranslations<"settings">>;
 
 function makeSchema(t: Translator) {
   return z.object({
-    name: z.string().trim().min(1, t("validation.nameRequired")).max(255),
-    email: z.union([z.literal(""), z.email(t("validation.emailInvalid"))]),
-    phone: z.string().max(50).optional(),
-    address: z.string().max(255).optional(),
+    name: requiredName(t("validation.nameRequired")),
+    email: optionalEmail(t("validation.emailInvalid")),
+    phone: optionalText(LIMITS.phone),
+    address: optionalText(LIMITS.address),
     timezone: z.string().min(1),
     locale: z.enum(locales),
+    defaultMaxPartySize: z
+      .number({ error: t("validation.partySizeInvalid") })
+      .int(t("validation.partySizeInvalid"))
+      .min(1, t("validation.partySizeInvalid"))
+      .max(LIMITS.partySize, t("validation.partySizeInvalid")),
   });
 }
 
@@ -67,6 +75,7 @@ export default function SettingsPage() {
         address: business.address ?? "",
         timezone: business.timezone,
         locale: isLocale(business.locale) ? business.locale : defaultLocale,
+        defaultMaxPartySize: business.defaultMaxPartySize ?? 1,
       });
     }
   }, [business, reset]);
@@ -82,6 +91,7 @@ export default function SettingsPage() {
         timezone: values.timezone,
         logoUrl: business?.logoUrl,
         locale: values.locale,
+        defaultMaxPartySize: values.defaultMaxPartySize,
       });
       toast.success(t("saved"));
     } catch (e) {
@@ -90,23 +100,25 @@ export default function SettingsPage() {
   }
 
   return (
-    <PageContainer className="max-w-2xl">
+    <PageContainer>
       <PageHeader title={t("header.title")} description={t("header.description")} />
 
       {isLoading ? (
-        <Skeleton className="h-96 rounded-3xl" />
+        <Skeleton className="h-96 max-w-2xl rounded-lg" />
       ) : error || !business ? (
         <ErrorState error={error ?? new Error(t("notFound"))} onRetry={() => refetch()} />
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="flex max-w-2xl flex-col gap-8">
           <BookingLinkCard slug={business.slug} />
+
+          <LogoCard business={business} />
 
           <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-5 shadow-card sm:p-6"
+            className="flex flex-col gap-4 border-t border-border pt-6"
           >
-            <h2 className="border-b border-border pb-4 text-base font-bold">{t("profile.title")}</h2>
+            <h2 className="text-xl font-semibold">{t("profile.title")}</h2>
             <Field label={t("profile.name")} htmlFor="biz-name" error={errors.name?.message}>
               <Input id="biz-name" aria-invalid={!!errors.name} {...register("name")} />
             </Field>
@@ -152,6 +164,22 @@ export default function SettingsPage() {
                 ))}
               </Select>
             </Field>
+            <Field
+              label={t("profile.defaultMaxPartySize")}
+              htmlFor="biz-party"
+              hint={t("profile.defaultMaxPartySizeHint")}
+              error={errors.defaultMaxPartySize?.message}
+            >
+              <Input
+                id="biz-party"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={LIMITS.partySize}
+                aria-invalid={!!errors.defaultMaxPartySize}
+                {...register("defaultMaxPartySize", { valueAsNumber: true })}
+              />
+            </Field>
             <FormError message={formError} />
             <div className="flex justify-end">
               <LoadingButton type="submit" loading={update.isPending} disabled={!isDirty}>
@@ -159,6 +187,8 @@ export default function SettingsPage() {
               </LoadingButton>
             </div>
           </form>
+
+          <BookingRulesCard />
 
           <PrivacyCard />
         </div>

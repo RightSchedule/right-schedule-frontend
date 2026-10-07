@@ -13,10 +13,10 @@ export default function BusinessPrivacyPage({ params }: { params: Promise<{ busi
   const t = useTranslations("legal.nav");
   const rawLocale = useLocale();
   const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
-  const { data: business, isLoading, error } = usePublicBusiness(businessSlug);
+  const { data: business, isLoading, error, refetch } = usePublicBusiness(businessSlug);
 
   if (isLoading) return <PublicLoading />;
-  if (error || !business) return <PublicNotFound />;
+  if (error || !business) return <PublicNotFound error={error} onRetry={() => refetch()} />;
 
   return (
     <LegalDocument

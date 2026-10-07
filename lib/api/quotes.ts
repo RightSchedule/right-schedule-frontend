@@ -1,6 +1,6 @@
 import { apiClient } from "./client";
 import { fetchPage } from "./page";
-import type { QuoteRequest, QuoteStatus } from "@/types/domain";
+import type { ManagedQuote, QuoteRequest, QuoteStatus } from "@/types/domain";
 
 export interface PublicQuoteRequest {
   businessId: string;
@@ -28,6 +28,18 @@ export const quotesApi = {
 
   quote: (id: string, payload: { amount: number; message?: string }) =>
     apiClient.patch<QuoteRequest>(`/api/v1/quote-requests/${id}/quote`, payload),
+
+  getManaged: (token: string) =>
+    apiClient.get<ManagedQuote>(`/api/v1/public/quote-requests/${encodeURIComponent(token)}`),
+
+  acceptManaged: (token: string) =>
+    apiClient.patch<ManagedQuote>(`/api/v1/public/quote-requests/${encodeURIComponent(token)}/accept`, {}),
+
+  declineManaged: (token: string) =>
+    apiClient.patch<ManagedQuote>(`/api/v1/public/quote-requests/${encodeURIComponent(token)}/decline`, {}),
+
+  convert: (id: string, payload: { startDateTime: string; serviceId?: string; staffId?: string }) =>
+    apiClient.patch<QuoteRequest>(`/api/v1/quote-requests/${id}/convert`, payload),
 
   remove: (id: string) => apiClient.delete<void>(`/api/v1/quote-requests/${id}`),
 
