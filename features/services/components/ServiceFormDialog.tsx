@@ -59,11 +59,15 @@ export function ServiceForm({
   submitLabel,
   onSubmit,
   onCancel,
+  onDelete,
+  deleteLabel,
 }: {
   service?: Service | null;
   submitLabel: string;
   onSubmit: (values: ServiceFormValues) => Promise<void>;
   onCancel?: () => void;
+  onDelete?: () => void;
+  deleteLabel?: string;
 }) {
   const t = useTranslations("services.form");
   const tErrors = useTranslations("services.form.errors");
@@ -193,7 +197,13 @@ export function ServiceForm({
         </Select>
       </Field>
       <FormError message={error} />
-      <FormActions submitLabel={submitLabel} loading={isSubmitting} onCancel={onCancel} />
+      <FormActions
+        submitLabel={submitLabel}
+        loading={isSubmitting}
+        onCancel={onCancel}
+        onDelete={onDelete}
+        deleteLabel={deleteLabel}
+      />
     </form>
   );
 }
@@ -202,10 +212,13 @@ export function ServiceFormDialog({
   open,
   onOpenChange,
   service,
+  onDelete,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   service?: Service | null;
+  /** Called with the service being edited; the caller confirms and deletes. */
+  onDelete?: (service: Service) => void;
 }) {
   const t = useTranslations("services.dialog");
   const tc = useTranslations("common.actions");
@@ -237,6 +250,8 @@ export function ServiceFormDialog({
         submitLabel={service ? tc("saveChanges") : t("submitNew")}
         onSubmit={onSubmit}
         onCancel={() => onOpenChange(false)}
+        onDelete={service && onDelete ? () => onDelete(service) : undefined}
+        deleteLabel={t("delete")}
       />
     </FormDialog>
   );

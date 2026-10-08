@@ -34,7 +34,7 @@ export function BookingConfirmation({
         <circle className="stamp-ring" cx="16" cy="16" r="13" pathLength="100" />
         <path className="stamp-check" d="M10.5 16.5l4 4 7-8" pathLength="30" />
       </svg>
-      <h1 className="text-2xl font-semibold tracking-tight">{t("confirmation.title")}</h1>
+      <h1 className="type-title">{t("confirmation.title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {summary
           ? t("confirmation.sentTo", { email: summary.customerEmail })

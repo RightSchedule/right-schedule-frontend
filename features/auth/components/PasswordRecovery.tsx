@@ -25,7 +25,7 @@ function Shell({
   const t = useTranslations("auth.recovery");
   return (
     <main className="mx-auto w-full max-w-sm px-4 py-16">
-      <h1 className="text-3xl font-semibold leading-tight">{title}</h1>
+      <h1 className="type-page">{title}</h1>
       {description && <p className="mb-8 mt-2 text-muted-foreground">{description}</p>}
       {children}
       <p className="mt-6 text-sm">

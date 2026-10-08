@@ -27,7 +27,7 @@ export function LegalDocument({
         </Link>
       )}
       <article className="rounded-lg border border-border bg-card p-6 sm:p-8">
-        <h1 className="text-2xl font-semibold">{doc.title}</h1>
+        <h1 className="type-title">{doc.title}</h1>
         {updated && <p className="mt-1 text-xs text-muted-foreground">{updated}</p>}
         {doc.intro && <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{doc.intro}</p>}
         {doc.sections.map((s) => (

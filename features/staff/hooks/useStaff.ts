@@ -1,8 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { qk } from "@/lib/query/keys";
 import { useInvalidatingMutation } from "@/lib/query/useInvalidatingMutation";
+import type { Staff, WorkingHours } from "@/types/domain";
 import { staffApi, type StaffPayload, type WorkingHoursEntry, type ExceptionPayload } from "@/lib/api/staff";
 
 export function useStaff() {
@@ -33,6 +34,25 @@ export function useWorkingHours(id: string) {
     queryKey: qk.staff.workingHours(id),
     queryFn: () => staffApi.getWorkingHours(id),
     enabled: !!id,
+  });
+}
+
+/** Working hours of every active staff member, for views that need the whole team at once. */
+export function useAllWorkingHours(staff: Staff[]) {
+  const ids = staff.filter((s) => s.active).map((s) => s.id);
+  return useQueries({
+    queries: ids.map((id) => ({
+      queryKey: qk.staff.workingHours(id),
+      queryFn: () => staffApi.getWorkingHours(id),
+      staleTime: 5 * 60_000,
+    })),
+    combine: (results) => {
+      const byStaff: Record<string, WorkingHours[] | undefined> = {};
+      results.forEach((r, i) => {
+        byStaff[ids[i]!] = r.data;
+      });
+      return { byStaff, pending: results.some((r) => r.isPending) };
+    },
   });
 }
 

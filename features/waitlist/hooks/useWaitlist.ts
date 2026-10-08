@@ -13,6 +13,15 @@ export function useWaitlistPage(status: WaitlistStatus | null, page: number) {
   });
 }
 
+/** Number of people waiting for a slot, for the dashboard. Only the count is needed, so fetch one row. */
+export function useWaitingCount() {
+  return useQuery({
+    queryKey: qk.waitlist.waiting,
+    queryFn: async () => (await waitlistApi.page({ status: "WAITING", size: 1 })).totalElements,
+    staleTime: 60_000,
+  });
+}
+
 export function useRemoveWaitlistEntry() {
   const qc = useQueryClient();
   return useMutation({

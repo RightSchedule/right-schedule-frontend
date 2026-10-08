@@ -40,7 +40,7 @@ export function TokenAction({
       {mutation.isSuccess ? (
         <>
           <CircleCheck className="mb-4 size-8 text-success-foreground" aria-hidden />
-          <h1 className="text-xl font-semibold">{messages.success}</h1>
+          <h1 className="type-section">{messages.success}</h1>
           <Link href="/login" className={buttonVariants({ className: "mt-6" })}>
             {tCommon("signIn")}
           </Link>
@@ -48,7 +48,7 @@ export function TokenAction({
       ) : mutation.isError ? (
         <div role="alert" className="flex flex-col items-center">
           <CircleX className="mb-4 size-8 text-destructive" aria-hidden />
-          <h1 className="text-xl font-semibold">{messages.failure}</h1>
+          <h1 className="type-section">{messages.failure}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{errorMessage(mutation.error)}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {retryHref && (
@@ -64,11 +64,11 @@ export function TokenAction({
       ) : auto ? (
         <div role="status" className="flex flex-col items-center gap-3">
           <Spinner className="size-6" />
-          <h1 className="text-xl font-semibold">{messages.title}</h1>
+          <h1 className="type-section">{messages.title}</h1>
         </div>
       ) : (
         <>
-          <h1 className="text-xl font-semibold">{messages.title}</h1>
+          <h1 className="type-section">{messages.title}</h1>
           <LoadingButton
             className="mt-6"
             loading={mutation.isPending}

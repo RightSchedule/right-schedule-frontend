@@ -54,7 +54,7 @@ export function FeatureClosed({
   const t = useTranslations("public.closed");
   return (
     <main className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-20 text-center">
-      <h1 className="text-2xl font-semibold">{business.name}</h1>
+      <h1 className="type-title">{business.name}</h1>
       <p className="mt-4 text-lg font-medium">{t(`${kind}.title`)}</p>
       <p className="mt-1 text-sm text-muted-foreground">{t(`${kind}.description`)}</p>
       <div className="mt-6 flex flex-col items-center gap-2 text-sm">
@@ -95,7 +95,7 @@ export function PublicInvalidLink({ kind }: { kind: TokenLinkKind }) {
   return (
     <main className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-24 text-center">
       <SearchX className="mb-4 size-6 text-muted-foreground" aria-hidden />
-      <h1 className="text-xl font-semibold">{t("title")}</h1>
+      <h1 className="type-section">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       {recovery ? (
         <Link href={recovery.href} className={buttonVariants({ className: "mt-6" })}>
@@ -128,7 +128,7 @@ export function PublicNotFound({
     return (
       <div role="alert" className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-24 text-center">
         <SearchX className="mb-4 size-6 text-muted-foreground" />
-        <h1 className="text-xl font-semibold">{tShell("title")}</h1>
+        <h1 className="type-section">{tShell("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{errorMessage(error)}</p>
         {onRetry && (
           <Button variant="outline" className="mt-6" onClick={onRetry}>
@@ -142,7 +142,7 @@ export function PublicNotFound({
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-24 text-center">
       <SearchX className="mb-4 size-6 text-muted-foreground" />
-      <h1 className="text-xl font-semibold">{t("title")}</h1>
+      <h1 className="type-section">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       <Link href="/login" className={buttonVariants({ variant: "outline", className: "mt-6" })}>
         {t("ownerSignIn")}

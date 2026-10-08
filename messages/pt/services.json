@@ -11,8 +11,6 @@
     "minutes": "{count} min",
     "bookable": "Disponível para marcação",
     "toggleAria": "Alternar {name}",
-    "editAria": "Editar {name}",
-    "deleteAria": "Eliminar {name}",
     "hiddenToast": "{name} ocultado da página de marcações",
     "bookableToast": "{name} já pode ser marcado",
     "deleted": "Serviço eliminado",
@@ -53,6 +51,7 @@
     "description": "Os clientes veem o nome, a duração e o preço ao fazer a marcação.",
     "submitNew": "Criar serviço",
     "created": "Serviço criado",
-    "updated": "Serviço atualizado"
+    "updated": "Serviço atualizado",
+    "delete": "Eliminar serviço"
   }
 }

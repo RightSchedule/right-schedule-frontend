@@ -40,7 +40,7 @@ export function BusinessLanding({ slug }: { slug: string }) {
             </AvatarFallback>
           </Avatar>
         </div>
-        <h1 className="reveal text-3xl font-semibold" style={stagger(1)}>{business.name}</h1>
+        <h1 className="reveal type-page" style={stagger(1)}>{business.name}</h1>
         <div className="reveal mt-3" style={stagger(2)}>
           <BusinessContact business={business} />
         </div>
@@ -73,7 +73,7 @@ export function BusinessLanding({ slug }: { slug: string }) {
       <section aria-labelledby="services-heading">
         <h2
           id="services-heading"
-          className="mb-1 font-sans text-sm font-semibold text-muted-foreground"
+          className="mb-1 text-sm font-semibold text-muted-foreground"
         >
           {t("landing.services")}
         </h2>

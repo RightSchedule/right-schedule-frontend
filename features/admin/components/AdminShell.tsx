@@ -80,7 +80,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 {key === "businesses" && pending > 0 && (
                   <span
                     aria-label={t("pendingCount", { count: pending })}
-                    className="ml-auto flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[0.65rem] font-bold leading-5 text-primary-foreground"
+                    className="ml-auto flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold leading-5 text-primary-foreground"
                   >
                     {pending > 99 ? "99+" : pending}
                   </span>

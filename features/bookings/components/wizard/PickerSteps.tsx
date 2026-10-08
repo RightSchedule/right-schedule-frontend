@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { initials } from "@/components/shared";
 import { ticketName } from "@/features/bookings/components/BookingTicket";
 import { useLocaleFormat } from "@/lib/i18n/format";
-import { transition } from "@/lib/utils/motion";
 import type { PublicService, PublicStaff } from "@/types/domain";
 
 export function OptionCard({

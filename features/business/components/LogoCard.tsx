@@ -49,8 +49,8 @@ export function LogoCard({ business }: { business: Business }) {
   }
 
   return (
-    <section aria-labelledby="logo-heading" className="flex flex-col gap-4 border-t border-border pt-6">
-      <h2 id="logo-heading" className="text-xl font-semibold">
+    <section aria-labelledby="logo-heading" className="flex flex-col gap-4">
+      <h2 id="logo-heading" className="type-section">
         {t("title")}
       </h2>
       <div className="flex flex-wrap items-center gap-4">

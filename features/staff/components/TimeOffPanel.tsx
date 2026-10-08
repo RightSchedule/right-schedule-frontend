@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { CalendarOff, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ConfirmDialog, EmptyState, ErrorState, Field, FormError, LoadingButton } from "@/components/shared";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { useLocaleFormat } from "@/lib/i18n/format";
+import { businessToday } from "@/lib/utils/clock";
+import { useBusiness } from "@/features/business/hooks/useBusiness";
 import { useAddException, useDeleteException, useExceptions } from "@/features/staff/hooks/useStaff";
 import type { ExceptionType } from "@/types/domain";
 
@@ -36,7 +37,8 @@ function AddTimeOffDialog({
   const errorMessage = useErrorMessage();
   const toast = useToast();
   const add = useAddException();
-  const today = format(new Date(), "yyyy-MM-dd");
+  const { data: business } = useBusiness();
+  const today = businessToday(business?.timezone);
   const [date, setDate] = useState(today);
   const [allDay, setAllDay] = useState(true);
   const [start, setStart] = useState("09:00");

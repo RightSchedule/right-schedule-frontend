@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useMemo, useState, type ReactNode } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
@@ -10,9 +10,15 @@ import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/toast";
-import { ErrorState, Field, FormError, LoadingButton } from "@/components/shared";
-import { useBookingSettings, useUpdateBookingSettings } from "@/features/business/hooks/useBusiness";
+import { ErrorState, Field, FormError } from "@/components/shared";
+import { DurationField } from "@/components/shared/DurationField";
+import { SaveBar } from "@/components/shared/SaveBar";
+import {
+  useBookingSettings,
+  useUpdateBookingSettings,
+} from "@/features/business/hooks/useBusiness";
 import { useErrorMessage } from "@/lib/i18n/errors";
+import { describeDuration } from "@/lib/utils/duration";
 import type { BookingSettings } from "@/types/domain";
 
 const SLOT_INTERVALS = [5, 10, 15, 20, 30, 60];
@@ -34,19 +40,20 @@ function optionalInt(min: number, max: number, message: string) {
     .string()
     .refine(
       (v) => v.trim() === "" || (/^\d+$/.test(v.trim()) && Number(v) >= min && Number(v) <= max),
-      message
+      message,
     );
 }
 
 function makeSchema(t: Translator) {
   const whole = (min: number, max: number, message: string) =>
     z.number({ error: message }).int(message).min(min, message).max(max, message);
+  const window = (message: string) => whole(0, MAX_MINUTES, message).nullable();
   return z.object({
     minNoticeMinutes: whole(0, MAX_MINUTES, t("errors.minNotice")),
     maxAdvanceDays: whole(1, 730, t("errors.maxAdvance")),
     bufferMinutes: whole(0, 240, t("errors.buffer")),
-    cancellationWindowMinutes: optionalInt(0, MAX_MINUTES, t("errors.cancellationWindow")),
-    rescheduleWindowMinutes: optionalInt(0, MAX_MINUTES, t("errors.cancellationWindow")),
+    cancellationWindowMinutes: window(t("errors.cancellationWindow")),
+    rescheduleWindowMinutes: window(t("errors.cancellationWindow")),
     slotIntervalMinutes: z.coerce.number().refine((v) => SLOT_INTERVALS.includes(v)),
     reminderLeadHours: z.coerce.number().refine((v) => REMINDER_LEADS.includes(v)),
     maxBookingsPerCustomerPerDay: optionalInt(1, 50, t("errors.perDay")),
@@ -71,8 +78,8 @@ function toForm(d: BookingSettings): FormValues {
     minNoticeMinutes: d.minNoticeMinutes,
     maxAdvanceDays: d.maxAdvanceDays,
     bufferMinutes: d.bufferMinutes,
-    cancellationWindowMinutes: toText(d.cancellationWindowMinutes),
-    rescheduleWindowMinutes: toText(d.rescheduleWindowMinutes),
+    cancellationWindowMinutes: d.cancellationWindowMinutes,
+    rescheduleWindowMinutes: d.rescheduleWindowMinutes,
     slotIntervalMinutes: d.slotIntervalMinutes,
     reminderLeadHours: d.reminderLeadHours,
     maxBookingsPerCustomerPerDay: toText(d.maxBookingsPerCustomerPerDay),
@@ -118,12 +125,42 @@ function ToggleRow({
   );
 }
 
-export function BookingRulesCard() {
+/** `booking` = online features, timing and limits; `emails` = notification switches. Both save the same settings. */
+export type RulesPart = "booking" | "emails";
+
+export function BookingRulesCard({ part }: { part: RulesPart }) {
   const t = useTranslations("settings.bookingRules");
-  const tActions = useTranslations("common.actions");
+  const { data, isLoading, error, refetch } = useBookingSettings();
+  const [discards, setDiscards] = useState(0);
+
+  if (isLoading) return <Skeleton className="h-48 rounded-lg" />;
+  if (error || !data) {
+    return <ErrorState error={error ?? new Error(t("errors.load"))} onRetry={() => refetch()} />;
+  }
+  // Remount when the server copy changes or edits are discarded so duration units re-derive.
+  return (
+    <RulesForm
+      key={`${JSON.stringify(data)}:${discards}`}
+      data={data}
+      part={part}
+      onDiscard={() => setDiscards((n) => n + 1)}
+    />
+  );
+}
+
+function RulesForm({
+  data,
+  part,
+  onDiscard,
+}: {
+  data: BookingSettings;
+  part: RulesPart;
+  onDiscard: () => void;
+}) {
+  const t = useTranslations("settings.bookingRules");
+  const tDuration = useTranslations("common.duration");
   const errorMessage = useErrorMessage();
   const toast = useToast();
-  const { data, isLoading, error, refetch } = useBookingSettings();
   const update = useUpdateBookingSettings();
   const [formError, setFormError] = useState<string | null>(null);
   const schema = useMemo(() => makeSchema(t), [t]);
@@ -131,20 +168,36 @@ export function BookingRulesCard() {
   const {
     register,
     handleSubmit,
-    reset,
     control,
     setValue,
     formState: { errors, isDirty },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
-
-  useEffect(() => {
-    if (data) reset(toForm(data));
-  }, [data, reset]);
+  } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: toForm(data) });
 
   const flags = useWatch({ control });
   const flag = (name: Flag) => flags[name] ?? false;
-  const setFlag = (name: Flag) => (value: boolean) =>
-    setValue(name, value, { shouldDirty: true });
+  const setFlag = (name: Flag) => (value: boolean) => setValue(name, value, { shouldDirty: true });
+
+  const validMinutes = (v: unknown): v is number =>
+    typeof v === "number" && Number.isFinite(v) && v >= 0;
+  const duration = (minutes: number) => {
+    const { unit, count } = describeDuration(minutes);
+    return tDuration(`format.${unit}`, { count });
+  };
+  const noticeHint = validMinutes(flags.minNoticeMinutes)
+    ? flags.minNoticeMinutes === 0
+      ? t("summary.noticeNone")
+      : t("summary.notice", { duration: duration(flags.minNoticeMinutes) })
+    : undefined;
+  const cancelHint =
+    validMinutes(flags.cancellationWindowMinutes) && flags.cancellationWindowMinutes > 0
+      ? t("summary.cancel", { duration: duration(flags.cancellationWindowMinutes) })
+      : t("summary.cancelNone");
+  const rescheduleHint =
+    flags.rescheduleWindowMinutes == null
+      ? t("summary.rescheduleSame")
+      : validMinutes(flags.rescheduleWindowMinutes) && flags.rescheduleWindowMinutes > 0
+        ? t("summary.reschedule", { duration: duration(flags.rescheduleWindowMinutes) })
+        : t("summary.rescheduleNone");
 
   async function onSubmit(values: FormValues) {
     setFormError(null);
@@ -153,8 +206,8 @@ export function BookingRulesCard() {
         minNoticeMinutes: values.minNoticeMinutes,
         maxAdvanceDays: values.maxAdvanceDays,
         bufferMinutes: values.bufferMinutes,
-        cancellationWindowMinutes: fromText(values.cancellationWindowMinutes),
-        rescheduleWindowMinutes: fromText(values.rescheduleWindowMinutes),
+        cancellationWindowMinutes: values.cancellationWindowMinutes,
+        rescheduleWindowMinutes: values.rescheduleWindowMinutes,
         slotIntervalMinutes: Number(values.slotIntervalMinutes),
         reminderLeadHours: Number(values.reminderLeadHours) as BookingSettings["reminderLeadHours"],
         maxBookingsPerCustomerPerDay: fromText(values.maxBookingsPerCustomerPerDay),
@@ -174,17 +227,9 @@ export function BookingRulesCard() {
   }
 
   return (
-    <section className="flex flex-col gap-4 border-t border-border pt-6">
-      <div>
-        <h2 className="text-xl font-semibold">{t("title")}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
-      </div>
-      {isLoading ? (
-        <Skeleton className="h-48 rounded-lg" />
-      ) : error || !data ? (
-        <ErrorState error={error ?? new Error(t("errors.load"))} onRetry={() => refetch()} />
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
+      {part === "booking" && (
+        <>
           <Section title={t("sections.online")}>
             <ToggleRow
               label={t("publicBooking")}
@@ -223,17 +268,19 @@ export function BookingRulesCard() {
               <Field
                 label={t("minNotice")}
                 htmlFor="rules-notice"
-                hint={t("minNoticeHint")}
+                hint={noticeHint}
                 error={errors.minNoticeMinutes?.message}
               >
-                <Input
-                  id="rules-notice"
-                  type="number"
-                  inputMode="numeric"
-                  min={0}
-                  max={MAX_MINUTES}
-                  aria-invalid={!!errors.minNoticeMinutes}
-                  {...register("minNoticeMinutes", { valueAsNumber: true })}
+                <Controller
+                  control={control}
+                  name="minNoticeMinutes"
+                  render={({ field }) => (
+                    <DurationField
+                      id="rules-notice"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </Field>
               <Field
@@ -280,29 +327,41 @@ export function BookingRulesCard() {
               <Field
                 label={t("cancellationWindow")}
                 htmlFor="rules-cancel"
-                hint={t("cancellationWindowHint")}
+                hint={cancelHint}
                 error={errors.cancellationWindowMinutes?.message}
               >
-                <Input
-                  id="rules-cancel"
-                  inputMode="numeric"
-                  placeholder={t("noLimit")}
-                  aria-invalid={!!errors.cancellationWindowMinutes}
-                  {...register("cancellationWindowMinutes")}
+                <Controller
+                  control={control}
+                  name="cancellationWindowMinutes"
+                  render={({ field }) => (
+                    <DurationField
+                      id="rules-cancel"
+                      allowEmpty
+                      placeholder={t("noLimit")}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </Field>
               <Field
                 label={t("rescheduleWindow")}
                 htmlFor="rules-reschedule"
-                hint={t("rescheduleWindowHint")}
+                hint={rescheduleHint}
                 error={errors.rescheduleWindowMinutes?.message}
               >
-                <Input
-                  id="rules-reschedule"
-                  inputMode="numeric"
-                  placeholder={t("sameAsCancellation")}
-                  aria-invalid={!!errors.rescheduleWindowMinutes}
-                  {...register("rescheduleWindowMinutes")}
+                <Controller
+                  control={control}
+                  name="rescheduleWindowMinutes"
+                  render={({ field }) => (
+                    <DurationField
+                      id="rules-reschedule"
+                      allowEmpty
+                      placeholder={t("sameAsCancellation")}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </Field>
             </div>
@@ -339,39 +398,37 @@ export function BookingRulesCard() {
               </Field>
             </div>
           </Section>
-
-          <Section title={t("sections.notifications")}>
-            <ToggleRow
-              label={t("notifyCustomer")}
-              hint={t("notifyCustomerHint")}
-              checked={flag("notifyCustomerConfirmation")}
-              onChange={setFlag("notifyCustomerConfirmation")}
-            />
-            <ToggleRow
-              label={t("notifyBusiness")}
-              hint={t("notifyBusinessHint")}
-              checked={flag("notifyBusinessNewBooking")}
-              onChange={setFlag("notifyBusinessNewBooking")}
-            />
-            <Field label={t("reminder")} htmlFor="rules-reminder" hint={t("reminderHint")}>
-              <Select id="rules-reminder" {...register("reminderLeadHours")}>
-                {REMINDER_LEADS.map((h) => (
-                  <option key={h} value={h}>
-                    {h === 0 ? t("reminderOff") : t("reminderHours", { count: h })}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-          </Section>
-
-          <FormError message={formError} />
-          <div className="flex justify-end">
-            <LoadingButton type="submit" loading={update.isPending} disabled={!isDirty}>
-              {tActions("saveChanges")}
-            </LoadingButton>
-          </div>
-        </form>
+        </>
       )}
-    </section>
+
+      {part === "emails" && (
+        <Section title={t("sections.notifications")}>
+          <ToggleRow
+            label={t("notifyCustomer")}
+            hint={t("notifyCustomerHint")}
+            checked={flag("notifyCustomerConfirmation")}
+            onChange={setFlag("notifyCustomerConfirmation")}
+          />
+          <ToggleRow
+            label={t("notifyBusiness")}
+            hint={t("notifyBusinessHint")}
+            checked={flag("notifyBusinessNewBooking")}
+            onChange={setFlag("notifyBusinessNewBooking")}
+          />
+          <Field label={t("reminder")} htmlFor="rules-reminder" hint={t("reminderHint")}>
+            <Select id="rules-reminder" {...register("reminderLeadHours")}>
+              {REMINDER_LEADS.map((h) => (
+                <option key={h} value={h}>
+                  {h === 0 ? t("reminderOff") : t("reminderHours", { count: h })}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        </Section>
+      )}
+
+      <FormError message={formError} />
+      <SaveBar dirty={isDirty} loading={update.isPending} onDiscard={onDiscard} />
+    </form>
   );
 }

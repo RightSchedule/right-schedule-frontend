@@ -59,7 +59,22 @@
     "signOut": "Sign out",
     "expandSidebar": "Expand sidebar",
     "collapseSidebar": "Collapse sidebar",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "waitingCount": "{count} waiting",
+    "moreCount": "{count} need attention"
+  },
+  "duration": {
+    "unitLabel": "Unit",
+    "units": {
+      "minutes": "minutes",
+      "hours": "hours",
+      "days": "days"
+    },
+    "format": {
+      "minutes": "{count, plural, one {# minute} other {# minutes}}",
+      "hours": "{count, plural, one {# hour} other {# hours}}",
+      "days": "{count, plural, one {# day} other {# days}}"
+    }
   },
   "shared": {
     "loadErrorTitle": "Couldn't load data",
@@ -85,5 +100,13 @@
       "title": "Your business is suspended",
       "description": "Your booking page is offline and new bookings are paused. Existing customers can still view and cancel their bookings. Contact support to find out more."
     }
+  },
+  "saveBar": {
+    "unsaved": "You have unsaved changes",
+    "discard": "Discard"
+  },
+  "combobox": {
+    "open": "Show options",
+    "empty": "No matches"
   }
 }

@@ -90,7 +90,7 @@ export default function AdminOverviewPage() {
 
       <section className="mt-10">
         <div className="mb-3 flex items-baseline justify-between gap-3">
-          <h2 className="text-xl font-semibold">{t("recentActivity")}</h2>
+          <h2 className="type-section">{t("recentActivity")}</h2>
           <Link
             href="/admin/audit"
             className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"

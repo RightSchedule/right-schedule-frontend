@@ -1,7 +1,7 @@
 {
   "header": {
     "title": "Definições",
-    "description": "O perfil do seu negócio e a sua página de marcações."
+    "description": "O perfil do negócio, a página de marcações e os emails."
   },
   "bookingLink": {
     "title": "A sua ligação de marcação",
@@ -50,23 +50,28 @@
   "saved": "Definições guardadas",
   "notFound": "Negócio não encontrado",
   "bookingRules": {
-    "title": "Regras de marcação",
-    "description": "Controle o que os clientes podem fazer online e o espaçamento entre marcações.",
-    "minNotice": "Antecedência mínima (minutos)",
-    "minNoticeHint": "Com quanto tempo os clientes têm de marcar. 0 permite marcações de última hora.",
+    "minNotice": "Antecedência mínima",
     "maxAdvance": "Horizonte de marcação (dias)",
     "maxAdvanceHint": "Até quando no futuro os clientes podem marcar.",
-    "cancellationWindow": "Prazo de cancelamento (minutos)",
-    "cancellationWindowHint": "Os clientes não podem cancelar online dentro desta janela antes do início.",
+    "cancellationWindow": "Prazo de cancelamento",
     "noLimit": "Sem limite",
+    "summary": {
+      "noticeNone": "Os clientes podem marcar até à hora de início.",
+      "notice": "Os clientes têm de marcar com pelo menos {duration} de antecedência.",
+      "cancelNone": "Os clientes podem cancelar online até ao início da marcação.",
+      "cancel": "Os clientes podem cancelar online até {duration} antes do início.",
+      "rescheduleSame": "Igual ao prazo de cancelamento.",
+      "rescheduleNone": "Os clientes podem reagendar online até ao início da marcação.",
+      "reschedule": "Os clientes podem reagendar online até {duration} antes do início."
+    },
     "slotInterval": "Intervalo entre horários",
     "slotIntervalHint": "Intervalo entre as horas de início oferecidas aos clientes.",
     "minutes": "{count} min",
     "saved": "Regras de marcação guardadas",
     "errors": {
-      "minNotice": "Introduza um número inteiro de 0 a 43200",
+      "minNotice": "Introduza uma duração de 0 até 30 dias",
       "maxAdvance": "Introduza um número inteiro de 1 a 730",
-      "cancellationWindow": "Deixe vazio ou introduza 0 a 43200",
+      "cancellationWindow": "Deixe vazio ou introduza uma duração até 30 dias",
       "load": "Regras de marcação não encontradas",
       "buffer": "Introduza um número inteiro de 0 a 240",
       "perDay": "Deixe vazio ou introduza 1 a 50",
@@ -90,8 +95,7 @@
     "showReviewsHint": "Mostra as avaliações recolhidas na página pública.",
     "buffer": "Intervalo entre marcações (minutos)",
     "bufferHint": "Tempo livre mantido após cada marcação. Os serviços podem alterá-lo.",
-    "rescheduleWindow": "Janela de reagendamento (minutos)",
-    "rescheduleWindowHint": "Os clientes não podem reagendar online dentro desta janela. Vazio usa a janela de cancelamento.",
+    "rescheduleWindow": "Janela de reagendamento",
     "sameAsCancellation": "Igual ao cancelamento",
     "limitsHint": "Aplicam-se às marcações feitas online pelos clientes. As marcações da equipa nunca são limitadas. Os clientes são identificados por email ou telefone.",
     "perDay": "Máx. de marcações por cliente por dia",
@@ -117,5 +121,12 @@
     "uploadFailed": "Não foi possível carregar a imagem. Tente novamente.",
     "updated": "Logótipo atualizado",
     "removed": "Logótipo removido"
+  },
+  "tabs": {
+    "label": "Secções das definições",
+    "business": "Negócio",
+    "booking": "Marcações online",
+    "emails": "Emails",
+    "account": "Conta e privacidade"
   }
 }

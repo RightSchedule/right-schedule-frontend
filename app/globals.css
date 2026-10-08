@@ -155,12 +155,6 @@
   html {
     @apply font-sans;
   }
-  h1,
-  h2 {
-    @apply font-heading;
-    font-optical-sizing: auto;
-    letter-spacing: -0.01em;
-  }
   ::selection {
     background: color-mix(in oklch, var(--primary) 25%, transparent);
   }
@@ -387,4 +381,35 @@
     animation-duration: 0s !important;
     animation-delay: 0s !important;
   }
+}
+/*
+ * Type roles. Titles use the serif display face; everything else is the sans body face.
+ *   page    30px  one per screen (h1)
+ *   title   24px  detail and public pages (h1)
+ *   section 20px  blocks within a page (h2)
+ *   body 14-16px, label 14px medium, caption 12px (the floor; never smaller)
+ * Headings below section size are plain sans, so no heading needs a font override.
+ */
+@utility type-page {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@utility type-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  line-height: var(--text-2xl--line-height);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@utility type-section {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }

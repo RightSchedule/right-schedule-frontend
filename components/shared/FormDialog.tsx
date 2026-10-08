@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -45,14 +46,30 @@ export function FormActions({
   submitLabel,
   loading,
   onCancel,
+  onDelete,
+  deleteLabel,
 }: {
   submitLabel: string;
   loading: boolean;
   onCancel?: () => void;
+  /** Edit forms offer a delete on the far left, away from the save button. */
+  onDelete?: () => void;
+  deleteLabel?: string;
 }) {
   const tc = useTranslations("common.actions");
   return (
     <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+      {onDelete && (
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={loading}
+          className="text-destructive hover:bg-destructive/10 hover:text-destructive sm:mr-auto"
+          onClick={onDelete}
+        >
+          <Trash2 /> {deleteLabel ?? tc("delete")}
+        </Button>
+      )}
       {onCancel && (
         <Button type="button" variant="outline" onClick={onCancel}>
           {tc("cancel")}

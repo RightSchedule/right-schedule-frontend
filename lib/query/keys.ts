@@ -47,6 +47,7 @@ export const qk = {
   },
   waitlist: {
     all: ["waitlist"] as const,
+    waiting: ["waitlist", "waiting"] as const,
     list: (status: string | null, page: number) => ["waitlist", "list", status, page] as const,
   },
   public: {

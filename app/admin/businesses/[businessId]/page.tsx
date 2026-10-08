@@ -130,7 +130,7 @@ export default function AdminBusinessPage({ params }: { params: Promise<{ busine
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="truncate text-2xl font-semibold">{b.name}</h1>
+                <h1 className="truncate type-title">{b.name}</h1>
                 <BusinessStatusBadge status={b.status} />
               </div>
               <a

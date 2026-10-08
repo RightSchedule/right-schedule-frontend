@@ -19,5 +19,12 @@
     "allDone": "No more bookings today.",
     "feature": "Bookings",
     "open": "Open calendar"
+  },
+  "attention": {
+    "title": "Needs your attention",
+    "quotes": "{count, plural, one {# quote request waiting for a reply} other {# quote requests waiting for a reply}}",
+    "quotesCta": "Open quotes",
+    "waitlist": "{count, plural, one {# person on the waitlist} other {# people on the waitlist}}",
+    "waitlistCta": "Open waitlist"
   }
 }
