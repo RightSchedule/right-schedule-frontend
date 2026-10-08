@@ -59,7 +59,22 @@
     "signOut": "Terminar sessão",
     "expandSidebar": "Expandir barra lateral",
     "collapseSidebar": "Recolher barra lateral",
-    "skipToContent": "Saltar para o conteúdo"
+    "skipToContent": "Saltar para o conteúdo",
+    "waitingCount": "{count} em espera",
+    "moreCount": "{count} precisam de atenção"
+  },
+  "duration": {
+    "unitLabel": "Unidade",
+    "units": {
+      "minutes": "minutos",
+      "hours": "horas",
+      "days": "dias"
+    },
+    "format": {
+      "minutes": "{count, plural, one {# minuto} other {# minutos}}",
+      "hours": "{count, plural, one {# hora} other {# horas}}",
+      "days": "{count, plural, one {# dia} other {# dias}}"
+    }
   },
   "shared": {
     "loadErrorTitle": "Não foi possível carregar os dados",
@@ -71,5 +86,27 @@
     "dismiss": "Fechar notificação"
   },
   "loading": "A carregar…",
-  "optional": "opcional"
+  "optional": "opcional",
+  "businessStatus": {
+    "PENDING_APPROVAL": {
+      "title": "O seu negócio aguarda aprovação",
+      "description": "A nossa equipa revê cada novo negócio antes de ficar online. Entretanto pode continuar a configurar serviços e equipa; a sua página de marcações começa a funcionar assim que for aprovado."
+    },
+    "REJECTED": {
+      "title": "O seu negócio não foi aprovado",
+      "description": "A sua página de marcações não está disponível para os clientes. Contacte o suporte se achar que se trata de um erro."
+    },
+    "SUSPENDED": {
+      "title": "O seu negócio está suspenso",
+      "description": "A sua página de marcações está offline e as novas marcações estão em pausa. Os clientes continuam a poder ver e cancelar as marcações existentes. Contacte o suporte para saber mais."
+    }
+  },
+  "saveBar": {
+    "unsaved": "Tem alterações por guardar",
+    "discard": "Descartar"
+  },
+  "combobox": {
+    "open": "Mostrar opções",
+    "empty": "Sem resultados"
+  }
 }

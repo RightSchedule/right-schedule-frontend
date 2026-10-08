@@ -64,7 +64,7 @@ export default function StaffDetailPage({
               <AvatarFallback className="text-lg font-semibold">{initials(staff.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-2xl font-semibold">{staff.name}</h1>
+              <h1 className="truncate type-title">{staff.name}</h1>
               <div className="mt-1.5">
                 <Badge variant={staff.active ? "success" : "secondary"}>
                   {staff.active ? t("active") : t("inactive")}

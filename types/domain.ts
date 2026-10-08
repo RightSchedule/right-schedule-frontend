@@ -29,10 +29,15 @@ export interface Business {
   logoUrl?: string;
   /** Party size limit for services that don't set their own. */
   defaultMaxPartySize?: number;
+  /** True only when status is ACTIVE. */
   active: boolean;
+  /** New businesses wait for platform approval before customers can see or book them. */
+  status: BusinessStatus;
   createdAt: string;
   updatedAt: string;
 }
+
+export type BusinessStatus = "PENDING_APPROVAL" | "ACTIVE" | "SUSPENDED" | "REJECTED";
 
 export interface Service {
   id: string;
@@ -251,4 +256,90 @@ export interface BusinessReviews {
     totalElements: number;
     totalPages: number;
   };
+}
+
+export type UserRole = "BUSINESS_OWNER" | "STAFF" | "PLATFORM_ADMIN";
+
+export interface AccountProfile {
+  id: string;
+  email: string;
+  role: UserRole;
+  emailVerified: boolean;
+}
+
+/** Platform back office (role PLATFORM_ADMIN). "Last 30 days" counts records created in the 30 days before the request. */
+export interface PlatformOverview {
+  totalBusinesses: number;
+  activeBusinesses: number;
+  /** Waiting for approval. */
+  pendingBusinesses: number;
+  suspendedBusinesses: number;
+  newBusinessesLast30Days: number;
+  /** Business owners and staff; admins are not counted. */
+  totalUsers: number;
+  disabledUsers: number;
+  newUsersLast30Days: number;
+  bookingsLast30Days: number;
+}
+
+export interface AdminBusiness {
+  id: string;
+  name: string;
+  slug: string;
+  status: BusinessStatus;
+  createdAt: string;
+  statusChangedAt: string | null;
+  ownerId: string;
+  ownerEmail: string;
+  ownerActive: boolean;
+  activeStaff: number;
+  bookingsLast30Days: number;
+}
+
+export interface AdminBusinessDetail extends AdminBusiness {
+  /** Internal note from the last reject or suspend; never shown to the business. */
+  statusReason: string | null;
+  email: string | null;
+  phone: string | null;
+  timezone: string;
+  locale: string;
+  ownerEmailVerified: boolean;
+  activeServices: number;
+  customers: number;
+  totalBookings: number;
+  upcomingBookings: number;
+  lastBookingCreatedAt: string | null;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  role: UserRole;
+  active: boolean;
+  emailVerified: boolean;
+  createdAt: string;
+  businessId: string | null;
+  businessName: string | null;
+}
+
+export type AdminAction =
+  | "BUSINESS_APPROVED"
+  | "BUSINESS_REJECTED"
+  | "BUSINESS_SUSPENDED"
+  | "BUSINESS_REACTIVATED"
+  | "USER_DISABLED"
+  | "USER_ENABLED";
+export type AuditTargetType = "BUSINESS" | "USER";
+
+export interface AuditEntry {
+  id: string;
+  action: AdminAction;
+  targetType: AuditTargetType;
+  targetId: string;
+  /** Current business name or account email; null once the target was deleted. */
+  targetLabel: string | null;
+  actorId: string | null;
+  actorEmail: string | null;
+  reason: string | null;
+  createdAt: string;
 }

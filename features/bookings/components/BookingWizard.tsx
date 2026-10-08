@@ -22,7 +22,7 @@ import { addMinutesToTime } from "@/lib/utils/date";
 import { transition } from "@/lib/utils/motion";
 import type { PublicService, PublicStaff } from "@/types/domain";
 import { DetailsForm } from "@/features/bookings/components/wizard/DetailsForm";
-import { OptionCard, PartyStep, ServiceStep, StaffStep } from "@/features/bookings/components/wizard/PickerSteps";
+import { PartyStep, ServiceStep, StaffStep } from "@/features/bookings/components/wizard/PickerSteps";
 import { WhenStep } from "@/features/bookings/components/wizard/WhenStep";
 
 export function BookingWizard({
@@ -241,7 +241,7 @@ export function BookingWizard({
           <h1
             ref={headingRef}
             tabIndex={-1}
-            className="mb-5 text-2xl font-semibold outline-none"
+            className="type-title mb-5 outline-none"
           >
             {t(`steps.${step}`)}
           </h1>

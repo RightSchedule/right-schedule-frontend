@@ -19,5 +19,12 @@
     "allDone": "Sem mais marcações hoje.",
     "feature": "Marcações",
     "open": "Abrir calendário"
+  },
+  "attention": {
+    "title": "Precisa da sua atenção",
+    "quotes": "{count, plural, one {# pedido de orçamento à espera de resposta} other {# pedidos de orçamento à espera de resposta}}",
+    "quotesCta": "Abrir orçamentos",
+    "waitlist": "{count, plural, one {# pessoa na lista de espera} other {# pessoas na lista de espera}}",
+    "waitlistCta": "Abrir lista de espera"
   }
 }

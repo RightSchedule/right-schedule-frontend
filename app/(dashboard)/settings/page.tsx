@@ -1,26 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
+import { Combobox } from "@/components/ui/combobox";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
-import {
-  ErrorState,
-  Field,
-  FormError,
-  LoadingButton,
-  PageContainer,
-  PageHeader,
-} from "@/components/shared";
-import { PrivacyCard } from "@/features/account/components/PrivacyCard";
-import { BookingRulesCard } from "@/features/business/components/BookingRulesCard";
+import { ErrorState, Field, FormError } from "@/components/shared";
+import { SaveBar } from "@/components/shared/SaveBar";
 import { LogoCard } from "@/features/business/components/LogoCard";
-import { BookingLinkCard } from "@/features/business/components/BookingLinkCard";
 import { useBusiness, useUpdateBusiness } from "@/features/business/hooks/useBusiness";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { useErrorMessage } from "@/lib/i18n/errors";
@@ -50,7 +42,6 @@ type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 export default function SettingsPage() {
   const t = useTranslations("settings");
   const tLanguage = useTranslations("common.language");
-  const tActions = useTranslations("common.actions");
   const errorMessage = useErrorMessage();
   const toast = useToast();
   const { data: business, isLoading, error, refetch } = useBusiness();
@@ -61,24 +52,31 @@ export default function SettingsPage() {
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, isDirty },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
+  const formValues = useMemo<FormValues | null>(
+    () =>
+      business
+        ? {
+            name: business.name,
+            email: business.email ?? "",
+            phone: business.phone ?? "",
+            address: business.address ?? "",
+            timezone: business.timezone,
+            locale: isLocale(business.locale) ? business.locale : defaultLocale,
+            defaultMaxPartySize: business.defaultMaxPartySize ?? 1,
+          }
+        : null,
+    [business],
+  );
+
   useEffect(() => {
-    if (business) {
-      reset({
-        name: business.name,
-        email: business.email ?? "",
-        phone: business.phone ?? "",
-        address: business.address ?? "",
-        timezone: business.timezone,
-        locale: isLocale(business.locale) ? business.locale : defaultLocale,
-        defaultMaxPartySize: business.defaultMaxPartySize ?? 1,
-      });
-    }
-  }, [business, reset]);
+    if (formValues) reset(formValues);
+  }, [formValues, reset]);
 
   async function onSubmit(values: FormValues) {
     setFormError(null);
@@ -99,100 +97,90 @@ export default function SettingsPage() {
     }
   }
 
+  if (isLoading) return <Skeleton className="h-96 rounded-lg" />;
+  if (error || !business) {
+    return <ErrorState error={error ?? new Error(t("notFound"))} onRetry={() => refetch()} />;
+  }
+
   return (
-    <PageContainer>
-      <PageHeader title={t("header.title")} description={t("header.description")} />
+    <div className="flex flex-col gap-8">
+      <LogoCard business={business} />
 
-      {isLoading ? (
-        <Skeleton className="h-96 max-w-2xl rounded-lg" />
-      ) : error || !business ? (
-        <ErrorState error={error ?? new Error(t("notFound"))} onRetry={() => refetch()} />
-      ) : (
-        <div className="flex max-w-2xl flex-col gap-8">
-          <BookingLinkCard slug={business.slug} />
-
-          <LogoCard business={business} />
-
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-            className="flex flex-col gap-4 border-t border-border pt-6"
-          >
-            <h2 className="text-xl font-semibold">{t("profile.title")}</h2>
-            <Field label={t("profile.name")} htmlFor="biz-name" error={errors.name?.message}>
-              <Input id="biz-name" aria-invalid={!!errors.name} {...register("name")} />
-            </Field>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label={t("profile.email")} htmlFor="biz-email" error={errors.email?.message}>
-                <Input
-                  id="biz-email"
-                  type="email"
-                  aria-invalid={!!errors.email}
-                  {...register("email")}
-                />
-              </Field>
-              <Field label={t("profile.phone")} htmlFor="biz-phone">
-                <Input id="biz-phone" type="tel" {...register("phone")} />
-              </Field>
-            </div>
-            <Field label={t("profile.address")} htmlFor="biz-address">
-              <Input id="biz-address" autoComplete="street-address" {...register("address")} />
-            </Field>
-            <Field
-              label={t("profile.timezone")}
-              htmlFor="biz-timezone"
-              hint={t("profile.timezoneHint")}
-            >
-              <Select id="biz-timezone" {...register("timezone")}>
-                {zones.map((z) => (
-                  <option key={z} value={z}>
-                    {z}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field
-              label={t("profile.emailLanguage")}
-              htmlFor="biz-locale"
-              hint={t("profile.emailLanguageHint")}
-            >
-              <Select id="biz-locale" {...register("locale")}>
-                {locales.map((l) => (
-                  <option key={l} value={l}>
-                    {tLanguage(l)}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field
-              label={t("profile.defaultMaxPartySize")}
-              htmlFor="biz-party"
-              hint={t("profile.defaultMaxPartySizeHint")}
-              error={errors.defaultMaxPartySize?.message}
-            >
-              <Input
-                id="biz-party"
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={LIMITS.partySize}
-                aria-invalid={!!errors.defaultMaxPartySize}
-                {...register("defaultMaxPartySize", { valueAsNumber: true })}
-              />
-            </Field>
-            <FormError message={formError} />
-            <div className="flex justify-end">
-              <LoadingButton type="submit" loading={update.isPending} disabled={!isDirty}>
-                {tActions("saveChanges")}
-              </LoadingButton>
-            </div>
-          </form>
-
-          <BookingRulesCard />
-
-          <PrivacyCard />
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+        <h2 className="type-section">{t("profile.title")}</h2>
+        <Field label={t("profile.name")} htmlFor="biz-name" error={errors.name?.message}>
+          <Input id="biz-name" aria-invalid={!!errors.name} {...register("name")} />
+        </Field>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field label={t("profile.email")} htmlFor="biz-email" error={errors.email?.message}>
+            <Input
+              id="biz-email"
+              type="email"
+              aria-invalid={!!errors.email}
+              {...register("email")}
+            />
+          </Field>
+          <Field label={t("profile.phone")} htmlFor="biz-phone">
+            <Input id="biz-phone" type="tel" {...register("phone")} />
+          </Field>
         </div>
-      )}
-    </PageContainer>
+        <Field label={t("profile.address")} htmlFor="biz-address">
+          <Input id="biz-address" autoComplete="street-address" {...register("address")} />
+        </Field>
+        <Field
+          label={t("profile.timezone")}
+          htmlFor="biz-timezone"
+          hint={t("profile.timezoneHint")}
+        >
+          <Controller
+              control={control}
+              name="timezone"
+              render={({ field }) => (
+                <Combobox
+                  id="biz-timezone"
+                  items={zones}
+                  value={field.value ?? ""}
+                  onValueChange={(zone) => field.onChange(zone)}
+                />
+              )}
+            />
+        </Field>
+        <Field
+          label={t("profile.emailLanguage")}
+          htmlFor="biz-locale"
+          hint={t("profile.emailLanguageHint")}
+        >
+          <Select id="biz-locale" {...register("locale")}>
+            {locales.map((l) => (
+              <option key={l} value={l}>
+                {tLanguage(l)}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field
+          label={t("profile.defaultMaxPartySize")}
+          htmlFor="biz-party"
+          hint={t("profile.defaultMaxPartySizeHint")}
+          error={errors.defaultMaxPartySize?.message}
+        >
+          <Input
+            id="biz-party"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={LIMITS.partySize}
+            aria-invalid={!!errors.defaultMaxPartySize}
+            {...register("defaultMaxPartySize", { valueAsNumber: true })}
+          />
+        </Field>
+        <FormError message={formError} />
+        <SaveBar
+          dirty={isDirty}
+          loading={update.isPending}
+          onDiscard={() => formValues && reset(formValues)}
+        />
+      </form>
+    </div>
   );
 }

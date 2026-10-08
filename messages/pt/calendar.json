@@ -18,13 +18,18 @@
     "statusPrefix": "{status}:",
     "needsReview": "Por rever:",
     "other": "Outro",
+    "allStaff": "Todos",
+    "staffFilter": "Mostrar membro da equipa",
     "emptyTitle": "Sem marcações",
     "emptyDescription": "Ainda não há marcações para este dia.",
     "openDay": "Abrir {weekday}, {day} de {month}",
     "bookingsCount": "{count, plural, one {# marcação} other {# marcações}}",
     "active": "Ativo",
     "inactive": "Inativo",
-    "summary": "{minutes} min · {price}"
+    "summary": "{minutes} min · {price}",
+    "columnLabel": "{name}: escolha uma hora para adicionar uma marcação",
+    "slotHelp": "Use as setas para cima e para baixo para escolher uma hora e prima Enter para adicionar uma marcação.",
+    "slotAnnounce": "Adicionar marcação às {time}"
   },
   "detail": {
     "fallbackTitle": "Marcação",
@@ -63,7 +68,8 @@
       "notes": "Notas",
       "notesCount": "{count}/{max}",
       "notesSaved": "Notas guardadas"
-    }
+    },
+    "moreActions": "Mais ações"
   },
   "create": {
     "title": "Nova marcação",

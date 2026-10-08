@@ -21,7 +21,7 @@ export function TopList({
 
   return (
     <section>
-      <h2 className="mb-4 text-xl font-semibold">{title}</h2>
+      <h2 className="mb-4 type-section">{title}</h2>
       {items.length === 0 ? (
         <p className="text-sm text-muted-foreground">{emptyLabel}</p>
       ) : (

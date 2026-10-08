@@ -18,7 +18,7 @@ export function BusinessReviews({ slug }: { slug: string }) {
 
   return (
     <section aria-labelledby="reviews-heading" className="mt-10">
-      <h2 id="reviews-heading" className="mb-2 font-sans text-sm font-semibold text-muted-foreground">
+      <h2 id="reviews-heading" className="mb-2 text-sm font-semibold text-muted-foreground">
         {t("heading")}
       </h2>
       <div className="mb-4 flex items-center gap-2">

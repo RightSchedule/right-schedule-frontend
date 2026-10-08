@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Pencil, Plus, Scissors, Trash2 } from "lucide-react";
+import { Plus, Scissors } from "lucide-react";
 import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -108,57 +108,60 @@ export default function ServicesPage() {
       ) : (
         <ListContainer>
           {services.map((service) => (
-            <li
-              key={service.id}
-              className="flex flex-wrap items-center gap-x-4 gap-y-3 p-4 sm:flex-nowrap sm:px-5"
-            >
-              <div className={cn("min-w-0 flex-1 basis-full sm:basis-auto", !service.active && "text-muted-foreground")}>
-                <h2 className="truncate font-sans text-base font-semibold leading-tight">
-                  {service.name}
-                  {!service.active && (
-                    <span className="ml-2 text-xs font-medium text-muted-foreground">{t("hidden")}</span>
+            <li key={service.id} className="flex items-center">
+              <button
+                type="button"
+                onClick={() => openEdit(service)}
+                className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 p-4 text-left transition-colors hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:outline-none sm:flex-nowrap sm:px-5"
+              >
+                <span
+                  className={cn(
+                    "min-w-0 flex-1 basis-full sm:basis-auto",
+                    !service.active && "text-muted-foreground"
                   )}
-                </h2>
-                {service.description && (
-                  <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">{service.description}</p>
-                )}
-              </div>
-              <p className="shrink-0 text-sm text-muted-foreground">
-                <span className="font-mono font-medium text-foreground">{price(service.price)}</span>
-                {" · "}
-                {t("minutes", { count: service.durationMinutes })}
-              </p>
-              <Switch
-                className="ml-auto sm:ml-0"
-                checked={service.active}
-                onCheckedChange={() => onToggle(service)}
-                disabled={toggle.isPending}
-                aria-label={t("toggleAria", { name: service.name })}
-              />
-              <div className="flex shrink-0 gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => openEdit(service)}
-                  aria-label={t("editAria", { name: service.name })}
                 >
-                  <Pencil />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => setDeleting(service)}
-                  aria-label={t("deleteAria", { name: service.name })}
-                >
-                  <Trash2 />
-                </Button>
+                  <span className="block truncate text-base font-semibold leading-tight">
+                    {service.name}
+                    {!service.active && (
+                      <span className="ml-2 text-xs font-medium text-muted-foreground">
+                        {t("hidden")}
+                      </span>
+                    )}
+                  </span>
+                  {service.description && (
+                    <span className="mt-0.5 line-clamp-1 block text-sm text-muted-foreground">
+                      {service.description}
+                    </span>
+                  )}
+                </span>
+                <span className="shrink-0 text-sm text-muted-foreground">
+                  <span className="font-mono font-medium text-foreground">{price(service.price)}</span>
+                  {" · "}
+                  {t("minutes", { count: service.durationMinutes })}
+                </span>
+              </button>
+              <div className="shrink-0 py-4 pr-4 sm:pr-5">
+                <Switch
+                  checked={service.active}
+                  onCheckedChange={() => onToggle(service)}
+                  disabled={toggle.isPending}
+                  aria-label={t("toggleAria", { name: service.name })}
+                />
               </div>
             </li>
           ))}
         </ListContainer>
       )}
 
-      <ServiceFormDialog open={formOpen} onOpenChange={setFormOpen} service={editing} />
+      <ServiceFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        service={editing}
+        onDelete={(service) => {
+          setFormOpen(false);
+          setDeleting(service);
+        }}
+      />
       <ConfirmDialog
         open={!!deleting}
         onOpenChange={(o) => !o && setDeleting(null)}

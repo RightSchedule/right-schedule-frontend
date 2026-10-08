@@ -21,6 +21,10 @@
     "done": {
       "title": "You're ready for bookings",
       "description": "Share this link anywhere: Instagram, WhatsApp, your website."
+    },
+    "pending": {
+      "title": "You're all set up",
+      "description": "We review every new business before it goes live. Your booking link starts working as soon as it's approved."
     }
   },
   "business": {

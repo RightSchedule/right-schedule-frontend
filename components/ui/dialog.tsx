@@ -97,7 +97,7 @@ function DialogFooter({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
-      className={cn("text-xl font-bold leading-tight tracking-tight", className)}
+      className={cn("font-heading text-xl font-bold leading-tight tracking-[-0.01em]", className)}
       {...props}
     />
   )

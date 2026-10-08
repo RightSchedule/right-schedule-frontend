@@ -111,12 +111,12 @@ function DashboardContent({ data }: { data: DashboardResponse }) {
       </div>
 
       <section className="mt-4 border-t border-border pt-6">
-        <h2 className="mb-4 text-xl font-semibold">{t("chart.title")}</h2>
+        <h2 className="mb-4 type-section">{t("chart.title")}</h2>
         <RevenueChart series={data.revenueSeries} granularity={data.granularity} />
       </section>
 
       <section className="mt-4 border-t border-border pt-6">
-        <h2 className="mb-4 text-xl font-semibold">{t("funnel.title")}</h2>
+        <h2 className="mb-4 type-section">{t("funnel.title")}</h2>
         <FunnelBar funnel={data.funnel} total={summary.bookings} />
       </section>
 

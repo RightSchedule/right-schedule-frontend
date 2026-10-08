@@ -18,13 +18,18 @@
     "statusPrefix": "{status}:",
     "needsReview": "Needs review:",
     "other": "Other",
+    "allStaff": "All",
+    "staffFilter": "Show staff member",
     "emptyTitle": "Nothing booked",
     "emptyDescription": "No bookings for this day yet.",
     "openDay": "Open {weekday}, {day} {month}",
     "bookingsCount": "{count, plural, one {# booking} other {# bookings}}",
     "active": "Active",
     "inactive": "Inactive",
-    "summary": "{minutes} min · {price}"
+    "summary": "{minutes} min · {price}",
+    "columnLabel": "{name}: choose a time to add a booking",
+    "slotHelp": "Use the up and down arrow keys to choose a time, then press Enter to add a booking.",
+    "slotAnnounce": "Add booking at {time}"
   },
   "detail": {
     "fallbackTitle": "Booking",
@@ -63,7 +68,8 @@
       "notes": "Notes",
       "notesCount": "{count}/{max}",
       "notesSaved": "Notes saved"
-    }
+    },
+    "moreActions": "More actions"
   },
   "create": {
     "title": "New booking",

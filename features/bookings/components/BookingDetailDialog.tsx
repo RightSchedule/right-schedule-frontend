@@ -3,10 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CircleCheck, Clock, Mail, NotebookText, Pencil, Phone, TriangleAlert, User, UserRound, Users, UserX } from "lucide-react";
+import { CalendarClock, CircleCheck, Clock, Ellipsis, Mail, NotebookText, Pencil, Phone, TriangleAlert, User, UserRound, Users, UserX, XCircle } from "lucide-react";
 import { bookingMinutes, bookingTotal } from "@/features/bookings/calendarGeometry";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/toast";
 import {
   Dialog,
@@ -23,7 +23,7 @@ import { BookingEditPanel } from "@/features/bookings/components/BookingEditPane
 import { useBusiness } from "@/features/business/hooks/useBusiness";
 import { bookingStarted } from "@/lib/utils/clock";
 import { useUpdateBookingStatus } from "@/features/bookings/hooks/useBookingActions";
-import type { Booking, BookingStatus } from "@/types/domain";
+import type { Booking } from "@/types/domain";
 
 export function BookingDetailDialog({
   booking,
@@ -182,28 +182,30 @@ export function BookingDetailDialog({
                 }}
               />
             ) : actionable ? (
-              <div className="mt-6 flex flex-wrap justify-end gap-2">
+              <div className="mt-6 flex flex-wrap items-center justify-end gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    aria-label={t("moreActions")}
+                    disabled={mutation.isPending}
+                    className={buttonVariants({ variant: "outline", size: "icon" })}
+                  >
+                    <Ellipsis />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem disabled={!started} onClick={() => setConfirming("no-show")}>
+                      <UserX /> {tStatus("NO_SHOW")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive" onClick={() => setConfirming("cancel")}>
+                      <XCircle /> {t("cancelBooking")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button
                   variant="outline"
                   disabled={mutation.isPending}
                   onClick={() => setEditing("reschedule")}
                 >
-                  {t("edit.reschedule")}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  disabled={mutation.isPending}
-                  onClick={() => setConfirming("cancel")}
-                >
-                  {t("cancelBooking")}
-                </Button>
-                <Button
-                  variant="outline"
-                  disabled={mutation.isPending || !started}
-                  onClick={() => setConfirming("no-show")}
-                >
-                  {tStatus("NO_SHOW")}
+                  <CalendarClock /> {t("edit.reschedule")}
                 </Button>
                 <LoadingButton
                   loading={mutation.isPending && mutation.variables?.action === "complete"}

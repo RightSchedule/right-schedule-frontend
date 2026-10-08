@@ -21,6 +21,10 @@
     "done": {
       "title": "Está pronto para receber marcações",
       "description": "Partilhe esta ligação onde quiser: Instagram, WhatsApp, o seu website."
+    },
+    "pending": {
+      "title": "Está tudo configurado",
+      "description": "Revemos cada novo negócio antes de ficar online. A sua ligação de marcação começa a funcionar assim que for aprovado."
     }
   },
   "business": {

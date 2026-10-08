@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { Controller, useForm, type UseFormRegisterReturn } from "react-hook-form";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { LegalLinks } from "@/features/legal/components/LegalLinks";
 import { Field, FormError } from "@/components/shared";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { useUrlParams } from "@/lib/hooks/useUrlParams";
 import { useErrorMessage } from "@/lib/i18n/errors";
 import { LIMITS, newPassword, requiredEmail } from "@/lib/validation";
 
@@ -61,14 +62,14 @@ function PasswordInput({
         placeholder={placeholder}
         autoComplete={autoComplete}
         maxLength={maxLength}
-        className="pr-11"
+        className="pr-12"
         {...registration}
       />
       <button
         type="button"
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? t("hidePassword") : t("showPassword")}
-        className="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 pointer-coarse:right-1 pointer-coarse:size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
       </button>
@@ -257,10 +258,11 @@ function RegisterForm() {
   );
 }
 
-export default function LoginPage() {
+function LoginScreen() {
   const t = useTranslations("auth");
-  const [tab, setTab] = useState<"login" | "register">("login");
-  const isLogin = tab === "login";
+  // The mode lives in the URL so /login?mode=register can be linked to and survives a reload.
+  const { params, set } = useUrlParams();
+  const isLogin = params.get("mode") !== "register";
   return (
     <main className="flex min-h-dvh flex-col bg-background px-6 py-6 sm:px-10">
       <header className="flex items-center justify-between">
@@ -270,7 +272,7 @@ export default function LoginPage() {
 
       <div className="flex flex-1 items-center">
         <div className="mx-auto w-full max-w-sm py-10">
-          <h1 className="text-4xl font-semibold leading-tight">
+          <h1 className="font-heading text-4xl font-semibold leading-tight tracking-[-0.01em]">
             {isLogin ? t("tabs.signIn") : t("tabs.createAccount")}
           </h1>
           <p className="mb-8 mt-2 text-muted-foreground">{t("tagline")}</p>
@@ -281,7 +283,7 @@ export default function LoginPage() {
             {isLogin ? t("switch.newHere") : t("switch.haveAccount")}{" "}
             <button
               type="button"
-              onClick={() => setTab(isLogin ? "register" : "login")}
+              onClick={() => set({ mode: isLogin ? "register" : null })}
               className="font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {isLogin ? t("switch.createAccount") : t("switch.signIn")}
@@ -291,5 +293,13 @@ export default function LoginPage() {
       </div>
       <LegalLinks className="justify-center" />
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginScreen />
+    </Suspense>
   );
 }

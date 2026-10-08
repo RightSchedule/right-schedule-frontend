@@ -1,7 +1,6 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import { cn } from "cn";
@@ -15,11 +14,12 @@ import {
   type BookingDraft,
 } from "@/features/bookings/components/CreateBookingDialog";
 import { BookingLinkCard } from "@/features/business/components/BookingLinkCard";
-import { useBookingsRange, useReviewCount } from "@/features/bookings/hooks/useBookings";
-import { useBusiness } from "@/features/business/hooks/useBusiness";
+import { useBookingsRange } from "@/features/bookings/hooks/useBookings";
+import { useBookingSettings, useBusiness } from "@/features/business/hooks/useBusiness";
+import { AttentionStrip } from "@/features/dashboard/components/AttentionStrip";
 import { toMinutes } from "@/features/bookings/calendarGeometry";
 import { useLocaleFormat } from "@/lib/i18n/format";
-import { businessMinuteOfDay, businessToday, useBusinessMinute } from "@/lib/utils/clock";
+import { businessMinuteOfDay, businessToday, defaultBookingTime, useBusinessMinute } from "@/lib/utils/clock";
 import type { Booking } from "@/types/domain";
 
 function greetingKey(minuteOfDay: number) {
@@ -83,10 +83,9 @@ function TimelineRow({ booking, onOpen }: { booking: Booking; onOpen: () => void
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
-  const tReview = useTranslations("review");
-  const { data: reviewCount } = useReviewCount();
   const f = useLocaleFormat();
   const business = useBusiness();
+  const { data: rules } = useBookingSettings();
   const timezone = business.data?.timezone;
   const today = businessToday(timezone);
   const nowMinute = useBusinessMinute(timezone, true) ?? businessMinuteOfDay(timezone);
@@ -118,7 +117,7 @@ export default function DashboardPage() {
     <div className="mx-auto w-full max-w-5xl p-4 pt-5 sm:p-6">
       <div className="mb-6 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-3xl font-semibold leading-tight">{t(`greeting.${greetingKey(nowMinute)}`)}</h1>
+          <h1 className="type-page">{t(`greeting.${greetingKey(nowMinute)}`)}</h1>
           <p className="mt-1 text-muted-foreground">
             {t("today", {
               weekday: f.date(today, "EEEE"),
@@ -128,30 +127,17 @@ export default function DashboardPage() {
             })}
           </p>
         </div>
-        <Button className="shrink-0" onClick={() => setDraft({ date: today, time: "09:00" })}>
+        <Button className="shrink-0" onClick={() => setDraft({ date: today, time: defaultBookingTime(today, timezone, rules?.slotIntervalMinutes) })}>
           <Plus /> {t("new")}
         </Button>
       </div>
 
-      {!!reviewCount && (
-        <div className="mb-6 flex flex-col gap-2 rounded-md border-l-4 border-warning bg-warning-muted px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <div className="min-w-0">
-            <p className="font-medium text-warning-foreground">{tReview("banner.title", { count: reviewCount })}</p>
-            <p className="text-sm text-warning-foreground/80">{tReview("banner.description")}</p>
-          </div>
-          <Link
-            href="/review"
-            className="shrink-0 text-sm font-semibold text-warning-foreground underline underline-offset-4 hover:no-underline"
-          >
-            {tReview("banner.cta")}
-          </Link>
-        </div>
-      )}
+      <AttentionStrip />
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_17rem]">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_17rem]">
         <section aria-labelledby="timeline-title">
           <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-border pb-3">
-            <h2 id="timeline-title" className="text-xl font-semibold">
+            <h2 id="timeline-title" className="type-section">
               {t("timeline.title")}
             </h2>
             {!isLoading && !error && (

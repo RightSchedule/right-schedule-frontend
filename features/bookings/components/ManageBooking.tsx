@@ -65,7 +65,7 @@ export function ManageBooking({ token }: { token: string }) {
     <main className="mx-auto w-full max-w-lg px-4 py-8">
       <p className="text-sm text-muted-foreground">{booking.businessName}</p>
       <div className="mt-1 flex items-center gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <h1 className="type-title">{t("title")}</h1>
         <BookingStatusBadge status={booking.status} />
       </div>
 

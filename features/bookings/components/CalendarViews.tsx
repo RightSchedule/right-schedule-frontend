@@ -9,12 +9,32 @@ import { EmptyState } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
 import { BookingStatusBadge } from "@/features/bookings/components/BookingStatusBadge";
 import { HOUR_PX, bookingMinutes, bookingTotal, snapOffsetToTime, toMinutes } from "@/features/bookings/calendarGeometry";
+import { openWindow, visibleHours, type MinuteRange, type StaffDayHours } from "@/features/bookings/calendarHours";
+import { layoutLanes, laneStyle } from "@/features/bookings/calendarLanes";
+import { OffHours, useSlotCursor } from "@/features/bookings/components/SlotCursor";
 import { useLocaleFormat } from "@/lib/i18n/format";
 import { businessToday, useBusinessMinute } from "@/lib/utils/clock";
 import type { Booking, Staff } from "@/types/domain";
 import { BLOCK_HOVER, blockStyle, sortByStart, BookingChip, DayCard } from "@/features/bookings/components/CalendarBlocks";
 
 type Column = { id: string; name: string; active: boolean };
+
+const MOBILE_BLOCK_MIN_PX = 48;
+const DESKTOP_BLOCK_MIN_PX = 28;
+const DESKTOP_MAX_LANES = 3;
+const MOBILE_MAX_LANES = 2;
+
+/** Cancelled and no-show bookings are history: they sit underneath instead of taking a lane. */
+const isClosed = (b: Booking) => b.status === "CANCELLED" || b.status === "NO_SHOW";
+
+/** A closed booking drawn under a live one is faded so its text does not bleed through. */
+function fadedUnder(b: Booking, all: Booking[]) {
+  if (!isClosed(b)) return false;
+  const start = toMinutes(b.startTime);
+  const end = toMinutes(b.endTime);
+  return all.some((o) => !isClosed(o) && toMinutes(o.startTime) < end && start < toMinutes(o.endTime));
+}
+
 
 function hourBackground() {
   return (
@@ -34,6 +54,8 @@ function StaffTimeline({
   hours,
   firstHour,
   nowTop,
+  nowMinute,
+  working,
   onSelect,
   onCreate,
 }: {
@@ -42,6 +64,8 @@ function StaffTimeline({
   hours: number[];
   firstHour: number;
   nowTop: number | null;
+  nowMinute: number | null;
+  working: MinuteRange[] | undefined;
   onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
 }) {
@@ -50,6 +74,21 @@ function StaffTimeline({
   const f = useLocaleFormat();
   const creatable = !!onCreate && column.id !== "__other";
   const height = hours.length * HOUR_PX;
+  const lanes = layoutLanes(
+    bookings
+      .filter((b) => !isClosed(b))
+      .map((b) => ({ id: b.id, start: toMinutes(b.startTime), end: toMinutes(b.endTime) })),
+    (MOBILE_BLOCK_MIN_PX / HOUR_PX) * 60,
+    MOBILE_MAX_LANES
+  );
+  const { surfaceProps, overlay } = useSlotCursor({
+    firstHour,
+    lastHour: firstHour + hours.length,
+    nowMinute,
+    enabled: creatable,
+    label: t("columnLabel", { name: column.name }),
+    onCreate: (time) => onCreate?.(column.id, time),
+  });
 
   return (
     <section className="overflow-hidden rounded-lg border border-border bg-card">
@@ -76,14 +115,21 @@ function StaffTimeline({
           ))}
         </div>
         <div
-          className={cn("relative flex-1", creatable && "cursor-cell")}
+          className={cn(
+            "relative flex-1",
+            creatable &&
+              "cursor-cell focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+          )}
           style={{ height, backgroundImage: hourBackground() }}
           onClick={(e) => {
             if (!creatable || e.target !== e.currentTarget) return;
             const offset = e.clientY - e.currentTarget.getBoundingClientRect().top;
             onCreate(column.id, snapOffsetToTime(offset, firstHour));
           }}
+          {...surfaceProps}
         >
+          <OffHours working={working} firstHour={firstHour} lastHour={firstHour + hours.length} />
+          {overlay}
           {nowTop !== null && (
             <div
               aria-hidden
@@ -91,19 +137,22 @@ function StaffTimeline({
               style={{ top: nowTop }}
             />
           )}
-          {sortByStart(bookings).map((b) => {
+          {[...sortByStart(bookings)].sort((a, b) => Number(!isClosed(a)) - Number(!isClosed(b))).map((b) => {
             const start = toMinutes(b.startTime);
             const end = toMinutes(b.endTime);
             const top = ((start - firstHour * 60) / 60) * HOUR_PX;
-            const blockHeight = Math.max(((end - start) / 60) * HOUR_PX - 4, 48);
+            const blockHeight = Math.max(((end - start) / 60) * HOUR_PX - 4, MOBILE_BLOCK_MIN_PX);
+            const placement = lanes.get(b.id);
+            const shared = (placement?.lanes ?? 1) > 1;
             return (
               <button
                 key={b.id}
                 type="button"
                 onClick={() => onSelect(b)}
-                style={{ top, minHeight: blockHeight }}
+                style={{ top, minHeight: blockHeight, ...laneStyle(placement) }}
                 className={cn(
-                  "absolute inset-x-1 flex flex-col justify-center gap-0.5 overflow-hidden rounded-md border px-3 py-1.5 text-left transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "absolute flex flex-col justify-center gap-0.5 overflow-hidden rounded-md border px-3 py-1.5 text-left transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  fadedUnder(b, bookings) && "opacity-40",
                   blockStyle(b),
                   BLOCK_HOVER
                 )}
@@ -115,7 +164,7 @@ function StaffTimeline({
                     </span>{" "}
                     · {b.customer?.name ?? t("customerFallback")}
                   </span>
-                  <BookingStatusBadge status={b.status} className="shrink-0" />
+                  <BookingStatusBadge status={b.status} className={shared ? "sr-only" : "shrink-0"} />
                 </span>
                 <span className="block truncate text-xs text-muted-foreground">
                   {b.service?.name ?? t("serviceFallback")}
@@ -137,6 +186,10 @@ function StaffTimeline({
 
 export type CreateHandler = (staffId: string, time: string) => void;
 
+/** Mobile-only staff filter. `null` means auto: everyone for a small team, the first member otherwise. */
+export type MobileStaffPick = string | null;
+const ALL_STAFF = "__all";
+
 export function DayView({
   date,
   timezone,
@@ -144,6 +197,9 @@ export function DayView({
   staff,
   onSelect,
   onCreate,
+  dayHours,
+  mobileStaff = null,
+  onMobileStaffChange,
 }: {
   date: Date;
   timezone?: string;
@@ -151,6 +207,10 @@ export function DayView({
   staff: Staff[];
   onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
+  /** Working ranges per staff for this weekday; leave out while unknown. */
+  dayHours?: StaffDayHours;
+  mobileStaff?: MobileStaffPick;
+  onMobileStaffChange?: (id: string) => void;
 }) {
   const iso = format(date, "yyyy-MM-dd");
   const nowMinute = useBusinessMinute(timezone, iso === businessToday(timezone));
@@ -164,9 +224,141 @@ export function DayView({
           onSelect={onSelect}
           onCreate={onCreate}
           nowMinute={nowMinute}
+          dayHours={dayHours}
+          mobileStaff={mobileStaff}
+          onMobileStaffChange={onMobileStaffChange}
         />
       </div>
     </ViewTransition>
+  );
+}
+
+function StaffPicker({
+  columns,
+  bookings,
+  value,
+  onChange,
+}: {
+  columns: Column[];
+  bookings: Booking[];
+  value: string;
+  onChange: (id: string) => void;
+}) {
+  const t = useTranslations("calendar.views");
+  const options = [
+    { id: ALL_STAFF, label: t("allStaff"), count: bookings.length },
+    ...columns.map((c) => ({
+      id: c.id,
+      label: c.name,
+      count: bookings.filter((b) => (c.id === "__other" ? !columns.some((o) => o.id === b.staffId) : b.staffId === c.id)).length,
+    })),
+  ];
+  return (
+    <div role="group" aria-label={t("staffFilter")} className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6">
+      {options.map((o) => (
+        <button
+          key={o.id}
+          type="button"
+          aria-pressed={value === o.id}
+          onClick={() => onChange(o.id)}
+          className={cn(
+            "flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            value === o.id
+              ? "border-primary bg-primary/10 font-semibold text-primary"
+              : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
+          )}
+        >
+          {o.label}
+          <span className="font-mono text-xs tabular-nums opacity-80">{o.count}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function DesktopColumn({
+  column,
+  bookings,
+  hours,
+  firstHour,
+  nowTop,
+  nowMinute,
+  working,
+  onSelect,
+  onCreate,
+}: {
+  column: Column;
+  bookings: Booking[];
+  hours: number[];
+  firstHour: number;
+  nowTop: number | null;
+  nowMinute: number | null;
+  working: MinuteRange[] | undefined;
+  onSelect: (b: Booking) => void;
+  onCreate?: CreateHandler;
+}) {
+  const t = useTranslations("calendar.views");
+  const creatable = !!onCreate && column.id !== "__other";
+  const { surfaceProps, overlay } = useSlotCursor({
+    firstHour,
+    lastHour: firstHour + hours.length,
+    nowMinute,
+    enabled: creatable,
+    label: t("columnLabel", { name: column.name }),
+    onCreate: (time) => onCreate?.(column.id, time),
+  });
+  const mine = [...bookings].sort((a, b) => Number(a.status === "CONFIRMED") - Number(b.status === "CONFIRMED"));
+  const lanes = layoutLanes(
+    bookings
+      .filter((b) => !isClosed(b))
+      .map((b) => ({ id: b.id, start: toMinutes(b.startTime), end: toMinutes(b.endTime) })),
+    (DESKTOP_BLOCK_MIN_PX / HOUR_PX) * 60,
+    DESKTOP_MAX_LANES
+  );
+
+  return (
+    <div
+      className={cn(
+        "relative border-l border-border",
+        creatable &&
+          "cursor-cell focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+      )}
+      onClick={(e) => {
+        if (!creatable || e.target !== e.currentTarget) return;
+        const offset = e.clientY - e.currentTarget.getBoundingClientRect().top;
+        onCreate(column.id, snapOffsetToTime(offset, firstHour));
+      }}
+      style={{
+        height: hours.length * HOUR_PX,
+        backgroundImage: hourBackground(),
+      }}
+      {...surfaceProps}
+    >
+      <OffHours working={working} firstHour={firstHour} lastHour={firstHour + hours.length} />
+      {overlay}
+      {nowTop !== null && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 h-px bg-primary transition-[top] duration-1000 ease-linear"
+          style={{ top: nowTop }}
+        />
+      )}
+      {mine.map((b) => {
+        const start = toMinutes(b.startTime);
+        const end = toMinutes(b.endTime);
+        const top = ((start - firstHour * 60) / 60) * HOUR_PX;
+        const height = Math.max(((end - start) / 60) * HOUR_PX - 2, DESKTOP_BLOCK_MIN_PX);
+        return (
+          <div
+            key={b.id}
+            className={cn("absolute", fadedUnder(b, bookings) && "opacity-40")}
+            style={{ top, height, ...laneStyle(lanes.get(b.id)) }}
+          >
+            <DayCard booking={b} height={height} onSelect={onSelect} />
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -176,20 +368,20 @@ function DayGrid({
   onSelect,
   onCreate,
   nowMinute,
+  dayHours,
+  mobileStaff,
+  onMobileStaffChange,
 }: {
   bookings: Booking[];
   staff: Staff[];
   onSelect: (b: Booking) => void;
   onCreate?: CreateHandler;
   nowMinute: number | null;
+  dayHours?: StaffDayHours;
+  mobileStaff: MobileStaffPick;
+  onMobileStaffChange?: (id: string) => void;
 }) {
   const t = useTranslations("calendar.views");
-  const starts = bookings.map((b) => toMinutes(b.startTime));
-  const ends = bookings.map((b) => toMinutes(b.endTime));
-  const firstHour = Math.min(8, Math.floor(Math.min(...starts, 8 * 60) / 60));
-  const lastHour = Math.min(24, Math.max(19, Math.ceil(Math.max(...ends, 0) / 60)));
-  const hours = Array.from({ length: lastHour - firstHour }, (_, i) => firstHour + i);
-
   const staffIds = new Set(staff.map((s) => s.id));
   const columns: Column[] = staff
     .filter((s) => s.active || bookings.some((b) => b.staffId === s.id))
@@ -200,14 +392,37 @@ function DayGrid({
   const bookingsOf = (c: Column) =>
     bookings.filter((b) => (c.id === "__other" ? !staffIds.has(b.staffId) : b.staffId === c.id));
 
+  const window = dayHours
+    ? openWindow(
+        dayHours,
+        columns.filter((c) => c.active).map((c) => c.id)
+      )
+    : null;
+  const { firstHour, lastHour } = visibleHours(bookings, window);
+  const hours = Array.from({ length: lastHour - firstHour }, (_, i) => firstHour + i);
+
   const nowTop =
     nowMinute !== null && nowMinute >= firstHour * 60 && nowMinute <= lastHour * 60
       ? ((nowMinute - firstHour * 60) / 60) * HOUR_PX
       : null;
 
+  const busy = (c: Column) => bookingsOf(c).length > 0;
+  const autoPick =
+    columns.length > 2
+      ? (columns.find((c) => c.active && busy(c)) ?? columns.find(busy) ?? columns[0]!).id
+      : ALL_STAFF;
+  const picked =
+    mobileStaff && (mobileStaff === ALL_STAFF || columns.some((c) => c.id === mobileStaff))
+      ? mobileStaff
+      : autoPick;
+  const mobileColumns = picked === ALL_STAFF ? columns : columns.filter((c) => c.id === picked);
+
   return (
     <>
       <div className="flex flex-col gap-4 md:hidden">
+        {columns.length > 1 && onMobileStaffChange && (
+          <StaffPicker columns={columns} bookings={bookings} value={picked} onChange={onMobileStaffChange} />
+        )}
         {columns.length === 0 ? (
           <EmptyState
             icon={CalendarX}
@@ -215,7 +430,7 @@ function DayGrid({
             description={t("emptyDescription")}
           />
         ) : (
-          columns.map((c) => (
+          mobileColumns.map((c) => (
             <StaffTimeline
               key={c.id}
               column={c}
@@ -223,6 +438,8 @@ function DayGrid({
               hours={hours}
               firstHour={firstHour}
               nowTop={nowTop}
+              nowMinute={nowMinute}
+              working={dayHours?.[c.id]}
               onSelect={onSelect}
               onCreate={onCreate}
             />
@@ -264,43 +481,20 @@ function DayGrid({
             )}
           </div>
 
-          {columns.map((c) => {
-            const mine = bookingsOf(c).sort((a, b) => Number(a.status === "CONFIRMED") - Number(b.status === "CONFIRMED"));
-            return (
-              <div
-                key={c.id}
-                className={cn("relative border-l border-border", onCreate && c.id !== "__other" && "cursor-cell")}
-                onClick={(e) => {
-                  if (!onCreate || c.id === "__other" || e.target !== e.currentTarget) return;
-                  const offset = e.clientY - e.currentTarget.getBoundingClientRect().top;
-                  onCreate(c.id, snapOffsetToTime(offset, firstHour));
-                }}
-                style={{
-                  height: hours.length * HOUR_PX,
-                  backgroundImage: hourBackground(),
-                }}
-              >
-                {nowTop !== null && (
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-x-0 h-px bg-primary transition-[top] duration-1000 ease-linear"
-                    style={{ top: nowTop }}
-                  />
-                )}
-                {mine.map((b) => {
-                  const start = toMinutes(b.startTime);
-                  const end = toMinutes(b.endTime);
-                  const top = ((start - firstHour * 60) / 60) * HOUR_PX;
-                  const height = Math.max(((end - start) / 60) * HOUR_PX - 2, 28);
-                  return (
-                    <div key={b.id} className="absolute inset-x-1" style={{ top, height }}>
-                      <DayCard booking={b} height={height} onSelect={onSelect} />
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
+          {columns.map((c) => (
+            <DesktopColumn
+              key={c.id}
+              column={c}
+              bookings={bookingsOf(c)}
+              hours={hours}
+              firstHour={firstHour}
+              nowTop={nowTop}
+              nowMinute={nowMinute}
+              working={dayHours?.[c.id]}
+              onSelect={onSelect}
+              onCreate={onCreate}
+            />
+          ))}
         </div>
       </div>
     </>

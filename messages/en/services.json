@@ -11,8 +11,6 @@
     "minutes": "{count} min",
     "bookable": "Available for booking",
     "toggleAria": "Toggle {name}",
-    "editAria": "Edit {name}",
-    "deleteAria": "Delete {name}",
     "hiddenToast": "{name} hidden from booking page",
     "bookableToast": "{name} is now bookable",
     "deleted": "Service deleted",
@@ -53,6 +51,7 @@
     "description": "Customers see the name, duration and price when booking.",
     "submitNew": "Create service",
     "created": "Service created",
-    "updated": "Service updated"
+    "updated": "Service updated",
+    "delete": "Delete service"
   }
 }

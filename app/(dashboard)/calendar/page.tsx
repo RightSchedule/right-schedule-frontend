@@ -9,16 +9,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ErrorState, PageContainer, PageHeader } from "@/components/shared";
 import { BookingDetailDialog } from "@/features/bookings/components/BookingDetailDialog";
-import { DayView, WeekView } from "@/features/bookings/components/CalendarViews";
+import { dayOfWeekOf, staffDayHours } from "@/features/bookings/calendarHours";
+import { DayView, WeekView, type MobileStaffPick } from "@/features/bookings/components/CalendarViews";
 import {
   CreateBookingDialog,
   type BookingDraft,
 } from "@/features/bookings/components/CreateBookingDialog";
 import { useBookingsRange } from "@/features/bookings/hooks/useBookings";
-import { useBusiness } from "@/features/business/hooks/useBusiness";
-import { useStaff } from "@/features/staff/hooks/useStaff";
+import { useBookingSettings, useBusiness } from "@/features/business/hooks/useBusiness";
+import { useAllWorkingHours, useStaff } from "@/features/staff/hooks/useStaff";
 import { useLocaleFormat } from "@/lib/i18n/format";
-import { businessToday } from "@/lib/utils/clock";
+import { businessToday, defaultBookingTime } from "@/lib/utils/clock";
 import { dateFromISO, getWeekDays, weekRange } from "@/lib/utils/date";
 import { transition } from "@/lib/utils/motion";
 import type { Booking } from "@/types/domain";
@@ -32,22 +33,34 @@ export default function CalendarPage() {
   const [view, setView] = useState<CalendarView>("day");
   const businessQuery = useBusiness();
   const timezone = businessQuery.data?.timezone;
+  const { data: rules } = useBookingSettings();
   const [picked, setCursor] = useState<Date | null>(null);
   const cursor = useMemo(() => picked ?? dateFromISO(businessToday(timezone)), [picked, timezone]);
   const [selected, setSelected] = useState<Booking | null>(null);
   const [draft, setDraft] = useState<BookingDraft | null>(null);
+  const [mobileStaff, setMobileStaff] = useState<MobileStaffPick>(null);
 
   const weekDays = useMemo(() => getWeekDays(cursor), [cursor]);
   const staff = useStaff();
+  const workingHours = useAllWorkingHours(staff.data ?? []);
   const dayIso = format(cursor, DAY_FORMAT);
   const range = view === "day" ? { from: dayIso, to: dayIso } : weekRange(cursor);
   const bookings = useBookingsRange(range.from, range.to, { enabled: !businessQuery.isLoading });
   const error = bookings.error ?? staff.error;
-  const loading = businessQuery.isLoading || bookings.isLoading || staff.isLoading;
+  const loading =
+    businessQuery.isLoading ||
+    bookings.isLoading ||
+    staff.isLoading ||
+    (view === "day" && !!staff.data && workingHours.pending);
   const retry = () => {
     if (bookings.error) bookings.refetch();
     if (staff.error) staff.refetch();
   };
+
+  const dayHours = useMemo(
+    () => staffDayHours(workingHours.byStaff, dayOfWeekOf(cursor)),
+    [workingHours.byStaff, cursor]
+  );
 
   const bookingsByDay = useMemo(
     () =>
@@ -87,7 +100,7 @@ export default function CalendarPage() {
         title={t("title")}
         description={t("description")}
         actions={
-          <Button size="lg" onClick={() => setDraft({ date: dayIso, time: "09:00" })}>
+          <Button size="lg" onClick={() => setDraft({ date: dayIso, time: defaultBookingTime(dayIso, timezone, rules?.slotIntervalMinutes) })}>
             <Plus /> {t("newBooking")}
           </Button>
         }
@@ -110,7 +123,7 @@ export default function CalendarPage() {
             {t("today")}
           </Button>
         </div>
-        <h2 className="min-w-40 flex-1 font-heading text-xl font-semibold leading-snug" aria-live="polite">
+        <h2 className="min-w-40 flex-1 type-section leading-snug" aria-live="polite">
           {businessQuery.isLoading ? (
             <span aria-hidden className="skeleton-shimmer block h-7 w-56 rounded-md bg-muted" />
           ) : (
@@ -161,6 +174,9 @@ export default function CalendarPage() {
               staff={staff.data ?? []}
               onSelect={setSelected}
               onCreate={(staffId, time) => setDraft({ date: dayIso, time, staffId })}
+              dayHours={dayHours}
+              mobileStaff={mobileStaff}
+              onMobileStaffChange={setMobileStaff}
             />
           ) : (
             <WeekView

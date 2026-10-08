@@ -57,7 +57,7 @@ function SheetFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 function SheetTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
-      className={cn("text-lg font-semibold text-foreground", className)}
+      className={cn("font-heading text-lg font-semibold text-foreground", className)}
       {...props}
     />
   )

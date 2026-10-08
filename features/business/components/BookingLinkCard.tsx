@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Check, Copy, ExternalLink, Send } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import { Tooltip } from "@/components/ui/tooltip";
 import { bookingPath, bookingUrl, quotePath, quoteUrl } from "@/lib/utils/booking-link";
 
 type LinkKind = "booking" | "quote";
@@ -55,16 +56,17 @@ function LinkRow({
           <Button className="flex-1" onClick={copy}>
             {copied ? <Check /> : <Copy />} {copied ? t("copied") : t("copyLink")}
           </Button>
-          <a
-            href={path}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={t("preview")}
-            title={t("preview")}
-            className={buttonVariants({ variant: "outline", size: "icon" })}
-          >
-            <Send />
-          </a>
+          <Tooltip content={t("preview")} side="top">
+            <a
+              href={path}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={t("preview")}
+              className={buttonVariants({ variant: "outline", size: "icon" })}
+            >
+              <Send />
+            </a>
+          </Tooltip>
         </div>
       </div>
     );

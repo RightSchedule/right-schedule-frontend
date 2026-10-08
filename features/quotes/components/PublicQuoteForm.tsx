@@ -101,7 +101,7 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
     return (
       <main className="mx-auto flex w-full max-w-md flex-col items-center px-4 py-12 text-center">
         <Check className="mb-4 size-8 text-success-foreground" strokeWidth={2.5} />
-        <h1 className="text-2xl font-semibold">{t("success.title")}</h1>
+        <h1 className="type-title">{t("success.title")}</h1>
         <p className="mt-2 text-sm">
           {t("success.description", { business: business.name, email: sentTo })}
         </p>
@@ -138,7 +138,7 @@ export function PublicQuoteForm({ slug, initialServiceId }: { slug: string; init
       </div>
 
       <div className="rounded-lg border border-border bg-card p-5 sm:p-6">
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
+        <h1 className="type-title">{t("title")}</h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
           {t("description", { business: business.name })}
         </p>

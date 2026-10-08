@@ -1,4 +1,15 @@
 export const qk = {
+  account: ["account", "me"] as const,
+  admin: {
+    all: ["admin"] as const,
+    overview: ["admin", "overview"] as const,
+    businesses: (search: string, status: string | null, page: number) =>
+      ["admin", "businesses", search, status, page] as const,
+    business: (id: string) => ["admin", "business", id] as const,
+    users: (search: string, status: string | null, page: number) =>
+      ["admin", "users", search, status, page] as const,
+    audit: (targetId: string | null, page: number) => ["admin", "audit", targetId, page] as const,
+  },
   business: ["business"] as const,
   bookingSettings: ["business", "booking-settings"] as const,
   services: ["services"] as const,
@@ -36,6 +47,7 @@ export const qk = {
   },
   waitlist: {
     all: ["waitlist"] as const,
+    waiting: ["waitlist", "waiting"] as const,
     list: (status: string | null, page: number) => ["waitlist", "list", status, page] as const,
   },
   public: {

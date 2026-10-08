@@ -3,14 +3,14 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ArrowRight } from "lucide-react";
 import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Field, FormError, LoadingButton } from "@/components/shared";
 import { ServiceForm } from "@/features/services/components/ServiceFormDialog";
@@ -99,6 +99,7 @@ function BusinessStep({ onDone }: { onDone: () => void }) {
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
     setError: setFieldError,
@@ -162,13 +163,18 @@ function BusinessStep({ onDone }: { onDone: () => void }) {
         </div>
       </Field>
       <Field label={t("business.timezone")} htmlFor="ob-timezone">
-        <Select id="ob-timezone" {...register("timezone")}>
-          {zones.map((z) => (
-            <option key={z} value={z}>
-              {z}
-            </option>
-          ))}
-        </Select>
+        <Controller
+          control={control}
+          name="timezone"
+          render={({ field }) => (
+            <Combobox
+              id="ob-timezone"
+              items={zones}
+              value={field.value ?? ""}
+              onValueChange={(zone) => field.onChange(zone)}
+            />
+          )}
+        />
       </Field>
       <FormError message={error} />
       <div className="mt-2 flex items-center justify-between gap-3">
@@ -275,6 +281,9 @@ export function OnboardingWizard() {
     return <Skeleton className="h-96 rounded-lg" />;
   }
 
+  // With approval on, the link only works once platform staff approve the business.
+  const copyKey = step === "done" && business.data?.status === "PENDING_APPROVAL" ? "pending" : step;
+
   const serviceIds =
     createdServiceIds.length > 0
       ? createdServiceIds
@@ -290,8 +299,8 @@ export function OnboardingWizard() {
 
       <div>
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold">{t(`copy.${step}.title`)}</h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">{t(`copy.${step}.description`)}</p>
+          <h1 className="type-title">{t(`copy.${copyKey}.title`)}</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">{t(`copy.${copyKey}.description`)}</p>
         </div>
         {step === "business" && <BusinessStep onDone={() => setStep("service")} />}
         {step === "service" && (

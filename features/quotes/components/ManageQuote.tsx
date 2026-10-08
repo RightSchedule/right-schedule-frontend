@@ -35,7 +35,7 @@ export function ManageQuote({ token }: { token: string }) {
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-8">
       <p className="text-sm text-muted-foreground">{quote.businessName}</p>
-      <h1 className="mt-1 text-2xl font-semibold tracking-tight">{t("title")}</h1>
+      <h1 className="mt-1 type-title">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {t("requestedOn", { date: f.date(quote.createdAt, "d MMMM yyyy") })}
         {quote.serviceName ? ` · ${quote.serviceName}` : ""}

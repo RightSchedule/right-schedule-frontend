@@ -108,7 +108,7 @@ export default function CustomerDetailPage({
               <AvatarFallback className="text-base">{initials(customer.data.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-2xl font-semibold">
+              <h1 className="truncate type-title">
                 {customer.data.name}
               </h1>
               <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">

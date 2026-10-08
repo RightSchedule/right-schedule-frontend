@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Sidebar, MobileBottomNav, MobileTopBar } from "@/components/layout/Sidebar";
+import { AdminRedirect } from "@/features/auth/components/AdminRedirect";
+import { BusinessStatusBanner } from "@/features/business/components/BusinessStatusBanner";
 
 export default async function DashboardLayout({
   children,
@@ -21,10 +23,12 @@ export default async function DashboardLayout({
       <div className="flex min-w-0 flex-1 flex-col">
         <MobileTopBar />
         <main id="main" className="flex-1 overflow-y-auto pb-24 md:pb-0">
+          <BusinessStatusBanner />
           {children}
         </main>
       </div>
       <MobileBottomNav />
+      <AdminRedirect />
     </div>
   );
 }

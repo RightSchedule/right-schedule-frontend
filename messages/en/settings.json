@@ -1,7 +1,7 @@
 {
   "header": {
     "title": "Settings",
-    "description": "Your business profile and booking page."
+    "description": "Your business profile, booking page and emails."
   },
   "bookingLink": {
     "title": "Your booking link",
@@ -50,23 +50,28 @@
   "saved": "Settings saved",
   "notFound": "Business not found",
   "bookingRules": {
-    "title": "Booking rules",
-    "description": "Control what customers can do online and how bookings are spaced.",
-    "minNotice": "Minimum notice (minutes)",
-    "minNoticeHint": "How far ahead customers must book. 0 allows last-minute bookings.",
+    "minNotice": "Minimum notice",
     "maxAdvance": "Booking horizon (days)",
     "maxAdvanceHint": "How far into the future customers can book.",
-    "cancellationWindow": "Cancellation window (minutes)",
-    "cancellationWindowHint": "Customers can't cancel online inside this window before the start.",
+    "cancellationWindow": "Cancellation window",
     "noLimit": "No limit",
+    "summary": {
+      "noticeNone": "Customers can book right up to the start time.",
+      "notice": "Customers must book at least {duration} ahead.",
+      "cancelNone": "Customers can cancel online until the booking starts.",
+      "cancel": "Customers can cancel online until {duration} before the start.",
+      "rescheduleSame": "Same as the cancellation window.",
+      "rescheduleNone": "Customers can reschedule online until the booking starts.",
+      "reschedule": "Customers can reschedule online until {duration} before the start."
+    },
     "slotInterval": "Time slot spacing",
     "slotIntervalHint": "Gap between start times offered to customers.",
     "minutes": "{count} min",
     "saved": "Booking rules saved",
     "errors": {
-      "minNotice": "Enter a whole number from 0 to 43200",
+      "minNotice": "Enter a duration from 0 up to 30 days",
       "maxAdvance": "Enter a whole number from 1 to 730",
-      "cancellationWindow": "Leave empty or enter 0 to 43200",
+      "cancellationWindow": "Leave empty or enter a duration up to 30 days",
       "load": "Booking rules not found",
       "buffer": "Enter a whole number from 0 to 240",
       "perDay": "Leave empty or enter 1 to 50",
@@ -90,8 +95,7 @@
     "showReviewsHint": "Display collected reviews on your public page.",
     "buffer": "Buffer between bookings (minutes)",
     "bufferHint": "Gap kept free after each booking. Services can override it.",
-    "rescheduleWindow": "Reschedule window (minutes)",
-    "rescheduleWindowHint": "Customers can't reschedule online inside this window. Empty reuses the cancellation window.",
+    "rescheduleWindow": "Reschedule window",
     "sameAsCancellation": "Same as cancellation",
     "limitsHint": "Apply to bookings customers make online. Staff bookings are never limited. Customers are identified by email or phone.",
     "perDay": "Max bookings per customer per day",
@@ -117,5 +121,12 @@
     "uploadFailed": "Couldn't upload the image. Try again.",
     "updated": "Logo updated",
     "removed": "Logo removed"
+  },
+  "tabs": {
+    "label": "Settings sections",
+    "business": "Business",
+    "booking": "Online booking",
+    "emails": "Emails",
+    "account": "Account and privacy"
   }
 }
