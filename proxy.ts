@@ -29,7 +29,9 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
+  // Icons and the manifest must load without a session: browsers and Android's WebAPK service fetch them
+  // cookie-less, and a redirect to /login makes the installed app fall back to a blurry favicon.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|public/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|manifest.webmanifest|icons/).*)",
   ],
 };
